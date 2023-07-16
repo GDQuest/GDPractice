@@ -2,17 +2,10 @@ extends Test
 
 const ERR := 1e-3
 
-var test_space: Array[Dictionary] = []
-
 
 func setup(practice: Node, solution: Node) -> void:
-	super(practice, solution)
 	solution.velocity = practice.velocity
-
-	await get_tree().create_timer(1.0).timeout
-	get_tree().physics_frame.connect(populate_test_space)
-	await get_tree().create_timer(1.0).timeout
-	get_tree().physics_frame.disconnect(populate_test_space)
+	await super(practice, solution)
 
 
 func populate_test_space() -> void:

@@ -10,6 +10,8 @@ const COLOR := {
 	false: "red",
 }
 
+var test_space: Array[Dictionary] = []
+
 var practice: Node = null
 var solution: Node = null
 
@@ -17,6 +19,13 @@ var solution: Node = null
 func setup(practice: Node, solution: Node) -> void:
 	self.practice = practice
 	self.solution = solution
+
+	if self.has_method("populate_test_space"):
+		var populate_test_space := Callable(self, "populate_test_space")
+		await get_tree().create_timer(1.0).timeout
+		get_tree().physics_frame.connect(populate_test_space)
+		await get_tree().create_timer(1.0).timeout
+		get_tree().physics_frame.disconnect(populate_test_space)
 
 
 func run() -> void:
