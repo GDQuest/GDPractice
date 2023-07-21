@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://defeicg327cls"]
+
+[ext_resource type="Texture2D" uid="uid://x18ctliprf48" path="res://shared/green_ship.png" id="1_gmsxs"]
+[ext_resource type="Script" path="res://practices/adding_input/adding_input.gd" id="2_wptl0"]
+
+[node name="Sprite2D" type="Sprite2D"]
+position = Vector2(540, 320)
+texture = ExtResource("1_gmsxs")
+script = ExtResource("2_wptl0")

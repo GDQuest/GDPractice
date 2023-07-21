@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://b30ipy66l0dxm"]
 
 [ext_resource type="Texture2D" uid="uid://x18ctliprf48" path="res://shared/green_ship.png" id="1_5h5h8"]
-[ext_resource type="Script" path="res://solutions/01.making_ship_move/making_ship_move.gd" id="2_teqfc"]
+[ext_resource type="Script" path="res://solutions/making_ship_move/making_ship_move.gd" id="2_teqfc"]
 
 [node name="Sprite2D" type="Sprite2D"]
 position = Vector2(160, 320)
