@@ -45,7 +45,7 @@ func populate_test_space() -> void:
 
 
 func test_direction_uses_get_axis_function() -> bool:
-	return matches_code_line(['direction=Vector2(Input.get_axis(*),Input.get_axis(*))'])
+	return _matches_code_line(['direction=Vector2(Input.get_axis(*),Input.get_axis(*))'])
 
 
 func test_get_axis_calls_use_correct_move_actions() -> bool:
