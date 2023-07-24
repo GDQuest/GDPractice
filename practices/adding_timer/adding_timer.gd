@@ -14,14 +14,8 @@ func _process(delta: float) -> void:
 	velocity = max_speed * direction
 
 	if Input.is_action_just_pressed("boost"):
-		max_speed = boost_speed # pass
-		get_node("Timer").start() #
+		pass
 
-	velocity = direction * max_speed #
 	position += velocity * delta
 	if direction:
 		rotation = velocity.angle()
-
-
-func _on_timer_timeout() -> void: #
-	max_speed = normal_speed #

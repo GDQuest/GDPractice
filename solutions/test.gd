@@ -26,7 +26,7 @@ func setup(practice: Node, solution: Node) -> void:
 func run(checks_v_box_container: VBoxContainer) -> void:
 	_test_space = _test_space.slice(1)
 	for d in get_method_list().filter(func(x: Dictionary) -> bool: return x.name.begins_with(PREFIX)):
-		var has_passed: bool = await Callable(self, d.name).call()
+		var has_passed: bool = await call(d.name)
 		var rich_text_label := RichTextLabel.new()
 		checks_v_box_container.add_child(rich_text_label)
 		rich_text_label.fit_content = true

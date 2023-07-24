@@ -3,7 +3,8 @@ extends Test
 
 func setup(practice: Node, solution: Node) -> void:
 	super(practice, solution)
-	solution.velocity = practice.velocity
+	if not practice.velocity.is_zero_approx():
+		solution.velocity = practice.velocity
 	await _connect_for(get_tree().process_frame, populate_test_space, 1.0)
 
 
@@ -31,5 +32,5 @@ func test_movement_takes_delta_into_account() -> bool:
 	return _test_sliding_window(fail_predicate)
 
 
-func test_position_matches_solution() -> bool:
+func test_position_is_computed_correctly() -> bool:
 	return _test_space.all(func(x: Dictionary) -> bool: return x.practice_position == x.solution_position)

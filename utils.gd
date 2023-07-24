@@ -3,8 +3,8 @@ class_name Utils
 const SEP := "/"
 
 
-static func fs_find(pattern: String = "*", path: String = "res://") -> Array:
-	var result := []
+static func fs_find(pattern: String = "*", path: String = "res://") -> Array[String]:
+	var result: Array[String] = []
 	var is_file := not pattern.ends_with(SEP)
 
 	var dir := DirAccess.open(path)
@@ -26,5 +26,12 @@ static func fs_find(pattern: String = "*", path: String = "res://") -> Array:
 		elif path.match(pattern):
 			result.push_back(new_path)
 		path = dir.get_next()
-
 	return result
+
+
+static func fs_remove_dir(base_path: String) -> void:
+	if DirAccess.dir_exists_absolute(base_path):
+		for paths in ["*", "*/"].map(func(x: String) -> Array: return Utils.fs_find(x, base_path)):
+			for path in paths:
+				DirAccess.remove_absolute(path)
+		DirAccess.remove_absolute(base_path)
