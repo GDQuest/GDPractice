@@ -1,14 +1,12 @@
 extends Test
 
 
-func setup(practice: Node, solution: Node) -> void:
-	super(practice, solution)
-	if not _are_requirements_valid:
-		get_tree().quit()
-		return
+func setup_state() -> void:
+	if not _practice.velocity.is_zero_approx():
+		_solution.velocity = _practice.velocity
 
-	if not practice.velocity.is_zero_approx():
-		solution.velocity = practice.velocity
+
+func setup_populate() -> void:
 	await _connect_for(get_tree().process_frame, populate_test_space, 1.0)
 
 

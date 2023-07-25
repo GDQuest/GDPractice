@@ -1,12 +1,13 @@
 extends Test
 
 
-func setup(practice: Node, solution: Node) -> void:
-	super(practice, solution)
+func setup_state() -> void:
 	_solution.max_speed = _practice.max_speed
 	_solution.velocity = _practice.velocity
 	_solution.direction = _practice.direction
 
+
+func setup_populate() -> void:
 	var actionss := [
 		["move_left"],
 		["move_right"],

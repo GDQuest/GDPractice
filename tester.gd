@@ -14,6 +14,10 @@ var practices := {
 @onready var next_button: Button = %NextButton
 
 
+func _ready() -> void:
+	Logger.setup(title_rich_text_label, checks_v_box_container)
+
+
 func check() -> void:
 	var practice_count := practices.size()
 	for project_name in practices:
@@ -26,6 +30,17 @@ func check() -> void:
 
 
 func check_practice(dir_name: StringName, project_name: String) -> void:
+	Logger.title("Checking...\n[b]%s:%s[/b]" % [
+		project_name,
+		dir_name,
+	].map(func(x: String) -> String: return x.capitalize()))
+
+	var practice_base_path := Builder.PRACTICES_PATH.path_join(dir_name)
+	Requirements.setup(practice_base_path)
+	# TODO: graceful exit
+	if not Requirements.check():
+		return
+
 	for node in sub_viewport.get_children():
 		node.queue_free()
 
@@ -36,7 +51,7 @@ func check_practice(dir_name: StringName, project_name: String) -> void:
 	if solution is Node2D:
 		solution.modulate.a = 0.5
 
-	var practice_scene := load(Builder.PRACTICES_PATH.path_join(dir_name).path_join(scene_name))
+	var practice_scene := load(practice_base_path.path_join(scene_name))
 	var practice: Node = practice_scene.instantiate()
 	sub_viewport.add_child(practice)
 
@@ -44,11 +59,6 @@ func check_practice(dir_name: StringName, project_name: String) -> void:
 	var test_script := load(Builder.SOLUTIONS_PATH.path_join(dir_name).path_join(scene_name))
 	var test: Test = test_script.new()
 	sub_viewport.add_child(test)
-#
-	title_rich_text_label.text = "Checking...\n[b]%s:%s[/b]" % [
-		project_name,
-		dir_name,
-	].map(func(x: String) -> String: return x.capitalize())
-	print_rich("\n%s" % title_rich_text_label.text)
+
 	await test.setup(practice, solution)
-	await test.run(checks_v_box_container)
+	await test.run()
