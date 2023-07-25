@@ -7,7 +7,7 @@ func setup_state() -> void:
 	_solution.direction = _practice.direction
 
 
-func setup_populate() -> void:
+func setup_populate_test_space() -> void:
 	var actionss := [
 		["move_left"],
 		["move_right"],
@@ -21,7 +21,7 @@ func setup_populate() -> void:
 	for actions in actionss:
 		for action in actions:
 			Input.action_press(action)
-		await _connect_for(get_tree().process_frame, populate_test_space, 0.3)
+		await _connect_timed(0.3, get_tree().process_frame, populate_test_space)
 		for action in actions:
 			Input.action_release(action)
 

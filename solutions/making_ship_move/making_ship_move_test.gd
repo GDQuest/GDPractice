@@ -6,8 +6,8 @@ func setup_state() -> void:
 		_solution.velocity = _practice.velocity
 
 
-func setup_populate() -> void:
-	await _connect_for(get_tree().process_frame, populate_test_space, 1.0)
+func setup_populate_test_space() -> void:
+	await _connect_timed(1.0, get_tree().process_frame, populate_test_space)
 
 
 func populate_test_space() -> void:

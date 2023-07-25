@@ -129,7 +129,7 @@ static func _get_scene_tree_proxy(state: SceneState) -> Dictionary:
 
 
 static func _log_item(item: Dictionary, is_valid: bool) -> void:
-	var filename: String = item.practice.resource_path.get_file()
+	var file_name: String = item.practice.resource_path.get_file()
 	Logger.log("\t%s...[color=%s]%s[/color]" % (
-		[filename] + (["green", "PASS"] if is_valid else ["red", "FAIL"])
+		[file_name] + (["green", "PASS"] if is_valid else ["red", "FAIL"])
 	))

@@ -22,14 +22,14 @@ func check() -> void:
 	var practice_count := practices.size()
 	for project_name in practices:
 		for practice_name in practices[project_name]:
-			await check_practice(practice_name, project_name)
+			await _check_practice(practice_name, project_name)
 			await next_button.pressed
 			for node in checks_v_box_container.get_children():
 				node.queue_free()
 		break
 
 
-func check_practice(dir_name: StringName, project_name: String) -> void:
+func _check_practice(dir_name: StringName, project_name: String) -> void:
 	Logger.title("Checking...\n[b]%s:%s[/b]" % [
 		project_name,
 		dir_name,

@@ -1,14 +1,29 @@
+## This class is used by [b]instructors[/b] to validate practices based on a direct comparisson
+## with the solution.
 class_name Test extends Node
 
 const PREFIX := "test_"
 const COMMENT_REGEX := "#.*$"
 
+## Used to store [b]practice[/b] and [b]solution[/b] as well as any needed extra data for
+## testing with the framework. It needs to be populated before use.
 var _test_space: Array[Dictionary] = []
+
+# TODO: what about for practices with multiple scripts?
+## Simplified [b]practice[/b] code split line by line as [Array] of [String].
 var _practice_code: Array[String] = []
+
 var _practice: Node = null
 var _solution: Node = null
 
 
+## Sets up references to the practice and solution scenes and awaits: [br]
+## - [i]virtual[/i] [method setup_state]: to update the solution state based on the practice
+## initial conditions. [br]
+## - [i]virtual[/i] [method setup_populate_test_space]: to acquire state for comparisson between
+## practice and solution scenes.
+##
+## These [code]setup_*()[/code] methods are helpers for breaking the tasks into smaller chunks.
 func setup(practice: Node, solution: Node) -> void:
 	_practice = practice
 	_solution = solution
@@ -18,18 +33,22 @@ func setup(practice: Node, solution: Node) -> void:
 	Logger.log("[b]Tests...[/b]")
 	await setup_state()
 	Logger.log("\tSetting practice <=> solution state...[color=green]DONE[/color]")
-	await setup_populate()
+	await setup_populate_test_space()
 	Logger.log("\tPopulating test space...[color=green]DONE[/color]")
 
 
+## Assign here the [b]practice[/b] state to the [b]solution[/b] state so they both start with the
+## same initial conditions.
 func setup_state() -> void:
 	pass
 
 
-func setup_populate() -> void:
+## Acquire both [b]practice[/b] and [b]solution[/b] state data for test validation.
+func setup_populate_test_space() -> void:
 	pass
 
 
+## Runs all functions following this pattern: [code]test_*()[/code].
 func run() -> void:
 	_test_space = _test_space.slice(1)
 	for d in get_method_list().filter(func(x: Dictionary) -> bool: return x.name.begins_with(PREFIX)):
@@ -40,8 +59,9 @@ func run() -> void:
 		])
 
 
-# Returns true if a line in the input `code` matches one of the `target_lines`.
-# Uses String.match to match lines, so you can use ? and * in `target_lines`.
+## Returns [code]true[/code] if a line in the input [code]code[/code] matches one of the
+## [param target_lines]. Uses [method String.match] to match lines, so you can use
+## [code]?[/code] and [code]*[/code] in [param target_lines].
 func _matches_code_line(target_lines: Array) -> bool:
 	for line in _practice_code:
 		for match_pattern in target_lines:
@@ -49,13 +69,20 @@ func _matches_code_line(target_lines: Array) -> bool:
 				return true
 	return false
 
-
-func _connect_for(sig: Signal, callback: Callable, time: float) -> void:
+## Connects [param callback] to [param sig] signal for the given amount of [param time] by waiting
+## for [signal SceneTreeTimer.timeout] and disconnecting at the end.
+func _connect_timed(time: float, sig: Signal, callback: Callable) -> void:
 	sig.connect(callback)
 	await get_tree().create_timer(time).timeout
 	sig.disconnect(callback)
 
 
+## Retruns [code]true[/code] if the [param fail_predicate] [Callable] is [code]true[/code] for all
+## pairs of consecutive items in [member _test_space]. Otherwise it returns [code]false[/code]. [br]
+## [br]
+## Parameters: [br]
+## - [param fail_predicate] is a [Callable] that expects a pair of parameters fed from
+## [member _test_space].
 func _test_sliding_window(fail_predicate: Callable) -> bool:
 	var result := true
 	var x: Dictionary = _test_space[0]
@@ -67,6 +94,8 @@ func _test_sliding_window(fail_predicate: Callable) -> bool:
 	return result
 
 
+## Helper to simplify the [b]practice[/b] script code. It returns the simplified code split
+## line by line as [Array] of [String].
 static func _preprocess_practice_code(practice_script: Script) -> Array[String]:
 	var result: Array[String] = []
 	var comment_suffix := RegEx.new()
