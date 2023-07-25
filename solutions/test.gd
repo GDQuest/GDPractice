@@ -2,14 +2,6 @@ class_name Test extends Node
 
 const PREFIX := "test_"
 const COMMENT_REGEX := "#.*$"
-const MAP := {
-	true: "PASS",
-	false: "FAIL",
-}
-const COLOR := {
-	true: "green",
-	false: "red",
-}
 
 var _test_space: Array[Dictionary] = []
 var _practice_code: Array[String] = []
@@ -30,7 +22,6 @@ func setup(practice: Node, solution: Node) -> void:
 	Logger.log("\tPopulating test space...[color=green]DONE[/color]")
 
 
-
 func setup_state() -> void:
 	pass
 
@@ -45,7 +36,7 @@ func run() -> void:
 		var has_passed: bool = await call(d.name)
 		Logger.log("\tTesting %s...%s" % [
 			d.name.trim_prefix(PREFIX).capitalize(),
-			"[color=%s]%s[/color]" % [COLOR[has_passed], MAP[has_passed]]
+			"[color=%s]%s[/color]" % (["green", "PASS"] if has_passed else ["red", "FAIL"])
 		])
 
 

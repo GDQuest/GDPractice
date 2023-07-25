@@ -4,5 +4,5 @@ extends Control
 
 
 func _ready() -> void:
-#	Builder.build()
+	Builder.build()
 	tester.check()

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bnnxfl3thl8qk"]
 
-[ext_resource type="Script" path="res://tester.gd" id="1_awhsl"]
+[ext_resource type="Script" path="res://tester/tester.gd" id="1_awhsl"]
 
 [node name="Tester" type="Control"]
 layout_mode = 3
@@ -60,9 +60,13 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="ChecksVBoxContainer" type="VBoxContainer" parent="HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/MarginContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="ChecksVBoxContainer" type="VBoxContainer" parent="HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="HBoxContainer"]
