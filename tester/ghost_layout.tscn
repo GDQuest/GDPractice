@@ -1,0 +1,29 @@
+[gd_scene load_steps=2 format=3 uid="uid://c553h2n1lu6uh"]
+
+[ext_resource type="Script" path="res://tester/ghost_layout.gd" id="1_822a2"]
+
+[node name="GhostLayout" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+script = ExtResource("1_822a2")
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+unique_name_in_owner = true
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
