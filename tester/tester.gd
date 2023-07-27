@@ -1,64 +1,64 @@
-class_name Tester extends Control
-
-var practices := {
-	"to space and beyond": [
-		"making_ship_move",
-		"adding_input",
-#		"adding_timer",
-	],
-}
+extends Control
 
 @onready var sub_viewport: SubViewport = %SubViewport
 @onready var title_rich_text_label: RichTextLabel = %TitleRichTextLabel
 @onready var checks_v_box_container: VBoxContainer = %ChecksVBoxContainer
-@onready var next_button: Button = %NextButton
 
 
 func _ready() -> void:
 	Logger.setup(title_rich_text_label, checks_v_box_container)
-
-
-func check() -> void:
-	var practice_count := practices.size()
-	for project_name in practices:
-		for practice_name in practices[project_name]:
-			await _check_practice(practice_name, project_name)
-			await next_button.pressed
-			for node in checks_v_box_container.get_children():
-				node.queue_free()
-		break
-
-
-func _check_practice(dir_name: StringName, project_name: String) -> void:
-	Logger.title("Checking...\n[b]%s:%s[/b]" % [
-		project_name,
-		dir_name,
-	].map(func(x: String) -> String: return x.capitalize()))
-
-	var practice_base_path := Builder.PRACTICES_PATH.path_join(dir_name)
-	Requirements.setup(practice_base_path)
-	# TODO: graceful exit
-	if not Requirements.check():
+	var info := _get_current_scene_info()
+	var is_practice_scene: bool = (
+		info.file_path.begins_with(Builder.PRACTICES_PATH)
+		and "%s.tscn" % info.dir_name == info.file_name
+	)
+	if not is_practice_scene:
+		Logger.log("Not a practice...[color=orange]SKIP[/color]")
+		queue_free()
 		return
 
-	for node in sub_viewport.get_children():
-		node.queue_free()
+	_move_practice.call_deferred(info)
+	_check_practice.call_deferred(info)
 
-	var scene_name := "".join([dir_name, ".tscn"])
-	var solution_scene := load(Builder.SOLUTIONS_PATH.path_join(dir_name).path_join(scene_name))
-	var solution: Node = solution_scene.instantiate()
+
+func _get_current_scene_info() -> Dictionary:
+	var result := {scene = get_tree().current_scene}
+	result.file_path = result.scene.scene_file_path
+	result.file_name = result.file_path.get_file()
+	result.base_path = result.file_path.get_base_dir()
+	result.dir_name = result.base_path.get_file()
+	return result
+
+
+func _to_solution(path: String) -> String:
+	return path.replace(Builder.PRACTICES_PATH, Builder.SOLUTIONS_PATH)
+
+
+func _move_practice(practice_info: Dictionary) -> void:
+	get_tree().root.remove_child(practice_info.scene)
+	sub_viewport.add_child(practice_info.scene)
+
+
+func _check_practice(practice_info: Dictionary) -> void:
+	Logger.title("Checking...\n[b]%s[/b]" % practice_info.file_name.get_basename().capitalize())
+
+	Requirements.setup(practice_info.base_path)
+	if not Requirements.check():
+		return
+#
+	var solution_packed_scene := load(_to_solution(practice_info.file_path))
+	var solution: Node = solution_packed_scene.instantiate()
 	sub_viewport.add_child(solution)
+	sub_viewport.move_child(solution, 0)
 	if solution is Node2D:
 		solution.modulate.a = 0.5
 
-	var practice_scene := load(practice_base_path.path_join(scene_name))
-	var practice: Node = practice_scene.instantiate()
-	sub_viewport.add_child(practice)
-
-	scene_name = "".join([dir_name, "_test.gd"])
-	var test_script := load(Builder.SOLUTIONS_PATH.path_join(dir_name).path_join(scene_name))
+	var test_script := load(
+		_to_solution(practice_info.base_path)
+		.path_join("%s_test.gd" % practice_info.file_name.get_basename())
+	)
 	var test: Test = test_script.new()
 	sub_viewport.add_child(test)
 
-	await test.setup(practice, solution)
+	await test.setup(practice_info.scene, solution)
 	await test.run()

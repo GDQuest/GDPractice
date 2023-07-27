@@ -2,14 +2,16 @@
 ## with the solution.
 class_name Test extends Node
 
+## Functions that have names beginning with this string will be called in [method run]
+## automatically.
 const PREFIX := "_test_"
+
 const COMMENT_REGEX := "#.*$"
 
 ## Used to store [b]practice[/b] and [b]solution[/b] as well as any needed extra data for
 ## testing with the framework. It needs to be populated before use.
 var _test_space: Array[Dictionary] = []
 
-# TODO: what about for practices with multiple scripts?
 ## Simplified [b]practice[/b] code split line by line as [Array] of [String].
 var _practice_code: Array[String] = []
 
@@ -37,7 +39,7 @@ func setup(practice: Node, solution: Node) -> void:
 	Logger.log("\tPopulating test space...[color=green]DONE[/color]")
 
 
-## Runs all functions following this pattern: [code]test_*()[/code].
+## Runs all functions with names that begin with [constant PREFIX].
 func run() -> void:
 	_test_space = _test_space.slice(1)
 	for d in get_method_list().filter(func(x: Dictionary) -> bool: return x.name.begins_with(PREFIX)):

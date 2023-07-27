@@ -1,9 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://bt54o81n3n353"]
+[gd_scene load_steps=3 format=3 uid="uid://cn1qmlh5otfp6"]
 
 [ext_resource type="Texture2D" uid="uid://x18ctliprf48" path="res://shared/green_ship.png" id="1_qvphc"]
-[ext_resource type="Script" path="res://practices/adding_input/adding_input.gd" id="2_llk8l"]
+[ext_resource type="Script" path="res://practices/adding_input/adding_input.gd" id="2_rmeml"]
 
 [node name="Sprite2D" type="Sprite2D"]
 position = Vector2(540, 320)
 texture = ExtResource("1_qvphc")
-script = ExtResource("2_llk8l")
+script = ExtResource("2_rmeml")
