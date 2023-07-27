@@ -1,8 +1,13 @@
-class_name Builder
+@tool
+class_name Builder extends EditorScript
 
 const DENTS := {"<": -1, ">": 1}
 const PRACTICES_PATH := "res://practices"
 const SOLUTIONS_PATH := "res://solutions"
+
+
+func _run() -> void:
+	build()
 
 
 static func build() -> void:

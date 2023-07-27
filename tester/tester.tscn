@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://bnnxfl3thl8qk"]
+[gd_scene load_steps=4 format=3 uid="uid://bnnxfl3thl8qk"]
 
 [ext_resource type="Script" path="res://tester/tester.gd" id="1_awhsl"]
 [ext_resource type="PackedScene" uid="uid://c553h2n1lu6uh" path="res://tester/ghost_layout.tscn" id="2_b1jiv"]
+[ext_resource type="PackedScene" uid="uid://5l36tosihkeq" path="res://tester/split_layout.tscn" id="2_pe8j0"]
 
 [node name="Tester" type="Control"]
 layout_mode = 3
@@ -77,6 +78,11 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Layout" parent="HBoxContainer" instance=ExtResource("2_b1jiv")]
+[node name="GhostLayout" parent="HBoxContainer" instance=ExtResource("2_b1jiv")]
 unique_name_in_owner = true
+layout_mode = 2
+
+[node name="SplitLayout" parent="HBoxContainer" instance=ExtResource("2_pe8j0")]
+unique_name_in_owner = true
+visible = false
 layout_mode = 2

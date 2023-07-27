@@ -28,8 +28,11 @@ stretch = true
 [node name="PracticeSubViewport" type="SubViewport" parent="HBoxContainer/PracticeSubViewportContainer"]
 unique_name_in_owner = true
 handle_input_locally = false
-size = Vector2i(958, 1080)
+size = Vector2i(954, 1080)
 render_target_update_mode = 4
+
+[node name="VSeparator" type="VSeparator" parent="HBoxContainer"]
+layout_mode = 2
 
 [node name="SolutionSubViewportContainer" type="SubViewportContainer" parent="HBoxContainer"]
 layout_mode = 2
@@ -39,5 +42,5 @@ stretch = true
 [node name="SolutionSubViewport" type="SubViewport" parent="HBoxContainer/SolutionSubViewportContainer"]
 unique_name_in_owner = true
 handle_input_locally = false
-size = Vector2i(958, 1080)
+size = Vector2i(954, 1080)
 render_target_update_mode = 4

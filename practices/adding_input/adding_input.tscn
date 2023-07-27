@@ -4,6 +4,6 @@
 [ext_resource type="Script" path="res://practices/adding_input/adding_input.gd" id="2_rmeml"]
 
 [node name="Sprite2D" type="Sprite2D"]
-position = Vector2(540, 320)
+position = Vector2(320, 320)
 texture = ExtResource("1_qvphc")
 script = ExtResource("2_rmeml")

@@ -9,7 +9,8 @@ var _input_map := {}
 @onready var h_box_container: HBoxContainer = %HBoxContainer
 @onready var title_rich_text_label: RichTextLabel = %TitleRichTextLabel
 @onready var checks_v_box_container: VBoxContainer = %ChecksVBoxContainer
-@onready var layout: Control = %Layout
+@onready var ghost_layout: Control = %GhostLayout
+@onready var split_layout: Control = %SplitLayout
 @onready var toggle_x5_button: Button = %ToggleX5Button
 @onready var toggle_layout_button: Button = %ToggleLayoutButton
 
@@ -32,12 +33,14 @@ func _on_toggle_x5_button_toggled(is_toggled: bool) -> void:
 
 
 func _on_toggle_layout_button_toggled(is_toggled: bool) -> void:
-	layout.visible = false
-	var new_layout := (SplitLayoutScene if is_toggled else GhostLayoutScene).instantiate()
-	h_box_container.add_child(new_layout)
-	new_layout.add_scenes([layout.practice, layout.solution])
-	layout.queue_free()
-	layout = new_layout
+	if is_toggled:
+		ghost_layout.visible = false
+		split_layout.visible = true
+		split_layout.refresh(ghost_layout.scenes)
+	else:
+		ghost_layout.visible = true
+		split_layout.visible = false
+		ghost_layout.refresh(split_layout.scenes)
 
 
 func _prepare_practice_info() -> void:
@@ -79,12 +82,9 @@ func _check_practice() -> void:
 	if not Requirements.check():
 		return
 
-	layout.practice = _practice_info.scene
 	var solution_packed_scene := load(_to_solution(_practice_info.file_path))
 	var solution: Node = solution_packed_scene.instantiate()
-	layout.solution = solution
-	if solution is Node2D:
-		solution.modulate.a = 0.5
+	ghost_layout.refresh([_practice_info.scene, solution])
 
 	var test_script := load(
 		_to_solution(_practice_info.base_path)
