@@ -8,9 +8,6 @@ static var _erase_arg_name_transformer := func(f: Dictionary) -> Dictionary:
 		return arg)
 	return f
 
-static var _index_node_transformer := func(x: int, state: SceneState) -> Dictionary:
-	return {path_for_parent = state.get_node_path(x, true), name = state.get_node_name(x), type = state.get_node_type(x)}
-
 static var _list := {}
 
 
@@ -106,13 +103,43 @@ static func _check_nodes() -> bool:
 	return _list.scenes.all(func(scene: Dictionary) -> bool:
 		var practice_scene_tree_proxy := _get_scene_tree_proxy(scene.practice.get_state())
 		var solution_scene_tree_proxy := _get_scene_tree_proxy(scene.solution.get_state())
-
-		var result := practice_scene_tree_proxy == solution_scene_tree_proxy
+		var result := practice_scene_tree_proxy.keys() == solution_scene_tree_proxy.keys()
+		if result:
+			for key in practice_scene_tree_proxy:
+				var practice_items: Array = practice_scene_tree_proxy[key]
+				var solution_items: Array = solution_scene_tree_proxy[key]
+				result = (
+					result
+					and practice_items.size() == solution_items.size()
+					and _check_scene_tree_proxy_items(practice_items, solution_items)
+				)
+				if not result:
+					break
 		_log_item(scene, result)
 		return result
 	)
 
 
+static func _check_scene_tree_proxy_items(practice_items: Array, solution_items: Array) -> bool:
+	var result := true
+	for idx in range(practice_items.size()):
+		var practice_item: Dictionary = practice_items[idx]
+		var solution_item: Dictionary = solution_items[idx]
+		var practice_script_path: String = practice_item.get("script_path", Builder.PRACTICES_PATH)
+		var solution_script_path: String = solution_item.get("script_path", Builder.SOLUTIONS_PATH)
+		result = result and (
+			practice_item.type == solution_item.type
+			and practice_script_path.begins_with(Builder.PRACTICES_PATH)
+			and solution_script_path.begins_with(Builder.SOLUTIONS_PATH)
+			and practice_script_path.trim_prefix(Builder.PRACTICES_PATH) == solution_script_path.trim_prefix(Builder.SOLUTIONS_PATH)
+		)
+		if not result:
+			break
+	return result
+
+
+# TODO: the proxy dictionary uses node paths as keys which might be too strict because it relies
+# on node names. Need a better solution to test for node types instead.
 static func _get_scene_tree_proxy(state: SceneState) -> Dictionary:
 	var result := {}
 	for idx in range(state.get_node_count()):
@@ -120,11 +147,16 @@ static func _get_scene_tree_proxy(state: SceneState) -> Dictionary:
 		if not path_for_parent in result:
 			result[path_for_parent] = []
 
-		var type := state.get_node_type(idx)
-		result[path_for_parent].append(type)
+		var item := {type = state.get_node_type(idx)}
+		for prop_idx in range(state.get_node_property_count(idx)):
+			if state.get_node_property_name(idx, prop_idx) == "script":
+				var script: Script = state.get_node_property_value(idx, prop_idx)
+				item.script_path = script.resource_path
+				break
+		result[path_for_parent].append(item)
 
 	for key in result:
-		result[key].sort()
+		result[key].sort_custom(func(x: Dictionary, y: Dictionary) -> bool: return x.type < y.type)
 	return result
 
 
