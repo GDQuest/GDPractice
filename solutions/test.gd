@@ -5,7 +5,6 @@ class_name Test extends Node
 ## Functions that have names beginning with this string will be called in [method run]
 ## automatically.
 const PREFIX := "_test_"
-
 const COMMENT_REGEX := "#.*$"
 
 ## Used to store [b]practice[/b] and [b]solution[/b] as well as any needed extra data for
@@ -15,7 +14,10 @@ var _test_space: Array[Dictionary] = []
 ## Simplified [b]practice[/b] code split line by line as [Array] of [String].
 var _practice_code: Array[String] = []
 
+## The [b]practice[/b] scene.
 var _practice: Node = null
+
+## The [b]solution[/b] scene.
 var _solution: Node = null
 
 
@@ -98,6 +100,26 @@ func _is_sliding_window_pass(fail_predicate: Callable) -> bool:
 			break
 		x = y
 	return result
+
+
+## Set [param property] to [param value] for both [member _practice] and [member _solution].
+## If [param property] isn't found in [member _practice] or [member _solution] an error is pushed
+## to the debugger with the details.
+func _set_all(property: String, value: Variant) -> void:
+	for node in [_practice, _solution]:
+		if not property in node:
+			push_error("Error setting property '%s.%s' with value '%s'. Property not found." % [node, property, value])
+		node.set(property, value)
+
+## Calls [param method] with [param arg_array] using [method Object.callv] on both
+## [member _practice] and [member _solution]. Returns the result of the [param method] calls
+## as a [Dictionary] with keys [code]practice[/code]
+## and [code]solution[/code].
+func _call_all(method: String, arg_array: Array = []) -> Dictionary:
+	return {
+		practice = _practice.callv(method, arg_array),
+		solution = _solution.callv(method, arg_array)
+	}
 
 
 ## Helper to simplify the [b]practice[/b] script code. It returns the simplified code split

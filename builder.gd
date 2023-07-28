@@ -1,3 +1,57 @@
+## Builder scripts that converts solutions into practices. Run in the Godot editor with
+## [kbd]Ctrl+Shift+x[/kbd] or by going to [i]File > Run[/i] in the [i]Script[/i] tab.
+##
+## The builder script also processes practice code lines by replacing them with the given
+## comments at the end of the line in [b]GDScript[/b] files.
+##
+## [codeblock]
+## position += delta * velocity # position
+## [/codeblock]
+##
+## Results in the following practice code:
+##
+## [codeblock]
+## position
+## [/codeblock]
+##
+## In some cases we want to remove the line completely for more complex code. Empty comments at
+## the end of the line result in deletion of the line in the practice GDScript file.
+##
+## Furthermore, we can use a special syntax like [code]# >[/code] and [code]# <[/code] to indent
+## and respectively dedent the given line of code in the practice script, otherwise the indentation
+## is preserved:
+##
+## [codeblock]
+## func generate_gems(columns: int, rows: int) -> void:
+##     # Add two nested loops to generate cell coordinates.
+##     # Generate the columns with the first loop and the rows with the second.
+##
+##     # You'll need to indent the lines below to be inside the inner loop block.
+##     # You can select the lines with the mouse and press Tab to do so.
+##     # Update the cell value to represent the cell coordinates on each loop iteration.
+##     for column in range(columns): #
+##         for row in range(rows): #
+##             var cell := Vector2(column, row) # << var cell := Vector2(0, 0)
+##             generate_one_gem(cell) # << generate_one_gem(cell)
+## [/codeblock]
+##
+## Results in the following practice code:
+##
+## [codeblock]
+## func generate_gems(columns: int, rows: int) -> void:
+##     # Add two nested loops to generate cell coordinates.
+##     # Generate the columns with the first loop and the rows with the second.
+##
+##     # You'll need to indent the lines below to be inside the inner loop block.
+##     # You can select the lines with the mouse and press Tab to do so.
+##     # Update the cell value to represent the cell coordinates on each loop iteration.
+##     var cell := Vector2(0, 0)
+##     generate_one_gem(cell)
+## [/codeblock]
+##
+## [b]Note[/b] that:[br]
+## - Only-comment lines are also preserved in the practice.[br]
+## - The special [code]<[/code] and [code]>[/code] symbols can be repeated multiple times.
 @tool
 class_name Builder extends EditorScript
 
@@ -7,20 +61,16 @@ const SOLUTIONS_PATH := "res://solutions"
 
 
 func _run() -> void:
-	build()
-
-
-static func build() -> void:
 	var regex_line := RegEx.new()
 	var regex_shift := RegEx.new()
 	regex_line.compile("^(\\h*)(.*)#\\h*(.*)$")
 	regex_shift.compile("^([<>]+)\\h*(.*)")
 	for dir_name in DirAccess.get_directories_at(SOLUTIONS_PATH):
 		print_rich("Building [b]%s[/b]..." % dir_name)
-		build_solution(dir_name, regex_line, regex_shift)
+		_build_solution(dir_name, regex_line, regex_shift)
 
 
-static func build_solution(dir_name: StringName, regex_line: RegEx, regex_shift: RegEx) -> void:
+static func _build_solution(dir_name: StringName, regex_line: RegEx, regex_shift: RegEx) -> void:
 	var solution_dir_path := SOLUTIONS_PATH.path_join(dir_name)
 	var solution_file_paths := Utils.fs_find("*", solution_dir_path)
 	solution_file_paths.assign(solution_file_paths.filter(func(x: String) -> bool: return not (x.ends_with("_test.gd") or x.ends_with("_diff.gd") or x.get_extension() == "import")))
