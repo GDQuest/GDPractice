@@ -105,7 +105,20 @@ func _is_sliding_window_pass(fail_predicate: Callable) -> bool:
 ## Set [param property_path] to [param value] for both [member _practice] and [member _solution].
 ## If [param property_path] base name (index [code]0[/code] of the [NodePath]) isn't found in
 ## [member _practice] or [member _solution] push an error to the debugger that it failed to set
-## the [param value].
+## the [param value].[br]
+## [br]
+## Say for example we have a scene with a [TextEdit] node referenced by the [code]text_edit[/code]
+## variable in code. Then we can call this function to set a property on [code]text_edit[/code]
+## for both [b]practice[/b] and [b]solution[/b] scenes like this:
+##
+## [codeblock]
+## var input := "world"
+## _set_all("text_edit:text", input)
+## [/codeblock]
+##
+## Known issues or limitations:[br]
+## - If [param property_path] referes to a non-existing deep-nested property, the function
+## does nothing and reports no errors.
 func _set_all(property_path: NodePath, value: Variant) -> void:
 	if property_path.is_empty():
 		push_error("Can't set empty property path with value %s." % value)
