@@ -102,14 +102,21 @@ func _is_sliding_window_pass(fail_predicate: Callable) -> bool:
 	return result
 
 
-## Set [param property] to [param value] for both [member _practice] and [member _solution].
-## If [param property] isn't found in [member _practice] or [member _solution] an error is pushed
-## to the debugger with the details.
-func _set_all(property: String, value: Variant) -> void:
+## Set [param property_path] to [param value] for both [member _practice] and [member _solution].
+## If [param property_path] base name (index [code]0[/code] of the [NodePath]) isn't found in
+## [member _practice] or [member _solution] push an error to the debugger that it failed to set
+## the [param value].
+func _set_all(property_path: NodePath, value: Variant) -> void:
+	if property_path.is_empty():
+		push_error("Can't set empty property path with value %s." % value)
+		return
+
 	for node in [_practice, _solution]:
-		if not property in node:
-			push_error("Error setting property '%s.%s' with value '%s'. Property not found." % [node, property, value])
-		node.set(property, value)
+		var property_name := property_path.get_name(0)
+		if not property_name in node:
+			push_error("Error setting property '%s.%s' with value '%s'. Property not found." % [node, property_name, value])
+		node.set_indexed(property_path, value)
+
 
 ## Calls [param method] with [param arg_array] using [method Object.callv] on both
 ## [member _practice] and [member _solution]. Returns the result of the [param method] calls
