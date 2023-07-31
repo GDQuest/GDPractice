@@ -1,6 +1,6 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=3 format=3 uid="uid://ygo7ie1w8v3"]
 
-[ext_resource type="Texture2D" path="res://shared/green_ship.png" id="1_apwj5"]
+[ext_resource type="Texture2D" uid="uid://x18ctliprf48" path="res://shared/green_ship.png" id="1_apwj5"]
 [ext_resource type="Script" path="res://practices/adding_timer/adding_timer.gd" id="2_no06f"]
 
 [node name="Sprite2D" type="Sprite2D"]

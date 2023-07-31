@@ -13,6 +13,7 @@ var _input_map := {}
 @onready var split_layout: Control = %SplitLayout
 @onready var toggle_x5_button: Button = %ToggleX5Button
 @onready var toggle_layout_button: Button = %ToggleLayoutButton
+@onready var input_animation_player: AnimationPlayer = %InputAnimationPlayer
 
 
 func _ready() -> void:
@@ -74,6 +75,7 @@ func _restore_from_test() -> void:
 	toggle_x5_button.toggled.disconnect(_on_toggle_x5_button_toggled)
 	toggle_x5_button.disabled = true
 	Engine.time_scale = 1
+	input_animation_player.play("input-on")
 	for action in _input_map:
 		for event in _input_map[action]:
 			InputMap.action_add_event(action, event)
