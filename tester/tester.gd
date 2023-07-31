@@ -16,7 +16,11 @@ var _input_map := {}
 
 
 func _ready() -> void:
-	Logger.setup(title_rich_text_label, checks_v_box_container)
+	if OS.has_feature("web"):
+		h_box_container.queue_free()
+	else:
+		Logger.setup(title_rich_text_label, checks_v_box_container)
+
 	_prepare_practice_info()
 	if not _is_practice_scene():
 		Logger.log("Not a practice...[color=orange]SKIP[/color]")
