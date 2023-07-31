@@ -14,7 +14,6 @@ grow_vertical = 2
 script = ExtResource("1_awhsl")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
-unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,46 +21,32 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer"]
+[node name="LogPanelContainer" type="PanelContainer" parent="HBoxContainer"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/LogPanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 16
 theme_override_constants/margin_top = 16
 theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 16
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/PanelContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/LogPanelContainer/MarginContainer"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="TitleRichTextLabel" type="RichTextLabel" parent="HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="TitleRichTextLabel" type="RichTextLabel" parent="HBoxContainer/LogPanelContainer/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 bbcode_enabled = true
 fit_content = true
 
-[node name="ToggleX5Button" type="Button" parent="HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-toggle_mode = true
-text = "x5"
-
-[node name="ToggleLayoutButton" type="Button" parent="HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-toggle_mode = true
-text = "Ghost / Split"
-
-[node name="HSeparator" type="HSeparator" parent="HBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="HBoxContainer/LogPanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/LogPanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/margin_left = 8
@@ -69,10 +54,10 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/MarginContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/LogPanelContainer/MarginContainer/VBoxContainer/MarginContainer"]
 layout_mode = 2
 
-[node name="ChecksVBoxContainer" type="VBoxContainer" parent="HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer"]
+[node name="ChecksVBoxContainer" type="VBoxContainer" parent="HBoxContainer/LogPanelContainer/MarginContainer/VBoxContainer/MarginContainer/ScrollContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -86,3 +71,34 @@ layout_mode = 2
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
+
+[node name="ControlsPanelContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -32.0
+offset_bottom = 32.0
+grow_horizontal = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="ControlsPanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ControlsPanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="ToggleX5Button" type="Button" parent="ControlsPanelContainer/MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+toggle_mode = true
+text = "x5"
+
+[node name="ToggleLayoutButton" type="Button" parent="ControlsPanelContainer/MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+toggle_mode = true
+text = "Ghost / Split"

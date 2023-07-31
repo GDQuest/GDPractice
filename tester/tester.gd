@@ -6,7 +6,7 @@ const SplitLayoutScene := preload("split_layout.tscn")
 var _practice_info := {}
 var _input_map := {}
 
-@onready var h_box_container: HBoxContainer = %HBoxContainer
+@onready var log_panel_container: PanelContainer = %LogPanelContainer
 @onready var title_rich_text_label: RichTextLabel = %TitleRichTextLabel
 @onready var checks_v_box_container: VBoxContainer = %ChecksVBoxContainer
 @onready var ghost_layout: Control = %GhostLayout
@@ -17,7 +17,7 @@ var _input_map := {}
 
 func _ready() -> void:
 	if OS.has_feature("web"):
-		h_box_container.queue_free()
+		log_panel_container.queue_free()
 	else:
 		Logger.setup(title_rich_text_label, checks_v_box_container)
 
