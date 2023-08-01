@@ -9,9 +9,12 @@ static var _erase_arg_name_transformer := func(f: Dictionary) -> Dictionary:
 	return f
 
 static var _list := {}
+static var _practice_base_path := ""
 
 
 static func setup(practice_base_path: String) -> void:
+	_practice_base_path = practice_base_path
+
 	var path_transformer := func(x: String) -> Dictionary:
 		return {
 			practice = x,
@@ -32,18 +35,31 @@ static func setup(practice_base_path: String) -> void:
 			.filter(file_exists_predicate)
 			.map(load_transformer)
 		)
-	Logger.log("[b]Requirements...[/b]")
+	Logger.log(Logger.Payload.new(
+		Logger.Payload.REQUIREMENT,
+		practice_base_path,
+		"[b]%s[/b]",
+		["Requirements...."]
+	))
 
 
 static func check() -> bool:
 	if _list.scripts.is_empty():
-		Logger.log("Nothing to do...[color=orange]SKIP[/color]")
+		Logger.log(Logger.Payload.new(
+			Logger.Payload.REQUIREMENT,
+			_practice_base_path,
+			"Nothing to do...[color=orange]SKIP[/color]",
+		))
 		return true
 	return _check_constants() and _check_properties() and _check_methods() and _check_signals() and _check_nodes()
 
 
 static func _check_methods() -> bool:
-	Logger.log("Methods...")
+	Logger.log(Logger.Payload.new(
+		Logger.Payload.REQUIREMENT,
+		_practice_base_path,
+		"Methods...",
+	))
 	return _list.scripts.all(func(script: Dictionary) -> bool:
 		var practice_method_list: Array[Dictionary] = script.practice.get_script_method_list()
 		var solution_method_list: Array[Dictionary] = script.solution.get_script_method_list()
@@ -57,7 +73,11 @@ static func _check_methods() -> bool:
 
 
 static func _check_properties() -> bool:
-	Logger.log("Properties...")
+	Logger.log(Logger.Payload.new(
+		Logger.Payload.REQUIREMENT,
+		_practice_base_path,
+		"Properties...",
+	))
 	return _list.scripts.all(func(script: Dictionary) -> bool:
 		var script_file_name: String = script.practice.resource_path.get_file()
 		var predicate := func(prop: Dictionary) -> bool: return prop.name != script_file_name
@@ -73,7 +93,11 @@ static func _check_properties() -> bool:
 
 
 static func _check_signals() -> bool:
-	Logger.log("Signals...")
+	Logger.log(Logger.Payload.new(
+		Logger.Payload.REQUIREMENT,
+		_practice_base_path,
+		"Signals...",
+	))
 	return _list.scripts.all(func(script: Dictionary) -> bool:
 		var practice_signal_list: Array[Dictionary] = script.practice.get_script_signal_list()
 		var solution_signal_list: Array[Dictionary] = script.solution.get_script_signal_list()
@@ -87,7 +111,11 @@ static func _check_signals() -> bool:
 
 
 static func _check_constants() -> bool:
-	Logger.log("Constants...")
+	Logger.log(Logger.Payload.new(
+		Logger.Payload.REQUIREMENT,
+		_practice_base_path,
+		"Constants...",
+	))
 	return _list.scripts.all(func(script: Dictionary) -> bool:
 		var practice_constant_map: Dictionary = script.practice.get_script_constant_map()
 		var solution_constant_map: Dictionary = script.solution.get_script_constant_map()
@@ -99,7 +127,11 @@ static func _check_constants() -> bool:
 
 
 static func _check_nodes() -> bool:
-	Logger.log("Nodes...")
+	Logger.log(Logger.Payload.new(
+		Logger.Payload.REQUIREMENT,
+		_practice_base_path,
+		"Nodes...",
+	))
 	return _list.scenes.all(func(scene: Dictionary) -> bool:
 		var practice_scene_tree_proxy := _get_scene_tree_proxy(scene.practice.get_state())
 		var solution_scene_tree_proxy := _get_scene_tree_proxy(scene.solution.get_state())
@@ -162,6 +194,9 @@ static func _get_scene_tree_proxy(state: SceneState) -> Dictionary:
 
 static func _log_item(item: Dictionary, is_valid: bool) -> void:
 	var file_name: String = item.practice.resource_path.get_file()
-	Logger.log("\t%s...[color=%s]%s[/color]" % (
-		[file_name] + (["green", "PASS"] if is_valid else ["red", "FAIL"])
+	Logger.log(Logger.Payload.new(
+		Logger.Payload.REQUIREMENT,
+		_practice_base_path,
+		"\t%s...[color=%s]%s[/color]",
+		[file_name] + (["green", "PASS"] if is_valid else ["red", "FAIL"]),
 	))

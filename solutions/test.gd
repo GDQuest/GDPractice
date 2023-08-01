@@ -11,6 +11,8 @@ const COMMENT_REGEX := "#.*$"
 ## testing with the framework. It needs to be populated before use.
 var _test_space: Array[Dictionary] = []
 
+var _practice_base_path := ""
+
 ## Simplified [b]practice[/b] code split line by line as [Array] of [String].
 var _practice_code: Array[String] = []
 
@@ -31,14 +33,30 @@ var _solution: Node = null
 func setup(practice: Node, solution: Node) -> void:
 	_practice = practice
 	_solution = solution
-	_practice_code = _preprocess_practice_code(_practice.get_script())
+
+	var _practice_script: Script = _practice.get_script()
+	_practice_base_path = _practice_script.resource_path.get_base_dir()
+	_practice_code = _preprocess_practice_code(_practice_script)
 
 	Logger.add_separator()
-	Logger.log("[b]Tests...[/b]")
+	Logger.log(Logger.Payload.new(
+		Logger.Payload.TEST,
+		_practice_base_path,
+		"[b]%s[/b]",
+		["Tests..."],
+	))
 	await _setup_state()
-	Logger.log("\tSetting practice <=> solution state...[color=green]DONE[/color]")
+	Logger.log(Logger.Payload.new(
+		Logger.Payload.TEST,
+		_practice_base_path,
+		"\tSetting practice <=> solution state...[color=green]DONE[/color]",
+	))
 	await _setup_populate_test_space()
-	Logger.log("\tPopulating test space...[color=green]DONE[/color]")
+	Logger.log(Logger.Payload.new(
+		Logger.Payload.TEST,
+		_practice_base_path,
+		"\tPopulating test space...[color=green]DONE[/color]",
+	))
 
 
 ## Runs all functions with names that begin with [constant PREFIX].
@@ -46,13 +64,24 @@ func run() -> void:
 	_test_space = _test_space.slice(1)
 	for d in get_method_list().filter(func(x: Dictionary) -> bool: return x.name.begins_with(PREFIX)):
 		var passed_status: String = await call(d.name)
-#		var has_passed: bool = await call(d.name)
-		Logger.log("\tTesting %s...%s" % [
-			d.name.trim_prefix(PREFIX).capitalize(),
-			"[color=%s]%s[/color]" % (["green", "PASS"] if passed_status.is_empty() else ["red", "FAIL"])
-		])
+		Logger.log(Logger.Payload.new(
+			Logger.Payload.TEST,
+			_practice_base_path,
+			"\tTesting %s...%s",
+			[
+				d.name.trim_prefix(PREFIX).capitalize(),
+				"[color=%s]%s[/color]" % (
+					["green", "PASS"] if passed_status.is_empty() else ["red", "FAIL"]
+				),
+			],
+		))
 		if passed_status != "":
-			Logger.log("\t\t%s" % passed_status)
+			Logger.log(Logger.Payload.new(
+				Logger.Payload.TEST,
+				_practice_base_path,
+				"\t\t%s",
+				[passed_status],
+			))
 
 
 ## Assign here the [b]practice[/b] state to the [b]solution[/b] state so they both start with the

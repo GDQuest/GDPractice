@@ -53,7 +53,7 @@
 ## - Only-comment lines are also preserved in the practice.[br]
 ## - The special [code]<[/code] and [code]>[/code] symbols can be repeated multiple times.
 @tool
-class_name Builder extends EditorScript
+class_name Builder
 
 const DENTS := {"<": -1, ">": 1}
 const PRACTICES_PATH := "res://practices"
