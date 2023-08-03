@@ -16,7 +16,6 @@ var _input_map := {}
 @onready var input_animation_player: AnimationPlayer = %InputAnimationPlayer
 
 
-
 func _ready() -> void:
 	if OS.has_feature("web"):
 		log_panel_container.free()
@@ -26,8 +25,8 @@ func _ready() -> void:
 	Logger.setup(title_rich_text_label, checks_v_box_container)
 	_prepare_practice_info()
 	if not _is_practice_scene():
-		Logger.log(Logger.Payload.new(
-			Logger.Payload.TESTER,
+		Logger.log(Payload.new(
+			Payload.Type.TESTER,
 			_practice_info.file_path,
 			"Not a practice...[color=orange]SKIP[/color]",
 		))
@@ -88,8 +87,8 @@ func _restore_from_test() -> void:
 
 
 func _check_practice() -> void:
-	Logger.log_title(Logger.Payload.new(
-		Logger.Payload.TESTER,
+	Logger.log_title(Payload.new(
+		Payload.Type.TESTER,
 		_practice_info.base_path,
 		"Checking...\n[b]%s[/b]",
 		[_practice_info.dir_name.capitalize()]

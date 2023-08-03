@@ -39,21 +39,21 @@ func setup(practice: Node, solution: Node) -> void:
 	_practice_code = _preprocess_practice_code(_practice_script)
 
 	Logger.add_separator()
-	Logger.log(Logger.Payload.new(
-		Logger.Payload.TEST,
+	Logger.log(Payload.new(
+		Payload.Type.TEST,
 		_practice_base_path,
 		"[b]%s[/b]",
 		["Tests..."],
 	))
 	await _setup_state()
-	Logger.log(Logger.Payload.new(
-		Logger.Payload.TEST,
+	Logger.log(Payload.new(
+		Payload.Type.TEST,
 		_practice_base_path,
 		"\tSetting practice <=> solution state...[color=green]DONE[/color]",
 	))
 	await _setup_populate_test_space()
-	Logger.log(Logger.Payload.new(
-		Logger.Payload.TEST,
+	Logger.log(Payload.new(
+		Payload.Type.TEST,
 		_practice_base_path,
 		"\tPopulating test space...[color=green]DONE[/color]",
 	))
@@ -64,8 +64,8 @@ func run() -> void:
 	_test_space = _test_space.slice(1)
 	for d in get_method_list().filter(func(x: Dictionary) -> bool: return x.name.begins_with(PREFIX)):
 		var passed_status: String = await call(d.name)
-		Logger.log(Logger.Payload.new(
-			Logger.Payload.TEST,
+		Logger.log(Payload.new(
+			Payload.Type.TEST,
 			_practice_base_path,
 			"\tTesting %s...%s",
 			[
@@ -76,8 +76,8 @@ func run() -> void:
 			],
 		))
 		if passed_status != "":
-			Logger.log(Logger.Payload.new(
-				Logger.Payload.TEST,
+			Logger.log(Payload.new(
+				Payload.Type.TEST,
 				_practice_base_path,
 				"\t\t%s",
 				[passed_status],

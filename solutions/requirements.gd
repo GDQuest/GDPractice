@@ -35,8 +35,8 @@ static func setup(practice_base_path: String) -> void:
 			.filter(file_exists_predicate)
 			.map(load_transformer)
 		)
-	Logger.log(Logger.Payload.new(
-		Logger.Payload.REQUIREMENT,
+	Logger.log(Payload.new(
+		Payload.Type.REQUIREMENT,
 		practice_base_path,
 		"[b]%s[/b]",
 		["Requirements...."]
@@ -45,8 +45,8 @@ static func setup(practice_base_path: String) -> void:
 
 static func check() -> bool:
 	if _list.scripts.is_empty():
-		Logger.log(Logger.Payload.new(
-			Logger.Payload.REQUIREMENT,
+		Logger.log(Payload.new(
+			Payload.Type.REQUIREMENT,
 			_practice_base_path,
 			"Nothing to do...[color=orange]SKIP[/color]",
 		))
@@ -55,8 +55,8 @@ static func check() -> bool:
 
 
 static func _check_methods() -> bool:
-	Logger.log(Logger.Payload.new(
-		Logger.Payload.REQUIREMENT,
+	Logger.log(Payload.new(
+		Payload.Type.REQUIREMENT,
 		_practice_base_path,
 		"Methods...",
 	))
@@ -73,8 +73,8 @@ static func _check_methods() -> bool:
 
 
 static func _check_properties() -> bool:
-	Logger.log(Logger.Payload.new(
-		Logger.Payload.REQUIREMENT,
+	Logger.log(Payload.new(
+		Payload.Type.REQUIREMENT,
 		_practice_base_path,
 		"Properties...",
 	))
@@ -93,8 +93,8 @@ static func _check_properties() -> bool:
 
 
 static func _check_signals() -> bool:
-	Logger.log(Logger.Payload.new(
-		Logger.Payload.REQUIREMENT,
+	Logger.log(Payload.new(
+		Payload.Type.REQUIREMENT,
 		_practice_base_path,
 		"Signals...",
 	))
@@ -111,8 +111,8 @@ static func _check_signals() -> bool:
 
 
 static func _check_constants() -> bool:
-	Logger.log(Logger.Payload.new(
-		Logger.Payload.REQUIREMENT,
+	Logger.log(Payload.new(
+		Payload.Type.REQUIREMENT,
 		_practice_base_path,
 		"Constants...",
 	))
@@ -127,8 +127,8 @@ static func _check_constants() -> bool:
 
 
 static func _check_nodes() -> bool:
-	Logger.log(Logger.Payload.new(
-		Logger.Payload.REQUIREMENT,
+	Logger.log(Payload.new(
+		Payload.Type.REQUIREMENT,
 		_practice_base_path,
 		"Nodes...",
 	))
@@ -194,8 +194,8 @@ static func _get_scene_tree_proxy(state: SceneState) -> Dictionary:
 
 static func _log_item(item: Dictionary, is_valid: bool) -> void:
 	var file_name: String = item.practice.resource_path.get_file()
-	Logger.log(Logger.Payload.new(
-		Logger.Payload.REQUIREMENT,
+	Logger.log(Payload.new(
+		Payload.Type.REQUIREMENT,
 		_practice_base_path,
 		"\t%s...[color=%s]%s[/color]",
 		[file_name] + (["green", "PASS"] if is_valid else ["red", "FAIL"]),
