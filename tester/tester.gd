@@ -21,15 +21,15 @@ func _ready() -> void:
 		log_panel_container.free()
 		title_rich_text_label = null
 		checks_v_box_container = null
+		JSPayload.setup()
 
 	Logger.setup(title_rich_text_label, checks_v_box_container)
 	_prepare_practice_info()
 	if not _is_practice_scene():
-		Logger.log(Payload.new(
-			Payload.Type.TESTER,
-			_practice_info.file_path,
-			"Not a practice...[color=orange]SKIP[/color]",
-		))
+		var message := "Not a practice"
+		JSPayload.new(JSPayload.Type.TESTER, JSPayload.Status.SKIP, _practice_info.file_path, message)
+		Logger.log("%s...[color=orange]SKIP[/color]" % message)
+
 		queue_free()
 		return
 
@@ -87,12 +87,10 @@ func _restore_from_test() -> void:
 
 
 func _check_practice() -> void:
-	Logger.log_title(Payload.new(
-		Payload.Type.TESTER,
-		_practice_info.base_path,
-		"Checking...\n[b]%s[/b]",
-		[_practice_info.dir_name.capitalize()]
-	))
+	var message: String = _practice_info.dir_name.capitalize()
+	JSPayload.new(JSPayload.Type.TESTER, JSPayload.Status.TITLE, _practice_info.base_path, message)
+	Logger.log_title("Checking...\n[b]%s[/b]" % message)
+
 	Requirements.setup(_practice_info.base_path)
 	if not Requirements.check():
 		return

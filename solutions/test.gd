@@ -39,49 +39,32 @@ func setup(practice: Node, solution: Node) -> void:
 	_practice_code = _preprocess_practice_code(_practice_script)
 
 	Logger.add_separator()
-	Logger.log(Payload.new(
-		Payload.Type.TEST,
-		_practice_base_path,
-		"[b]%s[/b]",
-		["Tests..."],
-	))
+	Logger.log("[b]Tests...[/b]")
 	await _setup_state()
-	Logger.log(Payload.new(
-		Payload.Type.TEST,
-		_practice_base_path,
-		"\tSetting practice <=> solution state...[color=green]DONE[/color]",
-	))
+
+	var message := "Setting practice <=> solution state"
+	JSPayload.new(JSPayload.Type.TEST, JSPayload.Status.DONE, _practice_base_path, message)
+	Logger.log("\t%s...[color=green]DONE[/color]" % message)
 	await _setup_populate_test_space()
-	Logger.log(Payload.new(
-		Payload.Type.TEST,
-		_practice_base_path,
-		"\tPopulating test space...[color=green]DONE[/color]",
-	))
+	message = "Populating test space"
+	JSPayload.new(JSPayload.Type.TEST, JSPayload.Status.DONE, _practice_base_path, message)
+	Logger.log("\t%s...[color=green]DONE[/color]" % message)
 
 
 ## Runs all functions with names that begin with [constant PREFIX].
 func run() -> void:
 	_test_space = _test_space.slice(1)
 	for d in get_method_list().filter(func(x: Dictionary) -> bool: return x.name.begins_with(PREFIX)):
-		var passed_status: String = await call(d.name)
-		Logger.log(Payload.new(
-			Payload.Type.TEST,
-			_practice_base_path,
-			"\tTesting %s...%s",
-			[
-				d.name.trim_prefix(PREFIX).capitalize(),
-				"[color=%s]%s[/color]" % (
-					["green", "PASS"] if passed_status.is_empty() else ["red", "FAIL"]
-				),
-			],
-		))
-		if passed_status != "":
-			Logger.log(Payload.new(
-				Payload.Type.TEST,
+		var hint: String = await call(d.name)
+		Logger.log("\tTesting %s...%s" % [d.name.trim_prefix(PREFIX).capitalize(), "[color=%s]%s[/color]" % (["green", "PASS"] if hint.is_empty() else ["red", "FAIL"])])
+		if not hint.is_empty():
+			JSPayload.new(
+				JSPayload.Type.TEST,
+				JSPayload.Status.PASS if hint.is_empty() else JSPayload.Status.FAIL,
 				_practice_base_path,
-				"\t\t%s",
-				[passed_status],
-			))
+				hint,
+			)
+			Logger.log("\t\t%s" % hint)
 
 
 ## Assign here the [b]practice[/b] state to the [b]solution[/b] state so they both start with the

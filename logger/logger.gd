@@ -19,29 +19,21 @@ static func setup(
 		_js_interface = JavaScriptBridge.get_interface("gdquest")
 
 
-static func log_title(payload: Payload) -> void:
-	if _js_interface != null:
-		_js_interface.log_title(payload.json)
-
-	var msg := payload.msg
-	print_rich("\n%s" % msg)
+static func log_title(message: String) -> void:
+	print_rich("\n%s" % message)
 
 	if _title_rich_text_label == null:
 		return
-	_title_rich_text_label.text = msg
+	_title_rich_text_label.text = message
 
 
-static func log(payload: Payload) -> void:
-	if _js_interface != null:
-		_js_interface.log(payload.json)
-
-	var msg := payload.msg
-	print_rich(msg)
+static func log(message: String) -> void:
+	print_rich(message)
 	if _checks_v_box_container == null:
 		return
 	var check_rich_text_label := CheckRichTextLabel.new()
 	_checks_v_box_container.add_child(check_rich_text_label)
-	check_rich_text_label.text = msg
+	check_rich_text_label.text = message
 
 
 static func add_separator() -> void:
