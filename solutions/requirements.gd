@@ -56,7 +56,7 @@ static func _check_methods() -> bool:
 		solution_method_list.sort_custom(_name_sorter)
 
 		var result := practice_method_list.map(_erase_arg_name_transformer) == solution_method_list.map(_erase_arg_name_transformer)
-		_log_item(script, result)
+		_log_item(script, result, JSPayload.Type.REQUIREMENT_METHODS)
 		return result
 	)
 
@@ -72,7 +72,7 @@ static func _check_properties() -> bool:
 		solution_property_list.sort_custom(_name_sorter)
 
 		var result := practice_property_list == solution_property_list
-		_log_item(script, result)
+		_log_item(script, result, JSPayload.Type.REQUIREMENT_PROPERTIES)
 		return result
 	)
 
@@ -86,7 +86,7 @@ static func _check_signals() -> bool:
 		solution_signal_list.sort_custom(_name_sorter)
 
 		var result := practice_signal_list.map(_erase_arg_name_transformer) == solution_signal_list.map(_erase_arg_name_transformer)
-		_log_item(script, result)
+		_log_item(script, result, JSPayload.Type.REQUIREMENT_SIGNALS)
 		return result
 	)
 
@@ -98,7 +98,7 @@ static func _check_constants() -> bool:
 		var solution_constant_map: Dictionary = script.solution.get_script_constant_map()
 
 		var result := practice_constant_map == solution_constant_map
-		_log_item(script, result)
+		_log_item(script, result, JSPayload.Type.REQUIREMENT_CONSTANTS)
 		return result
 	)
 
@@ -120,7 +120,7 @@ static func _check_nodes() -> bool:
 				)
 				if not result:
 					break
-		_log_item(scene, result)
+		_log_item(scene, result, JSPayload.Type.REQUIREMENT_METHODS)
 		return result
 	)
 
@@ -165,10 +165,10 @@ static func _get_scene_tree_proxy(state: SceneState) -> Dictionary:
 	return result
 
 
-static func _log_item(item: Dictionary, is_valid: bool) -> void:
+static func _log_item(item: Dictionary, is_valid: bool, js_payload_requirement: JSPayload.Type) -> void:
 	var file_name: String = item.practice.resource_path.get_file()
 	JSPayload.new(
-		JSPayload.Type.REQUIREMENT,
+		js_payload_requirement,
 		JSPayload.Status.PASS if is_valid else JSPayload.Status.FAIL,
 		_practice_base_path,
 		file_name,

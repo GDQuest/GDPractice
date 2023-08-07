@@ -2,7 +2,16 @@ class_name JSPayload
 
 static var _js_interface: JavaScriptObject = null
 
-enum Type {TESTER, TEST, REQUIREMENT}
+enum Type {
+	TESTER,
+	TEST,
+	REQUIREMENT,
+	REQUIREMENT_METHODS,
+	REQUIREMENT_PROPERTIES,
+	REQUIREMENT_SIGNALS,
+	REQUIREMENT_CONSTANTS,
+	REQUIREMENT_NODES,
+}
 
 enum Status {DONE, PASS, FAIL, SKIP, TITLE}
 
@@ -10,6 +19,7 @@ var type := Type.TESTER
 var status := Status.FAIL
 var path := ""
 var message := ""
+var requirement_context := ""
 var json: Variant:
 	get:
 		var result: Variant = JavaScriptBridge.create_object("Object")
