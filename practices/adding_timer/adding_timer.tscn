@@ -1,9 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://ygo7ie1w8v3"]
+[gd_scene load_steps=3 format=3]
 
-[ext_resource type="Texture2D" uid="uid://x18ctliprf48" path="res://shared/green_ship.png" id="1_apwj5"]
-[ext_resource type="Script" path="res://practices/adding_timer/adding_timer.gd" id="2_no06f"]
+[ext_resource type="Texture2D" path="res://shared/green_ship.png" id="1_cuxwv"]
+[ext_resource type="Script" path="res://practices/adding_timer/adding_timer.gd" id="2_vayx5"]
 
 [node name="Sprite2D" type="Sprite2D"]
 position = Vector2(512, 512)
-texture = ExtResource("1_apwj5")
-script = ExtResource("2_no06f")
+texture = ExtResource("1_cuxwv")
+script = ExtResource("2_vayx5")

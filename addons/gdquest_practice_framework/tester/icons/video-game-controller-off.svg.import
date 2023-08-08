@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cdge3jy3oa3h0"
-path="res://.godot/imported/video-game-controller-off.svg-f016c3ef1764dbf9b2417ef8c9b67120.ctex"
+path="res://.godot/imported/video-game-controller-off.svg-9a393aad0ad997219d38dd6e895648d0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://tester/icons/video-game-controller-off.svg"
-dest_files=["res://.godot/imported/video-game-controller-off.svg-f016c3ef1764dbf9b2417ef8c9b67120.ctex"]
+source_file="res://addons/gdquest_practice_framework/tester/icons/video-game-controller-off.svg"
+dest_files=["res://.godot/imported/video-game-controller-off.svg-9a393aad0ad997219d38dd6e895648d0.ctex"]
 
 [params]
 

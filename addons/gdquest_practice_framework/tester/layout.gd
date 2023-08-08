@@ -1,4 +1,4 @@
-class_name Layout extends Control
+extends Control
 
 var practice: Node = null: set = set_practice
 var solution: Node = null: set = set_solution

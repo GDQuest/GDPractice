@@ -1,5 +1,10 @@
 extends Control
 
+const Logger := preload("../logger/logger.gd")
+const JSPayload := preload("../logger/js_payload.gd")
+const Paths := preload("../paths.gd")
+const Requirements := preload("requirements.gd")
+
 const GhostLayoutScene := preload("ghost_layout.tscn")
 const SplitLayoutScene := preload("split_layout.tscn")
 
@@ -17,6 +22,10 @@ var _input_map := {}
 
 
 func _ready() -> void:
+	if DisplayServer.get_name() == "headless":
+		queue_free()
+		return
+
 	if OS.has_feature("web"):
 		log_panel_container.free()
 		title_rich_text_label = null
@@ -63,7 +72,7 @@ func _prepare_practice_info() -> void:
 
 func _is_practice_scene() -> bool:
 	return (
-		_practice_info.file_path.begins_with(Builder.PRACTICES_PATH)
+		_practice_info.file_path.begins_with(Paths.PRACTICES_PATH)
 		and "%s.tscn" % _practice_info.dir_name == _practice_info.file_name
 	)
 
@@ -111,4 +120,4 @@ func _check_practice() -> void:
 
 
 static func _to_solution(path: String) -> String:
-	return path.replace(Builder.PRACTICES_PATH, Builder.SOLUTIONS_PATH)
+	return path.replace(Paths.PRACTICES_PATH, Paths.SOLUTIONS_PATH)

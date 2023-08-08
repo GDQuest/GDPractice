@@ -1,4 +1,4 @@
-class_name CheckRichTextLabel extends RichTextLabel
+extends RichTextLabel
 
 
 func _ready() -> void:

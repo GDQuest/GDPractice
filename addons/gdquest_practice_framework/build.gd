@@ -1,7 +1,13 @@
-## Builder scripts that converts solutions into practices. Run in the Godot editor with
-## [kbd]Ctrl+Shift+x[/kbd] or by going to [i]File > Run[/i] in the [i]Script[/i] tab.
+#!/usr/bin/env -S godot --headless --script
+## Build script that converts solutions into practices. On Linux run with:
 ##
-## The builder script also processes practice code lines by replacing them with the given
+## [codeblock]
+## # might need to run:
+## chmod +x build.gd
+## ./build.gd
+## [/codeblock]
+##
+## The build script also processes practice code lines by replacing them with the given
 ## comments at the end of the line in [b]GDScript[/b] files.
 ##
 ## [codeblock]
@@ -52,26 +58,27 @@
 ## [b]Note[/b] that:[br]
 ## - Only-comment lines are also preserved in the practice.[br]
 ## - The special [code]<[/code] and [code]>[/code] symbols can be repeated multiple times.
-@tool
-class_name Builder
+extends SceneTree
+
+const Paths := preload("paths.gd")
+const Utils := preload("utils.gd")
 
 const DENTS := {"<": -1, ">": 1}
-const PRACTICES_PATH := "res://practices"
-const SOLUTIONS_PATH := "res://solutions"
 
 
-func _run() -> void:
+func _init() -> void:
 	var regex_line := RegEx.new()
 	var regex_shift := RegEx.new()
 	regex_line.compile("^(\\h*)(.*)#\\h*(.*)$")
 	regex_shift.compile("^([<>]+)\\h*(.*)")
-	for dir_name in DirAccess.get_directories_at(SOLUTIONS_PATH):
+	for dir_name in DirAccess.get_directories_at(Paths.SOLUTIONS_PATH):
 		print_rich("Building [b]%s[/b]..." % dir_name)
 		_build_solution(dir_name, regex_line, regex_shift)
+	quit()
 
 
 static func _build_solution(dir_name: StringName, regex_line: RegEx, regex_shift: RegEx) -> void:
-	var solution_dir_path := SOLUTIONS_PATH.path_join(dir_name)
+	var solution_dir_path := Paths.SOLUTIONS_PATH.path_join(dir_name)
 	var solution_file_paths := Utils.fs_find("*", solution_dir_path)
 	solution_file_paths.assign(solution_file_paths.filter(func(x: String) -> bool: return not (x.ends_with("_test.gd") or x.ends_with("_diff.gd") or x.get_extension() == "import")))
 
@@ -83,7 +90,7 @@ static func _build_solution(dir_name: StringName, regex_line: RegEx, regex_shift
 	var log_message := "\t%s...%s"
 	for solution_file_path in solution_file_paths:
 		var extension := solution_file_path.get_extension()
-		var practice_file_path: String = solution_file_path.replace(SOLUTIONS_PATH, PRACTICES_PATH)
+		var practice_file_path: String = solution_file_path.replace(Paths.SOLUTIONS_PATH, Paths.PRACTICES_PATH)
 		var practice_file_modified_time := FileAccess.get_modified_time(practice_file_path)
 		if (
 			FileAccess.file_exists(practice_file_path)
@@ -112,7 +119,7 @@ static func _build_solution(dir_name: StringName, regex_line: RegEx, regex_shift
 			var contents := FileAccess.get_file_as_string(practice_file_path)
 			if extension == "gd":
 				contents = _process_gd(contents, regex_line, regex_shift)
-			contents = contents.replace(SOLUTIONS_PATH, PRACTICES_PATH)
+			contents = contents.replace(Paths.SOLUTIONS_PATH, Paths.PRACTICES_PATH)
 			FileAccess.open(practice_file_path, FileAccess.WRITE).store_string(contents)
 			print_rich(log_message % [practice_file_path, "[color=yellow]PROCESS[/color]"])
 

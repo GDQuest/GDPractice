@@ -1,10 +1,10 @@
 [gd_scene load_steps=9 format=3 uid="uid://bnnxfl3thl8qk"]
 
-[ext_resource type="Script" path="res://tester/tester.gd" id="1_awhsl"]
-[ext_resource type="PackedScene" uid="uid://c553h2n1lu6uh" path="res://tester/ghost_layout.tscn" id="2_b1jiv"]
-[ext_resource type="PackedScene" uid="uid://5l36tosihkeq" path="res://tester/split_layout.tscn" id="2_pe8j0"]
-[ext_resource type="Texture2D" uid="uid://ct8uumbpfehb2" path="res://tester/icons/video-game-controller-on.svg" id="4_wn2a1"]
-[ext_resource type="Texture2D" uid="uid://cdge3jy3oa3h0" path="res://tester/icons/video-game-controller-off.svg" id="5_4xekx"]
+[ext_resource type="Script" path="res://addons/gdquest_practice_framework/tester/tester.gd" id="1_awhsl"]
+[ext_resource type="PackedScene" uid="uid://c553h2n1lu6uh" path="res://addons/gdquest_practice_framework/tester/ghost_layout.tscn" id="2_b1jiv"]
+[ext_resource type="PackedScene" uid="uid://5l36tosihkeq" path="res://addons/gdquest_practice_framework/tester/split_layout.tscn" id="2_pe8j0"]
+[ext_resource type="Texture2D" uid="uid://ct8uumbpfehb2" path="res://addons/gdquest_practice_framework/tester/icons/video-game-controller-on.svg" id="4_wn2a1"]
+[ext_resource type="Texture2D" uid="uid://cdge3jy3oa3h0" path="res://addons/gdquest_practice_framework/tester/icons/video-game-controller-off.svg" id="5_4xekx"]
 
 [sub_resource type="Animation" id="Animation_wsfw4"]
 resource_name = "input-off"

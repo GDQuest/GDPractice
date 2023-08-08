@@ -1,4 +1,4 @@
-class_name Logger
+const CheckRichTextLabel := preload("../tester/check_rich_text_label.gd")
 
 static var _js_interface: JavaScriptObject = null
 static var _title_rich_text_label: RichTextLabel = null

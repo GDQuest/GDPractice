@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://c553h2n1lu6uh"]
 
-[ext_resource type="Script" path="res://tester/ghost_layout.gd" id="1_822a2"]
+[ext_resource type="Script" path="res://addons/gdquest_practice_framework/tester/ghost_layout.gd" id="1_822a2"]
 
 [node name="GhostLayout" type="Control"]
 layout_mode = 3

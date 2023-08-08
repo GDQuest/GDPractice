@@ -1,5 +1,3 @@
-class_name JSPayload
-
 static var _js_interface: JavaScriptObject = null
 
 enum Type {

@@ -2,6 +2,9 @@
 ## with the solution.
 class_name Test extends Node
 
+const Logger := preload("../logger/logger.gd")
+const JSPayload := preload("../logger/js_payload.gd")
+
 ## Functions that have names beginning with this string will be called in [method run]
 ## automatically.
 const PREFIX := "_test_"

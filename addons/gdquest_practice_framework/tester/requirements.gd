@@ -1,4 +1,7 @@
-class_name Requirements
+const Logger := preload("../logger/logger.gd")
+const JSPayload := preload("../logger/js_payload.gd")
+const Paths := preload("../paths.gd")
+const Utils := preload("../utils.gd")
 
 static var _name_sorter := func(x: Dictionary, y: Dictionary) -> bool: return x.name < y.name
 
@@ -18,7 +21,7 @@ static func setup(practice_base_path: String) -> void:
 	var path_transformer := func(x: String) -> Dictionary:
 		return {
 			practice = x,
-			solution = x.replace(Builder.PRACTICES_PATH, Builder.SOLUTIONS_PATH),
+			solution = x.replace(Paths.PRACTICES_PATH, Paths.SOLUTIONS_PATH),
 		}
 
 	var file_exists_predicate := func(x: Dictionary) -> bool:
@@ -130,13 +133,13 @@ static func _check_scene_tree_proxy_items(practice_items: Array, solution_items:
 	for idx in range(practice_items.size()):
 		var practice_item: Dictionary = practice_items[idx]
 		var solution_item: Dictionary = solution_items[idx]
-		var practice_script_path: String = practice_item.get("script_path", Builder.PRACTICES_PATH)
-		var solution_script_path: String = solution_item.get("script_path", Builder.SOLUTIONS_PATH)
+		var practice_script_path: String = practice_item.get("script_path", Paths.PRACTICES_PATH)
+		var solution_script_path: String = solution_item.get("script_path", Paths.SOLUTIONS_PATH)
 		result = result and (
 			practice_item.type == solution_item.type
-			and practice_script_path.begins_with(Builder.PRACTICES_PATH)
-			and solution_script_path.begins_with(Builder.SOLUTIONS_PATH)
-			and practice_script_path.trim_prefix(Builder.PRACTICES_PATH) == solution_script_path.trim_prefix(Builder.SOLUTIONS_PATH)
+			and practice_script_path.begins_with(Paths.PRACTICES_PATH)
+			and solution_script_path.begins_with(Paths.SOLUTIONS_PATH)
+			and practice_script_path.trim_prefix(Paths.PRACTICES_PATH) == solution_script_path.trim_prefix(Paths.SOLUTIONS_PATH)
 		)
 		if not result:
 			break

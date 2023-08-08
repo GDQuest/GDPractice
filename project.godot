@@ -17,7 +17,11 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-Tester="*res://tester/tester.tscn"
+Tester="*res://addons/gdquest_practice_framework/tester/tester.tscn"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gdquest_practice_framework/plugin.cfg")
 
 [input]
 
