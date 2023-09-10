@@ -10,6 +10,10 @@ const JSPayload := preload("../logger/js_payload.gd")
 const PREFIX := "_test_"
 const COMMENT_REGEX := "#.*$"
 
+## Track the call to [method _connect_timed]. If it was used then discard the first
+## element fo [member _test_space] in [member run].
+var is_timed := false
+
 ## Used to store [b]practice[/b] and [b]solution[/b] as well as any needed extra data for
 ## testing with the framework. It needs to be populated before use.
 var _test_space: Array[Dictionary] = []
@@ -56,7 +60,8 @@ func setup(practice: Node, solution: Node) -> void:
 
 ## Runs all functions with names that begin with [constant PREFIX].
 func run() -> void:
-	_test_space = _test_space.slice(1)
+	if is_timed:
+		_test_space = _test_space.slice(1)
 	for d in get_method_list().filter(func(x: Dictionary) -> bool: return x.name.begins_with(PREFIX)):
 		var hint: String = await call(d.name)
 		Logger.log("\tTesting %s...%s" % [d.name.trim_prefix(PREFIX).capitalize(), "[color=%s]%s[/color]" % (["green", "PASS"] if hint.is_empty() else ["red", "FAIL"])])
@@ -87,6 +92,7 @@ func _connect_timed(time: float, sig: Signal, callback: Callable) -> void:
 	sig.connect(callback)
 	await get_tree().create_timer(time).timeout
 	sig.disconnect(callback)
+	is_timed = true
 
 
 ## Returns [code]true[/code] if a line in the input [code]code[/code] matches one of the
