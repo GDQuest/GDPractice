@@ -38,6 +38,10 @@ var _solution: Node = null
 ##
 ## These [code]_setup_*()[/code] methods are helpers for breaking the tasks into smaller chunks.
 func setup(practice: Node, solution: Node) -> void:
+	# We wait for 1 frame to ensure the practice scene had the time to get ready.
+	# Without that, state immediately gathered in _setup_state() will not be accurate.
+	await get_tree().process_frame
+
 	_practice = practice
 	_solution = solution
 
