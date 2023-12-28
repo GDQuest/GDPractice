@@ -80,7 +80,13 @@ func _init() -> void:
 static func _build_solution(dir_name: StringName, regex_line: RegEx, regex_shift: RegEx) -> void:
 	var solution_dir_path := Paths.SOLUTIONS_PATH.path_join(dir_name)
 	var solution_file_paths := Utils.fs_find("*", solution_dir_path)
-	solution_file_paths.assign(solution_file_paths.filter(func(x: String) -> bool: return not (x.ends_with("_test.gd") or x.ends_with("_diff.gd") or x.get_extension() == "import")))
+	solution_file_paths.assign(
+		solution_file_paths.filter(
+			func(x: String) -> bool: return not (
+				x.ends_with("_test.gd") or x.ends_with("_diff.gd") or x.get_extension() == "import"
+			)
+		)
+	)
 
 	var solution_diff_path := solution_dir_path.path_join("%s_diff.gd" % dir_name)
 	var solution_diff: GDScript = null
@@ -90,7 +96,9 @@ static func _build_solution(dir_name: StringName, regex_line: RegEx, regex_shift
 	var log_message := "\t%s...%s"
 	for solution_file_path in solution_file_paths:
 		var extension := solution_file_path.get_extension()
-		var practice_file_path: String = solution_file_path.replace(Paths.SOLUTIONS_PATH, Paths.PRACTICES_PATH)
+		var practice_file_path: String = solution_file_path.replace(
+			Paths.SOLUTIONS_PATH, Paths.PRACTICES_PATH
+		)
 		var practice_file_modified_time := FileAccess.get_modified_time(practice_file_path)
 		if (
 			FileAccess.file_exists(practice_file_path)
@@ -138,7 +146,9 @@ static func _process_line(line: String, regex_line: RegEx, regex_shift: RegEx) -
 	var result := {line = line, do_skip = false}
 	var regex_line_match := regex_line.search(line)
 	if regex_line_match != null and not regex_line_match.strings[2].is_empty():
-		result.line = _process_tabs(regex_line_match.strings[1], regex_line_match.strings[3].strip_edges(), regex_shift)
+		result.line = _process_tabs(
+			regex_line_match.strings[1], regex_line_match.strings[3].strip_edges(), regex_shift
+		)
 		result.do_skip = not line.strip_edges().is_empty() and result.line.strip_edges().is_empty()
 	return result
 

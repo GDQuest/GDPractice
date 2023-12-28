@@ -1,0 +1,38 @@
+[gd_scene load_steps=2 format=3 uid="uid://c2bdexvumy07m"]
+
+[ext_resource type="Script" path="res://addons/gdquest_practice_framework/ui/ui_practice_dock.gd" id="1_p3vi5"]
+
+[node name="GDQuestPractices" type="VBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_p3vi5")
+
+[node name="List" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Footer" type="HBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 10
+
+[node name="OpenButton" type="Button" parent="Footer"]
+unique_name_in_owner = true
+layout_mode = 2
+disabled = true
+text = "Open"
+
+[node name="RunButton" type="Button" parent="Footer"]
+unique_name_in_owner = true
+layout_mode = 2
+disabled = true
+text = "Run"
+
+[node name="ResetButton" type="Button" parent="Footer"]
+unique_name_in_owner = true
+layout_mode = 2
+disabled = true
+text = "Reset"

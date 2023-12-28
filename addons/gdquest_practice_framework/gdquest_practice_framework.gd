@@ -6,23 +6,35 @@ const Utils := preload("utils.gd")
 const ROOT_PATH := "res://"
 const TEMPLATES_DIR := "script_templates/Test"
 
+var ui_practice_dock := preload("ui/ui_practice_dock.tscn").instantiate()
+
 
 func _enter_tree() -> void:
 	add_autoload_singleton("Tester", "tester/tester.tscn")
 	add_templates()
+	add_control_to_dock(DOCK_SLOT_RIGHT_UL, ui_practice_dock)
 
 
 func _exit_tree() -> void:
 	remove_autoload_singleton("Tester")
 	remove_templates()
+	remove_control_from_docks(ui_practice_dock)
 
 
 func add_templates() -> void:
 	var plugin_dir_path: String = get_script().resource_path.get_base_dir()
 	var plugin_template_dir_path := plugin_dir_path.path_join(TEMPLATES_DIR)
 	for plugin_template_file_path in Utils.fs_find("*.gd", plugin_template_dir_path):
-		var root_template_file_path = ROOT_PATH.path_join(TEMPLATES_DIR).path_join(plugin_template_file_path.get_file())
-		if FileAccess.file_exists(root_template_file_path) and FileAccess.get_modified_time(plugin_template_file_path) < FileAccess.get_modified_time(root_template_file_path):
+		var root_template_file_path = ROOT_PATH.path_join(TEMPLATES_DIR).path_join(
+			plugin_template_file_path.get_file()
+		)
+		if (
+			FileAccess.file_exists(root_template_file_path)
+			and (
+				FileAccess.get_modified_time(plugin_template_file_path)
+				< FileAccess.get_modified_time(root_template_file_path)
+			)
+		):
 			continue
 
 		DirAccess.make_dir_recursive_absolute(root_template_file_path.get_base_dir())
