@@ -55,6 +55,16 @@
 ##     generate_one_gem(cell)
 ## [/codeblock]
 ##
+## The build script [b]skips[/b] solutions that contain only one GDScript script file
+## with the same name as the solution folder and a [code]metadata[/code] variable:
+##
+## [codeblock]
+## # e.g. file path: res://solutions/some_practice/some_practice.gd
+## var metadata := PracticeMetadata.new("Test Solution", "TEST_SOLUTION_ID") #
+## [/codeblock]
+##
+## The build script [b]fails[/b] if there are solutions with no [code]metadata[/code] variable.[br]
+## [br]
 ## [b]Note[/b] that:[br]
 ## - Only-comment lines are also preserved in the practice.[br]
 ## - The special [code]<[/code] and [code]>[/code] symbols can be repeated multiple times.
@@ -77,9 +87,20 @@ func _init() -> void:
 	quit()
 
 
-static func _build_solution(dir_name: StringName, regex_line: RegEx, regex_shift: RegEx) -> void:
+func _build_solution(dir_name: StringName, regex_line: RegEx, regex_shift: RegEx) -> void:
 	var solution_dir_path := Paths.SOLUTIONS_PATH.path_join(dir_name)
 	var solution_file_paths := Utils.fs_find("*", solution_dir_path)
+	var solution_main_path := solution_dir_path.path_join("%s.gd" % dir_name)
+	var solution_main: Object = load(solution_main_path).new()
+	var log_message := "\t%s...%s"
+	if not "metadata" in solution_main:
+		print_rich(log_message % [solution_main_path, "[color=red]FAIL[/color]"])
+		quit()
+		return
+	elif solution_file_paths.all(func(p: String) -> bool: return p == solution_main_path):
+		print_rich(log_message % [solution_main_path, "[color=orange]SKIP[/color]"])
+		return
+
 	solution_file_paths.assign(
 		solution_file_paths.filter(
 			func(x: String) -> bool: return not (
@@ -93,7 +114,6 @@ static func _build_solution(dir_name: StringName, regex_line: RegEx, regex_shift
 	if FileAccess.file_exists(solution_diff_path):
 		solution_diff = load(solution_diff_path)
 
-	var log_message := "\t%s...%s"
 	for solution_file_path in solution_file_paths:
 		var extension := solution_file_path.get_extension()
 		var practice_file_path: String = solution_file_path.replace(
