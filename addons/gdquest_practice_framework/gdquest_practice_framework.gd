@@ -10,14 +10,16 @@ var ui_practice_dock := preload("ui/ui_practice_dock.tscn").instantiate()
 
 
 func _enter_tree() -> void:
+	scene_changed.connect(ui_practice_dock.select_practice)
+	add_control_to_dock(DOCK_SLOT_RIGHT_UL, ui_practice_dock)
 	add_autoload_singleton("Tester", "tester/tester.tscn")
 	add_templates()
-	add_control_to_dock(DOCK_SLOT_RIGHT_UL, ui_practice_dock)
 
 
 func _exit_tree() -> void:
-	remove_autoload_singleton("Tester")
 	remove_templates()
+	remove_autoload_singleton("Tester")
+	scene_changed.disconnect(ui_practice_dock.select_practice)
 	remove_control_from_docks(ui_practice_dock)
 
 
