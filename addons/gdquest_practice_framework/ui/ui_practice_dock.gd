@@ -2,19 +2,13 @@
 extends VBoxContainer
 
 const Paths := preload("../paths.gd")
+const SolutionsList := preload("../solutions_list.gd")
 const UISelectablePractice := preload("ui_selectable_practice.gd")
 
 const UI_SELECTABLE_PRACTICE_SCENE := preload("ui_selectable_practice.tscn")
 
 const GD_EXT := ".gd"
 const TSCN_EXT := ".tscn"
-
-const SOLUTIONS: Array[Script] = [
-	preload("res://solutions/adding_input/adding_input.gd"),
-	preload("res://solutions/adding_timer/adding_timer.gd"),
-	preload("res://solutions/making_ship_move/making_ship_move.gd"),
-	preload("res://solutions/test/test.gd"),
-]
 
 @onready var list: VBoxContainer = %List
 @onready var footer: HBoxContainer = %Footer
@@ -24,7 +18,7 @@ const SOLUTIONS: Array[Script] = [
 
 func _ready() -> void:
 	run_button.pressed.connect(run_practice)
-	for Solution in SOLUTIONS:
+	for Solution in SolutionsList.SOLUTIONS:
 		var ui_selectable_practice: UISelectablePractice = UI_SELECTABLE_PRACTICE_SCENE.instantiate()
 		ui_selectable_practice.pressed.connect(_on_ui_selectable_practice_pressed)
 		list.add_child(ui_selectable_practice)
@@ -51,22 +45,28 @@ static func solution_to_practice_path(path: String) -> String:
 func get_practice_path(index := -1) -> String:
 	if index == -1:
 		index = UISelectablePractice.button_group.get_pressed_button().get_parent().get_index()
-	return solution_to_practice_path(SOLUTIONS[index].resource_path)
+	return solution_to_practice_path(SolutionsList.SOLUTIONS[index].resource_path)
 
 
 func get_practice_index(path: String) -> int:
 	var result := -1
-	for Solution in SOLUTIONS.filter(func(x: Script) -> bool: return (x.resource_path == path)):
-		result = SOLUTIONS.find(Solution)
+	for Solution in SolutionsList.SOLUTIONS.filter(func(x: Script) -> bool: return (x.resource_path == path)):
+		result = SolutionsList.SOLUTIONS.find(Solution)
 	return result
 
 
 func select_practice(scene_root: Node) -> void:
 	deselect()
 	if (
-		scene_root.scene_file_path.begins_with(Paths.SOLUTIONS_PATH)
-		or scene_root.scene_file_path.is_empty()
-		or scene_root.get_script() == null
+		scene_root == null
+		or (
+			scene_root != null
+			and (
+				scene_root.scene_file_path.begins_with(Paths.SOLUTIONS_PATH)
+				or scene_root.scene_file_path.is_empty()
+				or scene_root.get_script() == null
+			)
+		)
 	):
 		return
 	var path: String = scene_root.get_script().resource_path.replace(Paths.PRACTICES_PATH, Paths.SOLUTIONS_PATH)

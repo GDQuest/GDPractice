@@ -100,13 +100,13 @@ func _check_practice() -> void:
 	JSPayload.new(JSPayload.Type.TESTER, JSPayload.Status.TITLE, _practice_info.base_path, message)
 	Logger.log_title("Checking...\n[b]%s[/b]" % message)
 
-	Requirements.setup(_practice_info.base_path)
-	if not Requirements.check():
-		return
-
 	var solution_packed_scene := load(_to_solution(_practice_info.file_path))
 	var solution: Node = solution_packed_scene.instantiate()
 	ghost_layout.refresh([_practice_info.scene, solution])
+
+	Requirements.setup(_practice_info.base_path)
+	if not Requirements.check():
+		return
 
 	var test_script := load(
 		_to_solution(_practice_info.base_path)
