@@ -59,18 +59,16 @@ func setup(practice: Node, solution: Node) -> void:
 
 
 ## Runs all functions with names that begin with [constant PREFIX].
-func run() -> void:
+func run() -> int:
+	var result := 1
 	for d in get_method_list().filter(func(x: Dictionary) -> bool: return x.name.begins_with(PREFIX)):
 		var hint: String = await call(d.name)
 		Logger.log("\tTesting %s...%s" % [d.name.trim_prefix(PREFIX).capitalize(), "[color=%s]%s[/color]" % (["green", "PASS"] if hint.is_empty() else ["red", "FAIL"])])
 		if not hint.is_empty():
-			JSPayload.new(
-				JSPayload.Type.TEST,
-				JSPayload.Status.PASS if hint.is_empty() else JSPayload.Status.FAIL,
-				_practice_base_path,
-				hint,
-			)
+			result = 0
+			JSPayload.new(JSPayload.Type.TEST, JSPayload.Status.FAIL, _practice_base_path, hint)
 			Logger.log("\t\t%s" % hint)
+	return result
 
 
 ## Assign here the [b]practice[/b] state to the [b]solution[/b] state so they both start with the

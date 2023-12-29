@@ -2,6 +2,8 @@
 @tool
 extends Control
 
+const Progress := preload("../db/progress.gd")
+
 ## Emitted when the child button node is pressed.
 signal pressed(index: int)
 
@@ -38,6 +40,8 @@ static var button_group := ButtonGroup.new()
 		else:
 			label_title.remove_theme_color_override("font_color")
 
+var id: String = ""
+
 @onready var icon_lock: TextureRect = %IconLock
 @onready var label_symbol: Label = %LabelSymbol
 @onready var label_title: Label = %LabelTitle
@@ -71,3 +75,9 @@ func select() -> void:
 
 func deselect() -> void:
 	button.set_pressed_no_signal(false)
+
+
+func update(progress: Progress) -> void:
+	if not id in progress.state:
+		return
+	label_symbol.modulate.a = 1 if progress.state[id].completion == 1 else 0

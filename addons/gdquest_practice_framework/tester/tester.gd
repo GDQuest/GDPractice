@@ -4,12 +4,15 @@ const Logger := preload("../logger/logger.gd")
 const JSPayload := preload("../logger/js_payload.gd")
 const Paths := preload("../paths.gd")
 const Requirements := preload("requirements.gd")
+const DB := preload("../db/db.gd")
 
 const GhostLayoutScene := preload("ghost_layout.tscn")
 const SplitLayoutScene := preload("split_layout.tscn")
 
 var _practice_info := {}
 var _input_map := {}
+
+var db := DB.new()
 
 @onready var log_panel_container: PanelContainer = %LogPanelContainer
 @onready var title_rich_text_label: RichTextLabel = %TitleRichTextLabel
@@ -36,7 +39,9 @@ func _ready() -> void:
 	_prepare_practice_info()
 	if not _is_practice_scene():
 		var message := "Not a practice"
-		JSPayload.new(JSPayload.Type.TESTER, JSPayload.Status.SKIP, _practice_info.file_path, message)
+		JSPayload.new(
+			JSPayload.Type.TESTER, JSPayload.Status.SKIP, _practice_info.file_path, message
+		)
 		Logger.log("%s...[color=orange]SKIP[/color]" % message)
 
 		queue_free()
@@ -109,14 +114,17 @@ func _check_practice() -> void:
 		return
 
 	var test_script := load(
-		_to_solution(_practice_info.base_path)
-		.path_join("%s_test.gd" % _practice_info.file_name.get_basename())
+		_to_solution(_practice_info.base_path).path_join(
+			"%s_test.gd" % _practice_info.file_name.get_basename()
+		)
 	)
 	var test: Test = test_script.new()
 	add_child(test)
 
 	await test.setup(_practice_info.scene, solution)
-	await test.run()
+	var completion := await test.run()
+	db.update({solution.metadata.id: {completion = completion}})
+	db.save()
 
 
 static func _to_solution(path: String) -> String:

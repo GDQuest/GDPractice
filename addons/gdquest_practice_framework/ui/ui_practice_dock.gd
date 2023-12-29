@@ -1,6 +1,7 @@
 @tool
 extends VBoxContainer
 
+const DB := preload("../db/db.gd")
 const Paths := preload("../paths.gd")
 const SolutionsList := preload("../solutions_list.gd")
 const UISelectablePractice := preload("ui_selectable_practice.gd")
@@ -18,14 +19,18 @@ const TSCN_EXT := ".tscn"
 
 func _ready() -> void:
 	run_button.pressed.connect(run_practice)
+	reset_button.pressed.connect(reset_practice)
 	for Solution in SolutionsList.SOLUTIONS:
 		var ui_selectable_practice: UISelectablePractice = UI_SELECTABLE_PRACTICE_SCENE.instantiate()
 		ui_selectable_practice.pressed.connect(_on_ui_selectable_practice_pressed)
 		list.add_child(ui_selectable_practice)
 		ui_selectable_practice.setup()
-		ui_selectable_practice.title = Solution.new().metadata.title
+		var metadata: PracticeMetadata = Solution.new().metadata
+		ui_selectable_practice.title = metadata.title
+		ui_selectable_practice.id = metadata.id
 		ui_selectable_practice.is_free = FileAccess.file_exists(solution_to_practice_path(Solution.resource_path))
 		ui_selectable_practice.is_locked = not ui_selectable_practice.is_free
+	update()
 
 
 func _on_ui_selectable_practice_pressed(index: int) -> void:
@@ -36,6 +41,14 @@ func _on_ui_selectable_practice_pressed(index: int) -> void:
 
 func run_practice() -> void:
 	EditorInterface.play_custom_scene(get_practice_path())
+
+
+func reset_practice() -> void:
+	var ui_selectable_practice := UISelectablePractice.button_group.get_pressed_button().get_parent()
+	var db := DB.new()
+	db.progress.state[ui_selectable_practice.id].completion = 0
+	db.save()
+	ui_selectable_practice.update(db.progress)
 
 
 static func solution_to_practice_path(path: String) -> String:
@@ -81,3 +94,9 @@ func deselect() -> void:
 
 	for footer_button: Button in footer.get_children():
 		footer_button.disabled = true
+
+
+func update() -> void:
+	var db := DB.new()
+	for ui_selectable_practice in list.get_children():
+		ui_selectable_practice.update(db.progress)

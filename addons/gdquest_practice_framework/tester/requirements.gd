@@ -68,7 +68,7 @@ static func _check_properties() -> bool:
 	Logger.log("Properties...")
 	return _list.scripts.all(func(script: Dictionary) -> bool:
 		var script_file_name: String = script.practice.resource_path.get_file()
-		var predicate := func(prop: Dictionary) -> bool: return prop.name != script_file_name
+		var predicate := func(prop: Dictionary) -> bool: return prop.name != script_file_name and prop.name != "metadata"
 		var practice_property_list: Array[Dictionary] = script.practice.get_script_property_list().filter(predicate)
 		var solution_property_list: Array[Dictionary] = script.solution.get_script_property_list().filter(predicate)
 		practice_property_list.sort_custom(_name_sorter)

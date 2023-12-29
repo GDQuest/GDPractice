@@ -6,10 +6,13 @@ const Utils := preload("utils.gd")
 const ROOT_PATH := "res://"
 const TEMPLATES_DIR := "script_templates/Test"
 
+var editor_run_bar: MarginContainer = null
 var ui_practice_dock := preload("ui/ui_practice_dock.tscn").instantiate()
 
 
 func _enter_tree() -> void:
+	editor_run_bar = EditorInterface.get_base_control().find_child("*EditorRunBar*", true, false)
+	editor_run_bar.stop_pressed.connect(ui_practice_dock.update)
 	scene_changed.connect(ui_practice_dock.select_practice)
 	add_control_to_dock(DOCK_SLOT_RIGHT_UL, ui_practice_dock)
 	add_autoload_singleton("Tester", "tester/tester.tscn")
@@ -17,6 +20,7 @@ func _enter_tree() -> void:
 
 
 func _exit_tree() -> void:
+	editor_run_bar.stop_pressed.disconnect(ui_practice_dock.update)
 	remove_templates()
 	remove_autoload_singleton("Tester")
 	scene_changed.disconnect(ui_practice_dock.select_practice)
