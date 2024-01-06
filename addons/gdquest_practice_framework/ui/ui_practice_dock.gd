@@ -2,6 +2,7 @@
 extends VBoxContainer
 
 const DB := preload("../db/db.gd")
+const Build := preload("../build.gd")
 const Paths := preload("../paths.gd")
 const SolutionsList := preload("../solutions_list.gd")
 const UISelectablePractice := preload("ui_selectable_practice.gd")
@@ -10,6 +11,8 @@ const UI_SELECTABLE_PRACTICE_SCENE := preload("ui_selectable_practice.tscn")
 
 const GD_EXT := ".gd"
 const TSCN_EXT := ".tscn"
+
+var build := Build.new()
 
 @onready var list: VBoxContainer = %List
 @onready var footer: HBoxContainer = %Footer
@@ -28,6 +31,7 @@ func _ready() -> void:
 		var metadata: PracticeMetadata = Solution.new().metadata
 		ui_selectable_practice.title = metadata.title
 		ui_selectable_practice.id = metadata.id
+		ui_selectable_practice.solution_dir_name = Solution.resource_path.get_base_dir().get_file()
 		ui_selectable_practice.is_free = FileAccess.file_exists(solution_to_practice_path(Solution.resource_path))
 		ui_selectable_practice.is_locked = not ui_selectable_practice.is_free
 	update()
@@ -49,6 +53,7 @@ func reset_practice() -> void:
 	db.progress.state[ui_selectable_practice.id].completion = 0
 	db.save()
 	ui_selectable_practice.update(db.progress)
+	build.build_solution(ui_selectable_practice.solution_dir_name, true)
 
 
 static func solution_to_practice_path(path: String) -> String:

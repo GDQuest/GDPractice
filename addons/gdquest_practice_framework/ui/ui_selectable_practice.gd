@@ -40,7 +40,8 @@ static var button_group := ButtonGroup.new()
 		else:
 			label_title.remove_theme_color_override("font_color")
 
-var id: String = ""
+var id: StringName = ""
+var solution_dir_name: StringName = ""
 
 @onready var icon_lock: TextureRect = %IconLock
 @onready var label_symbol: Label = %LabelSymbol

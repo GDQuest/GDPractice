@@ -75,19 +75,19 @@ const Utils := preload("utils.gd")
 
 const DENTS := {"<": -1, ">": 1}
 
+var regex_line := RegEx.create_from_string("^(\\h*)(.*)#\\h*(.*)$")
+var regex_shift := RegEx.create_from_string("^([<>]+)\\h*(.*)")
+
 
 func _init() -> void:
-	var regex_line := RegEx.new()
-	var regex_shift := RegEx.new()
-	regex_line.compile("^(\\h*)(.*)#\\h*(.*)$")
-	regex_shift.compile("^([<>]+)\\h*(.*)")
-	for dir_name in DirAccess.get_directories_at(Paths.SOLUTIONS_PATH):
-		print_rich("Building [b]%s[/b]..." % dir_name)
-		_build_solution(dir_name, regex_line, regex_shift)
-	quit()
+	if "--script" in OS.get_cmdline_args():
+		for dir_name in DirAccess.get_directories_at(Paths.SOLUTIONS_PATH):
+			build_solution(dir_name)
+		quit()
 
 
-func _build_solution(dir_name: StringName, regex_line: RegEx, regex_shift: RegEx) -> void:
+func build_solution(dir_name: StringName, is_forced := false) -> void:
+	print_rich("Building [b]%s[/b]..." % dir_name)
 	var solution_dir_path := Paths.SOLUTIONS_PATH.path_join(dir_name)
 	var solution_file_paths := Utils.fs_find("*", solution_dir_path)
 	var solution_main_path := solution_dir_path.path_join("%s.gd" % dir_name)
@@ -121,9 +121,12 @@ func _build_solution(dir_name: StringName, regex_line: RegEx, regex_shift: RegEx
 		)
 		var practice_file_modified_time := FileAccess.get_modified_time(practice_file_path)
 		if (
-			FileAccess.file_exists(practice_file_path)
-			and practice_file_modified_time > FileAccess.get_modified_time(solution_file_path)
-			and practice_file_modified_time > FileAccess.get_modified_time(solution_diff_path)
+			(
+				FileAccess.file_exists(practice_file_path)
+				and practice_file_modified_time > FileAccess.get_modified_time(solution_file_path)
+				and practice_file_modified_time > FileAccess.get_modified_time(solution_diff_path)
+			)
+			and not is_forced
 		):
 			print_rich(log_message % [practice_file_path, "[color=orange]SKIP[/color]"])
 			continue
@@ -146,34 +149,34 @@ func _build_solution(dir_name: StringName, regex_line: RegEx, regex_shift: RegEx
 		if extension in ["gd", "tscn"]:
 			var contents := FileAccess.get_file_as_string(practice_file_path)
 			if extension == "gd":
-				contents = _process_gd(contents, regex_line, regex_shift)
+				contents = _process_gd(contents)
 			contents = contents.replace(Paths.SOLUTIONS_PATH, Paths.PRACTICES_PATH)
 			FileAccess.open(practice_file_path, FileAccess.WRITE).store_string(contents)
 			print_rich(log_message % [practice_file_path, "[color=yellow]PROCESS[/color]"])
 
 
-static func _process_gd(contents: String, regex_line: RegEx, regex_shift: RegEx) -> String:
+func _process_gd(contents: String) -> String:
 	var partial_result := []
 	for line in contents.split("\n"):
-		var processed := _process_line(line, regex_line, regex_shift)
+		var processed := _process_line(line)
 		if processed.do_skip:
 			continue
 		partial_result.push_back(processed.line)
 	return "\n".join(partial_result).strip_edges() + "\n"
 
 
-static func _process_line(line: String, regex_line: RegEx, regex_shift: RegEx) -> Dictionary:
+func _process_line(line: String) -> Dictionary:
 	var result := {line = line, do_skip = false}
 	var regex_line_match := regex_line.search(line)
 	if regex_line_match != null and not regex_line_match.strings[2].is_empty():
 		result.line = _process_tabs(
-			regex_line_match.strings[1], regex_line_match.strings[3].strip_edges(), regex_shift
+			regex_line_match.strings[1], regex_line_match.strings[3].strip_edges()
 		)
 		result.do_skip = not line.strip_edges().is_empty() and result.line.strip_edges().is_empty()
 	return result
 
 
-static func _process_tabs(prefix: String, line: String, regex_shift: RegEx) -> String:
+func _process_tabs(prefix: String, line: String) -> String:
 	var tabs := prefix.count("\t")
 	var regex_shift_match := regex_shift.search(line)
 	if regex_shift_match != null:
