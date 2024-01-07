@@ -31,7 +31,7 @@ func _ready() -> void:
 		var metadata: PracticeMetadata = Solution.new().metadata
 		ui_selectable_practice.title = metadata.title
 		ui_selectable_practice.id = metadata.id
-		ui_selectable_practice.solution_dir_name = Solution.resource_path.get_base_dir().get_file()
+		ui_selectable_practice.solution_path = Solution.resource_path
 		ui_selectable_practice.is_free = FileAccess.file_exists(solution_to_practice_path(Solution.resource_path))
 		ui_selectable_practice.is_locked = not ui_selectable_practice.is_free
 	update()
@@ -48,12 +48,14 @@ func run_practice() -> void:
 
 
 func reset_practice() -> void:
-	var ui_selectable_practice := UISelectablePractice.button_group.get_pressed_button().get_parent()
+	var ui_selectable_practice: UISelectablePractice = UISelectablePractice.button_group.get_pressed_button().get_parent()
 	var db := DB.new()
 	db.progress.state[ui_selectable_practice.id].completion = 0
 	db.save()
 	ui_selectable_practice.update(db.progress)
-	build.build_solution(ui_selectable_practice.solution_dir_name, true)
+
+	var solution_dir_name := ui_selectable_practice.solution_path.get_base_dir().get_file()
+	build.build_solution(solution_dir_name, true)
 
 
 static func solution_to_practice_path(path: String) -> String:
@@ -77,20 +79,14 @@ func select_practice(scene_root: Node) -> void:
 	deselect()
 	if (
 		scene_root == null
-		or (
-			scene_root != null
-			and (
-				scene_root.scene_file_path.begins_with(Paths.SOLUTIONS_PATH)
-				or scene_root.scene_file_path.is_empty()
-				or scene_root.get_script() == null
-			)
-		)
+		or (scene_root != null and (scene_root.scene_file_path.is_empty() or scene_root.get_script() == null))
 	):
 		return
-	var path: String = scene_root.get_script().resource_path.replace(Paths.PRACTICES_PATH, Paths.SOLUTIONS_PATH)
+	var script_path: String = scene_root.get_script().resource_path
+	var path := script_path.replace(Paths.PRACTICES_PATH, Paths.SOLUTIONS_PATH)
 	var index := get_practice_index(path)
 	if index != -1:
-		list.get_child(index).select()
+		list.get_child(index).select(script_path.begins_with(Paths.SOLUTIONS_PATH))
 
 
 func deselect() -> void:
