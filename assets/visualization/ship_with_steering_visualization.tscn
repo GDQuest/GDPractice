@@ -1,0 +1,96 @@
+[gd_scene load_steps=6 format=3 uid="uid://0kgvpq7i06gp"]
+
+[ext_resource type="Texture2D" uid="uid://bniyrxn3r2v8h" path="res://assets/ship.png" id="1_rkf8f"]
+[ext_resource type="Script" path="res://assets/visualization/ship_with_steering_visualization.gd" id="2_rag2q"]
+[ext_resource type="PackedScene" uid="uid://cu0ij1ytyf37d" path="res://assets/visualization/steering_vectors_2d.tscn" id="3_3ywy5"]
+[ext_resource type="Script" path="res://assets/visualization/vector_2d.gd" id="4_1imyy"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wshfa"]
+bg_color = Color(0.129412, 0.129412, 0.129412, 0.552941)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="Sprite2D" type="Sprite2D"]
+position = Vector2(932, 519)
+rotation = -1.57079
+texture = ExtResource("1_rkf8f")
+script = ExtResource("2_rag2q")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.6
+
+[node name="SteeringVectors2D" parent="." instance=ExtResource("3_3ywy5")]
+
+[node name="Node" type="Node" parent="."]
+
+[node name="Panel" type="Panel" parent="Node"]
+offset_left = 63.0
+offset_top = 51.0
+offset_right = 392.0
+offset_bottom = 198.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_wshfa")
+
+[node name="Label" type="Label" parent="Node"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -305.0
+offset_top = 134.0
+offset_right = 305.0
+offset_bottom = 293.0
+grow_horizontal = 2
+text = "In this demo, time is slowed down to help you visualize the three velocity vectors involved in steering."
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Label2" type="Label" parent="Node"]
+offset_left = 240.0
+offset_top = 111.0
+offset_right = 628.0
+offset_bottom = 134.0
+text = "velocity"
+vertical_alignment = 1
+
+[node name="Label3" type="Label" parent="Node"]
+offset_left = 240.0
+offset_top = 72.0
+offset_right = 628.0
+offset_bottom = 95.0
+text = "desired velocity"
+vertical_alignment = 1
+
+[node name="Label4" type="Label" parent="Node"]
+offset_left = 240.0
+offset_top = 152.0
+offset_right = 628.0
+offset_bottom = 175.0
+text = "steering"
+vertical_alignment = 1
+
+[node name="Velocity" type="Node2D" parent="Node"]
+unique_name_in_owner = true
+show_behind_parent = true
+position = Vector2(91, 123)
+script = ExtResource("4_1imyy")
+color = Color(0.14902, 0.776471, 0.968627, 1)
+vector = Vector2(120, 0)
+
+[node name="DesiredVelocity" type="Node2D" parent="Node"]
+unique_name_in_owner = true
+show_behind_parent = true
+position = Vector2(91, 84)
+script = ExtResource("4_1imyy")
+color = Color(0.768627, 0.113725, 0.239216, 1)
+vector = Vector2(120, 0)
+
+[node name="SteeringVelocity" type="Node2D" parent="Node"]
+unique_name_in_owner = true
+show_behind_parent = true
+position = Vector2(91, 166)
+script = ExtResource("4_1imyy")
+color = Color(1, 0.835294, 0, 1)
+vector = Vector2(120, 0)
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

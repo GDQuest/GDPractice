@@ -72,6 +72,7 @@ extends SceneTree
 
 const Paths := preload("paths.gd")
 const Utils := preload("utils.gd")
+const Metadata := preload("metadata.gd")
 
 const DENTS := {"<": -1, ">": 1}
 
@@ -80,25 +81,33 @@ var regex_shift := RegEx.create_from_string("^([<>]+)\\h*(.*)")
 
 
 func _init() -> void:
+	build_practices()
+
+
+func build_practices() -> void:
 	if "--script" in OS.get_cmdline_args():
 		for dir_name in DirAccess.get_directories_at(Paths.SOLUTIONS_PATH):
-			build_solution(dir_name)
+			build_practice(dir_name)
 		quit()
 
 
-func build_solution(dir_name: StringName, is_forced := false) -> void:
+func build_practice(dir_name: StringName, is_forced := false) -> void:
 	print_rich("Building [b]%s[/b]..." % dir_name)
 	var solution_dir_path := Paths.SOLUTIONS_PATH.path_join(dir_name)
 	var solution_file_paths := Utils.fs_find("*", solution_dir_path)
-	var solution_main_path := solution_dir_path.path_join("%s.gd" % dir_name)
-	var solution_main: Object = load(solution_main_path).new()
+	var metadata_file_path := solution_dir_path.path_join("metadata.tres")
 	var log_message := "\t%s...%s"
-	if not "metadata" in solution_main:
-		print_rich(log_message % [solution_main_path, "[color=red]FAIL[/color]"])
+
+	var do_exit := false
+	if FileAccess.file_exists(metadata_file_path):
+		var metadata: Metadata = load(metadata_file_path)
+		do_exit = metadata.title.is_empty() or metadata.id.is_empty()
+	else:
+		do_exit = true
+
+	if do_exit:
+		print_rich(log_message % [metadata_file_path, "[color=red]FAIL[/color]"])
 		quit()
-		return
-	elif solution_file_paths.all(func(p: String) -> bool: return p == solution_main_path):
-		print_rich(log_message % [solution_main_path, "[color=orange]SKIP[/color]"])
 		return
 
 	solution_file_paths.assign(
@@ -146,7 +155,7 @@ func build_solution(dir_name: StringName, is_forced := false) -> void:
 			DirAccess.copy_absolute(solution_file_path, practice_file_path)
 			print_rich(log_message % [practice_file_path, "[color=green]COPY[/color]"])
 
-		if extension in ["gd", "tscn"]:
+		if extension in ["gd", "tscn", "tres"]:
 			var contents := FileAccess.get_file_as_string(practice_file_path)
 			if extension == "gd":
 				contents = _process_gd(contents)

@@ -1,0 +1,27 @@
+[gd_scene load_steps=3 format=3 uid="uid://cu0ij1ytyf37d"]
+
+[ext_resource type="Script" path="res://assets/visualization/steering_vectors_2d.gd" id="1_vqbnv"]
+[ext_resource type="Script" path="res://assets/visualization/vector_2d.gd" id="2_bsh4y"]
+
+[node name="SteeringVectors2D" type="Node2D"]
+show_behind_parent = true
+top_level = true
+script = ExtResource("1_vqbnv")
+
+[node name="DesiredVelocity" type="Node2D" parent="."]
+unique_name_in_owner = true
+show_behind_parent = true
+script = ExtResource("2_bsh4y")
+color = Color(0.768627, 0.113725, 0.239216, 1)
+
+[node name="Velocity" type="Node2D" parent="."]
+unique_name_in_owner = true
+show_behind_parent = true
+script = ExtResource("2_bsh4y")
+color = Color(0.14902, 0.776471, 0.968627, 1)
+
+[node name="SteeringVelocity" type="Node2D" parent="."]
+unique_name_in_owner = true
+show_behind_parent = true
+script = ExtResource("2_bsh4y")
+color = Color(1, 0.835294, 0, 1)

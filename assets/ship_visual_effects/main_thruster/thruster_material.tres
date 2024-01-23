@@ -1,0 +1,23 @@
+[gd_resource type="ShaderMaterial" load_steps=6 format=3 uid="uid://djyidstytau4k"]
+
+[ext_resource type="Shader" path="res://assets/ship_visual_effects/ship_flame.gdshader" id="1_7mf8j"]
+
+[sub_resource type="Curve" id="Curve_cxtrt"]
+_data = [Vector2(0, 0), -1.85185, 0.0, 0, 0, Vector2(0.474545, 1), 0.0, 0.0, 0, 0, Vector2(0.6, 0), 0.0, 15.7895, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_jlu8o"]
+curve = SubResource("Curve_cxtrt")
+
+[sub_resource type="Gradient" id="Gradient_d7f3r"]
+offsets = PackedFloat32Array(0.0756501, 1)
+colors = PackedColorArray(1, 0.433333, 0, 1, 1, 0.683333, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_5n213"]
+gradient = SubResource("Gradient_d7f3r")
+
+[resource]
+shader = ExtResource("1_7mf8j")
+shader_parameter/deformation = 0.4
+shader_parameter/base_color = SubResource("GradientTexture1D_5n213")
+shader_parameter/band_gradient = SubResource("CurveTexture_jlu8o")

@@ -1,0 +1,62 @@
+[gd_scene load_steps=12 format=3 uid="uid://dgf54k70yiiff"]
+
+[ext_resource type="Material" uid="uid://djyidstytau4k" path="res://assets/ship_visual_effects/main_thruster/thruster_material.tres" id="1_hncak"]
+[ext_resource type="Texture2D" uid="uid://jroyif3arx2w" path="res://assets/ship_visual_effects/main_thruster/ship_flame_sdf.png" id="2_0uds3"]
+[ext_resource type="Script" path="res://assets/ship_visual_effects/main_thruster/main_thruster.gd" id="3_dpbpx"]
+[ext_resource type="Texture2D" uid="uid://b4eivixs3nn3n" path="res://assets/ship_visual_effects/spark.png" id="4_hbt2x"]
+
+[sub_resource type="Curve" id="Curve_8xwmy"]
+_data = [Vector2(0.2, 0), 0.0, 0.0, 0, 0, Vector2(0.9, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_vwo5l"]
+_data = [Vector2(0.2, 0), 0.0, 0.0, 0, 0, Vector2(0.6, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_nl58g"]
+offsets = PackedFloat32Array(0, 0.785047, 1)
+colors = PackedColorArray(1, 0.35, 0, 1, 1, 0.717647, 0, 1, 1, 0.717647, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_p36au"]
+gradient = SubResource("Gradient_nl58g")
+
+[sub_resource type="Curve" id="Curve_3iokn"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.8, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_prscj"]
+curve = SubResource("Curve_3iokn")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_408ui"]
+particle_flag_align_y = true
+particle_flag_disable_z = true
+initial_velocity_min = 100.0
+initial_velocity_max = 200.0
+damping_min = 10.0
+damping_max = 80.0
+scale_min = 0.3
+scale_max = 0.4
+scale_curve = SubResource("CurveTexture_prscj")
+color_ramp = SubResource("GradientTexture1D_p36au")
+
+[node name="MainThruster" type="Line2D"]
+material = ExtResource("1_hncak")
+rotation = -3.14159
+points = PackedVector2Array(0, 0, 33.3333, 0, 66.6667, 0)
+width = 45.0
+texture = ExtResource("2_0uds3")
+texture_mode = 2
+joint_mode = 2
+script = ExtResource("3_dpbpx")
+size_curve = SubResource("Curve_8xwmy")
+alpha_curve = SubResource("Curve_vwo5l")
+max_length = 100.0
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(2, 0)
+amount = 4
+process_material = SubResource("ParticleProcessMaterial_408ui")
+texture = ExtResource("4_hbt2x")
+lifetime = 0.35
+local_coords = true

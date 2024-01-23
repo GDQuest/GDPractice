@@ -1,5 +1,7 @@
-const SolutionsList := preload("../solutions_list.gd")
 const Progress := preload("progress.gd")
+const Metadata := preload("../metadata.gd")
+
+const MetadataList := preload("../metadata_list.gd")
 
 var progress: Progress = null
 
@@ -7,8 +9,8 @@ var progress: Progress = null
 func _init() -> void:
 	if not ResourceLoader.exists(Progress.PATH):
 		progress = Progress.new()
-		for Solution: Script in SolutionsList.SOLUTIONS:
-			var metadata: PracticeMetadata = Solution.new().metadata
+		for metadata_path: String in MetadataList.METADATA_PATHS:
+			var metadata: Metadata = load(metadata_path)
 			progress.state[metadata.id] = {completion = 0, tries = 0}
 		save()
 	reload()
