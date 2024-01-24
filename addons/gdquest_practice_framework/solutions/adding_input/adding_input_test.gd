@@ -1,4 +1,4 @@
-extends Test
+extends "res://addons/gdquest_practice_framework/tester/test.gd"
 
 
 func _setup_state() -> void:

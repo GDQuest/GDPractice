@@ -1,5 +1,4 @@
 extends Sprite2D
-var metadata := PracticeMetadata.new("Adding Timer", "ADDING_TIMER_ID") #
 
 var boost_speed := 1500.0
 var normal_speed := 600.0

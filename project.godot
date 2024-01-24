@@ -24,7 +24,7 @@ project/assembly_name="Godot Practice Framework"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/gdquest_practice_framework/plugin.cfg", "res://addons/gdquest_theme_utils/plugin.cfg")
+enabled=PackedStringArray("res://addons/gdquest_practice_framework/plugin.cfg")
 
 [input]
 

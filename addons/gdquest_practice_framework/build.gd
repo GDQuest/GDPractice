@@ -55,15 +55,7 @@
 ##     generate_one_gem(cell)
 ## [/codeblock]
 ##
-## The build script [b]skips[/b] solutions that contain only one GDScript script file
-## with the same name as the solution folder and a [code]metadata[/code] variable:
-##
-## [codeblock]
-## # e.g. file path: res://solutions/some_practice/some_practice.gd
-## var metadata := PracticeMetadata.new("Test Solution", "TEST_SOLUTION_ID") #
-## [/codeblock]
-##
-## The build script [b]fails[/b] if there are solutions with no [code]metadata[/code] variable.[br]
+## The build script [b]fails[/b] if there are solutions with no [code]metadata.tres[/code] file.[br]
 ## [br]
 ## [b]Note[/b] that:[br]
 ## - Only-comment lines are also preserved in the practice.[br]
@@ -72,7 +64,7 @@ extends SceneTree
 
 const Paths := preload("paths.gd")
 const Utils := preload("utils.gd")
-const Metadata := preload("metadata.gd")
+const Metadata := preload("metadata/metadata.gd")
 
 const DENTS := {"<": -1, ">": 1}
 
@@ -113,12 +105,15 @@ func build_practice(dir_name: StringName, is_forced := false) -> void:
 	solution_file_paths.assign(
 		solution_file_paths.filter(
 			func(x: String) -> bool: return not (
-				x.ends_with("_test.gd") or x.ends_with("_diff.gd") or x.get_extension() == "import"
+				x.ends_with("/test.gd")
+				or x.ends_with("/diff.gd")
+				or x.ends_with("/metadata.tres")
+				or x.get_extension() == "import"
 			)
 		)
 	)
 
-	var solution_diff_path := solution_dir_path.path_join("%s_diff.gd" % dir_name)
+	var solution_diff_path := solution_dir_path.path_join("diff.gd")
 	var solution_diff: GDScript = null
 	if FileAccess.file_exists(solution_diff_path):
 		solution_diff = load(solution_diff_path)
@@ -159,7 +154,7 @@ func build_practice(dir_name: StringName, is_forced := false) -> void:
 			var contents := FileAccess.get_file_as_string(practice_file_path)
 			if extension == "gd":
 				contents = _process_gd(contents)
-			contents = contents.replace(Paths.SOLUTIONS_PATH, Paths.PRACTICES_PATH)
+			contents = Paths.to_practice(contents)
 			FileAccess.open(practice_file_path, FileAccess.WRITE).store_string(contents)
 			print_rich(log_message % [practice_file_path, "[color=yellow]PROCESS[/color]"])
 

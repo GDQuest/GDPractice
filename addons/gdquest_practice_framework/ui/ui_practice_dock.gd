@@ -1,20 +1,20 @@
 @tool
 extends VBoxContainer
 
+const UISelectablePractice := preload("ui_selectable_practice.gd")
+
 const DB := preload("../db/db.gd")
 const Build := preload("../build.gd")
 const Paths := preload("../paths.gd")
-const Metadata := preload("../metadata.gd")
-
-const MetadataList := preload("../metadata_list.gd")
-const UISelectablePractice := preload("ui_selectable_practice.gd")
+const Metadata := preload("../metadata/metadata.gd")
+const MetadataList := preload("../metadata/metadata_list.gd")
 
 const UI_SELECTABLE_PRACTICE_SCENE := preload("ui_selectable_practice.tscn")
 
-const TSCN_EXT := ".tscn"
-const TRES_EXT := ".tres"
-
 var build := Build.new()
+var metadata_list: MetadataList = load(
+	"res://addons/gdquest_practice_framework/metadata/metadata_list.tres"
+)
 
 @onready var list: VBoxContainer = %List
 @onready var footer: HBoxContainer = %Footer
@@ -25,17 +25,15 @@ var build := Build.new()
 func _ready() -> void:
 	run_button.pressed.connect(run_practice)
 	reset_button.pressed.connect(reset_practice)
-	for metadata_path: String in MetadataList.METADATA_PATHS:
-		var ui_selectable_practice: UISelectablePractice = (
-			UI_SELECTABLE_PRACTICE_SCENE.instantiate()
-		)
-		ui_selectable_practice.pressed.connect(_on_ui_selectable_practice_pressed)
+	UISelectablePractice.button_group.pressed.connect(_on_ui_selectable_practice_pressed)
+	for metadata in metadata_list.metadatas:
+		var ui_selectable_practice = UI_SELECTABLE_PRACTICE_SCENE.instantiate()
 		list.add_child(ui_selectable_practice)
-		ui_selectable_practice.setup(metadata_path)
+		ui_selectable_practice.setup(metadata)
 	update()
 
 
-func _on_ui_selectable_practice_pressed() -> void:
+func _on_ui_selectable_practice_pressed(_button: BaseButton) -> void:
 	for footer_button: Button in footer.get_children():
 		footer_button.disabled = false
 
@@ -56,40 +54,43 @@ func reset_practice() -> void:
 	db.save()
 	ui_selectable_practice.update(db.progress)
 
-	var metadata_path := MetadataList.METADATA_PATHS[ui_selectable_practice.get_index()]
+	var metadata_path := metadata_list.metadatas[ui_selectable_practice.get_index()].resource_path
 	var solution_dir_name := metadata_path.get_base_dir().get_file()
 	build.build_practice(solution_dir_name, true)
 
 
 func get_practice_paths(index := -1) -> Array[String]:
+	var result: Array[String] = []
 	if index == -1:
 		index = UISelectablePractice.button_group.get_pressed_button().get_parent().get_index()
-	return list.get_child(index).metadata.scene_file_paths
+	result.assign(
+		list.get_child(index).metadata.scene_file_paths.map(
+			func(x: String) -> String: return Paths.to_practice(x)
+		)
+	)
+	return result
 
 
 func get_practice_index(path: String) -> int:
 	var result := -1
-	for metadata_path: String in MetadataList.METADATA_PATHS.filter(
-		func(x: String) -> bool: return x.begins_with(path)
-	):
-		result = MetadataList.METADATA_PATHS.find(metadata_path)
+	path = Paths.to_solution(path)
+	var metadata_path := path.get_base_dir().path_join("metadata.tres")
+	if FileAccess.file_exists(path) and FileAccess.file_exists(metadata_path):
+		var metadata: Metadata = load(path.get_base_dir().path_join("metadata.tres"))
+		for scene_file_path in metadata.scene_file_paths:
+			if path == scene_file_path:
+				result = metadata_list.metadatas.find(metadata)
+			break
 	return result
 
 
 func select_practice(scene_root: Node) -> void:
 	deselect()
-	if (
-		scene_root == null
-		or (
-			scene_root != null
-			and (scene_root.scene_file_path.is_empty() or scene_root.get_script() == null)
-		)
-	):
+	if scene_root == null or (scene_root != null and scene_root.scene_file_path.is_empty()):
 		return
-	var script_path: String = scene_root.get_script().resource_path
-	var index := get_practice_index(script_path.get_base_dir())
+	var index := get_practice_index(scene_root.scene_file_path)
 	if index != -1:
-		list.get_child(index).select(script_path.begins_with(Paths.SOLUTIONS_PATH))
+		list.get_child(index).select()
 
 
 func deselect() -> void:

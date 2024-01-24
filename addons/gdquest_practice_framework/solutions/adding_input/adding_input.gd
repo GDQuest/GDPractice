@@ -1,5 +1,4 @@
 extends Sprite2D
-var metadata := PracticeMetadata.new("Adding Input", "ADDING_INPUT_ID") #
 
 var max_speed := 600.0
 var velocity := Vector2.ZERO

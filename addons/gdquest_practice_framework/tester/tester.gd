@@ -5,6 +5,8 @@ const JSPayload := preload("../logger/js_payload.gd")
 const Paths := preload("../paths.gd")
 const Requirements := preload("requirements.gd")
 const DB := preload("../db/db.gd")
+const Test := preload("../tester/test.gd")
+const Metadata := preload("../metadata/metadata.gd")
 
 const GhostLayoutScene := preload("ghost_layout.tscn")
 const SplitLayoutScene := preload("split_layout.tscn")
@@ -73,12 +75,17 @@ func _prepare_practice_info() -> void:
 	_practice_info.file_name = _practice_info.file_path.get_file()
 	_practice_info.base_path = _practice_info.file_path.get_base_dir()
 	_practice_info.dir_name = _practice_info.base_path.get_file()
+	_practice_info.metadata = load(
+		Paths.to_solution(_practice_info.base_path).path_join("metadata.tres")
+	)
 
 
 func _is_practice_scene() -> bool:
 	return (
 		_practice_info.file_path.begins_with(Paths.PRACTICES_PATH)
-		and "%s.tscn" % _practice_info.dir_name == _practice_info.file_name
+		and (
+			Paths.to_solution(_practice_info.file_path) in _practice_info.metadata.scene_file_paths
+		)
 	)
 
 
@@ -105,7 +112,7 @@ func _check_practice() -> void:
 	JSPayload.new(JSPayload.Type.TESTER, JSPayload.Status.TITLE, _practice_info.base_path, message)
 	Logger.log_title("Checking...\n[b]%s[/b]" % message)
 
-	var solution_packed_scene := load(_to_solution(_practice_info.file_path))
+	var solution_packed_scene := load(Paths.to_solution(_practice_info.file_path))
 	var solution: Node = solution_packed_scene.instantiate()
 	ghost_layout.refresh([_practice_info.scene, solution])
 
@@ -113,19 +120,11 @@ func _check_practice() -> void:
 	if not Requirements.check():
 		return
 
-	var test_script := load(
-		_to_solution(_practice_info.base_path).path_join(
-			"%s_test.gd" % _practice_info.file_name.get_basename()
-		)
-	)
+	var test_script := load(Paths.to_solution(_practice_info.base_path).path_join("test.gd"))
 	var test: Test = test_script.new()
 	add_child(test)
 
 	await test.setup(_practice_info.scene, solution)
 	var completion := await test.run()
-	db.update({solution.metadata.id: {completion = completion}})
+	db.update({_practice_info.metadata.id: {completion = completion}})
 	db.save()
-
-
-static func _to_solution(path: String) -> String:
-	return path.replace(Paths.PRACTICES_PATH, Paths.SOLUTIONS_PATH)

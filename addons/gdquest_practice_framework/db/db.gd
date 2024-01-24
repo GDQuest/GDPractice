@@ -1,16 +1,14 @@
 const Progress := preload("progress.gd")
-const Metadata := preload("../metadata.gd")
-
-const MetadataList := preload("../metadata_list.gd")
+const Metadata := preload("../metadata/metadata.gd")
 
 var progress: Progress = null
 
 
 func _init() -> void:
+	var metadata_list := load("res://addons/gdquest_practice_framework/metadata/metadata_list.tres")
 	if not ResourceLoader.exists(Progress.PATH):
 		progress = Progress.new()
-		for metadata_path: String in MetadataList.METADATA_PATHS:
-			var metadata: Metadata = load(metadata_path)
+		for metadata: Metadata in metadata_list.metadatas:
 			progress.state[metadata.id] = {completion = 0, tries = 0}
 		save()
 	reload()

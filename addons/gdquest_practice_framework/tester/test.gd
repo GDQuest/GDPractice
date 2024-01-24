@@ -1,6 +1,6 @@
 ## This class is used by [b]instructors[/b] to validate practices based on a direct comparisson
 ## with the solution.
-class_name Test extends Node
+extends Node
 
 const Logger := preload("../logger/logger.gd")
 const JSPayload := preload("../logger/js_payload.gd")
@@ -61,9 +61,22 @@ func setup(practice: Node, solution: Node) -> void:
 ## Runs all functions with names that begin with [constant PREFIX].
 func run() -> int:
 	var result := 1
-	for d in get_method_list().filter(func(x: Dictionary) -> bool: return x.name.begins_with(PREFIX)):
+	for d in get_method_list().filter(
+		func(x: Dictionary) -> bool: return x.name.begins_with(PREFIX)
+	):
 		var hint: String = await call(d.name)
-		Logger.log("\tTesting %s...%s" % [d.name.trim_prefix(PREFIX).capitalize(), "[color=%s]%s[/color]" % (["green", "PASS"] if hint.is_empty() else ["red", "FAIL"])])
+		Logger.log(
+			(
+				"\tTesting %s...%s"
+				% [
+					d.name.trim_prefix(PREFIX).capitalize(),
+					(
+						"[color=%s]%s[/color]"
+						% (["green", "PASS"] if hint.is_empty() else ["red", "FAIL"])
+					)
+				]
+			)
+		)
 		if not hint.is_empty():
 			result = 0
 			JSPayload.new(JSPayload.Type.TEST, JSPayload.Status.FAIL, _practice_base_path, hint)
@@ -143,7 +156,12 @@ func _set_all(property_path: NodePath, value: Variant) -> void:
 	for node in [_practice, _solution]:
 		var property_name := property_path.get_name(0)
 		if not property_name in node:
-			push_error("Error setting property '%s.%s' with value '%s'. Property not found." % [node, property_name, value])
+			push_error(
+				(
+					"Error setting property '%s.%s' with value '%s'. Property not found."
+					% [node, property_name, value]
+				)
+			)
 		node.set_indexed(property_path, value)
 
 
@@ -153,8 +171,7 @@ func _set_all(property_path: NodePath, value: Variant) -> void:
 ## and [code]solution[/code].
 func _call_all(method: String, arg_array: Array = []) -> Dictionary:
 	return {
-		practice = _practice.callv(method, arg_array),
-		solution = _solution.callv(method, arg_array)
+		practice = _practice.callv(method, arg_array), solution = _solution.callv(method, arg_array)
 	}
 
 

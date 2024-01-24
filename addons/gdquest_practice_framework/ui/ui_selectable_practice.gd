@@ -4,14 +4,7 @@ extends Control
 
 const Paths := preload("../paths.gd")
 const Progress := preload("../db/progress.gd")
-const Metadata := preload("../metadata.gd")
-
-const GD_EXT := ".gd"
-const TSCN_EXT := ".tscn"
-const SOLUTION_BORDER_WIDTH := 4
-
-## Emitted when the child button node is pressed.
-signal pressed
+const Metadata := preload("../metadata/metadata.gd")
 
 const COLOR_DISABLED_TEXT := Color(0.51764708757401, 0.59607845544815, 0.74509805440903)
 
@@ -40,7 +33,6 @@ static var button_group := ButtonGroup.new()
 		button.disabled = is_locked
 		icon_lock.visible = is_locked
 		label_symbol.visible = not is_locked
-		solution_button.visible = not is_locked
 		button.mouse_default_cursor_shape = (
 			Control.CURSOR_FORBIDDEN if is_locked else Control.CURSOR_POINTING_HAND
 		)
@@ -56,7 +48,6 @@ var metadata: Metadata = null
 @onready var label_title: Label = %LabelTitle
 @onready var label_free: Label = %LabelFree
 @onready var button: Button = %Button
-@onready var solution_button: Button = %SolutionButton
 
 
 func _ready() -> void:
@@ -65,11 +56,10 @@ func _ready() -> void:
 	is_locked = is_locked
 	button.button_group = button_group
 	button.pressed.connect(open)
-	solution_button.pressed.connect(open.bind(true))
 
 
-func setup(metadata_path: String) -> void:
-	metadata = load(metadata_path)
+func setup(metadata: Metadata) -> void:
+	self.metadata = metadata
 	title = metadata.title
 	is_free = metadata.is_free
 	is_locked = not is_free
@@ -84,16 +74,8 @@ func setup(metadata_path: String) -> void:
 
 
 ## Makes this selected, pressing the child button node and emitting the pressed signal.
-func select(is_solution := false) -> void:
+func select() -> void:
 	button.set_pressed_no_signal(true)
-	var button_stylebox: StyleBoxFlat = button.get("theme_override_styles/pressed")
-	if is_solution:
-		button_stylebox.border_color.a = 1.0
-		button_stylebox.set_expand_margin_all(0)
-	else:
-		button_stylebox.border_color.a = 0.0
-		button_stylebox.set_expand_margin_all(SOLUTION_BORDER_WIDTH)
-		pressed.emit()
 
 
 func deselect() -> void:
@@ -106,16 +88,12 @@ func update(progress: Progress) -> void:
 	label_symbol.modulate.a = 1 if progress.state[metadata.id].completion == 1 else 0
 
 
-func open(is_solution := false) -> void:
-	var scene_file_paths := metadata.scene_file_paths.duplicate()
-	scene_file_paths.reverse()
-
-	for scene_file_path: String in metadata.scene_file_paths:
-		if is_solution:
-			scene_file_path = scene_file_path.replace(Paths.PRACTICES_PATH, Paths.SOLUTIONS_PATH)
-
+func open() -> void:
+	for scene_file_path in metadata.scene_file_paths:
+		scene_file_path = Paths.to_practice(scene_file_path)
 		if FileAccess.file_exists(scene_file_path):
 			EditorInterface.open_scene_from_path(scene_file_path)
-
-	if not is_solution:
-		pressed.emit()
+			await get_tree().process_frame
+			select()
+		break
+	button_group.pressed.emit(button)

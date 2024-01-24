@@ -19,10 +19,7 @@ static func setup(practice_base_path: String) -> void:
 	_practice_base_path = practice_base_path
 
 	var path_transformer := func(x: String) -> Dictionary:
-		return {
-			practice = x,
-			solution = x.replace(Paths.PRACTICES_PATH, Paths.SOLUTIONS_PATH),
-		}
+		return {practice = x, solution = Paths.to_solution(x)}
 
 	var file_exists_predicate := func(x: Dictionary) -> bool:
 		return FileAccess.file_exists(x.solution)
