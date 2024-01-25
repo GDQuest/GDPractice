@@ -11,6 +11,8 @@ const MetadataList := preload("../metadata/metadata_list.gd")
 
 const UI_SELECTABLE_PRACTICE_SCENE := preload("ui_selectable_practice.tscn")
 
+var button_group: ButtonGroup = null
+
 var build := Build.new()
 var metadata_list: MetadataList = load(Paths.SOLUTIONS_PATH.path_join("metadata_list.tres"))
 
@@ -21,17 +23,18 @@ var metadata_list: MetadataList = load(Paths.SOLUTIONS_PATH.path_join("metadata_
 
 
 func _ready() -> void:
+	button_group = ButtonGroup.new()
 	run_button.pressed.connect(run_practice)
 	reset_button.pressed.connect(reset_practice)
-	UISelectablePractice.button_group.pressed.connect(_on_ui_selectable_practice_pressed)
 	for metadata in metadata_list.metadatas:
 		var ui_selectable_practice = UI_SELECTABLE_PRACTICE_SCENE.instantiate()
+		ui_selectable_practice.setup(metadata, button_group)
 		list.add_child(ui_selectable_practice)
-		ui_selectable_practice.setup(metadata)
+		ui_selectable_practice.pressed.connect(_on_ui_selectable_practice_pressed)
 	update()
 
 
-func _on_ui_selectable_practice_pressed(_button: BaseButton) -> void:
+func _on_ui_selectable_practice_pressed() -> void:
 	for footer_button: Button in footer.get_children():
 		footer_button.disabled = false
 
@@ -44,7 +47,7 @@ func run_practice() -> void:
 
 func reset_practice() -> void:
 	var ui_selectable_practice: UISelectablePractice = (
-		UISelectablePractice.button_group.get_pressed_button().get_parent()
+		button_group.get_pressed_button().get_parent()
 	)
 
 	var db := DB.new()
@@ -60,7 +63,7 @@ func reset_practice() -> void:
 func get_practice_paths(index := -1) -> Array[String]:
 	var result: Array[String] = []
 	if index == -1:
-		index = UISelectablePractice.button_group.get_pressed_button().get_parent().get_index()
+		index = button_group.get_pressed_button().get_parent().get_index()
 	result.assign(
 		list.get_child(index).metadata.scene_file_paths.map(
 			func(x: String) -> String: return Paths.to_practice(x)

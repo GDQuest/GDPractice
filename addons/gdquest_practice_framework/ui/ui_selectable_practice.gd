@@ -2,13 +2,13 @@
 @tool
 extends Control
 
+signal pressed
+
 const Paths := preload("../paths.gd")
 const Progress := preload("../db/progress.gd")
 const Metadata := preload("../metadata/metadata.gd")
 
 const COLOR_DISABLED_TEXT := Color(0.51764708757401, 0.59607845544815, 0.74509805440903)
-
-static var button_group := ButtonGroup.new()
 
 @export var is_free := false:
 	set(value):
@@ -42,6 +42,7 @@ static var button_group := ButtonGroup.new()
 			label_title.remove_theme_color_override("font_color")
 
 var metadata: Metadata = null
+var button_group: ButtonGroup = null
 
 @onready var icon_lock: TextureRect = %IconLock
 @onready var label_symbol: Label = %LabelSymbol
@@ -57,13 +58,6 @@ func _ready() -> void:
 	button.button_group = button_group
 	button.pressed.connect(open)
 
-
-func setup(metadata: Metadata) -> void:
-	self.metadata = metadata
-	title = metadata.title
-	is_free = metadata.is_free()
-	is_locked = not is_free
-
 	if not Engine.is_editor_hint():
 		return
 
@@ -73,10 +67,18 @@ func setup(metadata: Metadata) -> void:
 		ThemeUtils.scale_font_size(label)
 
 
+func setup(metadata: Metadata, button_group: ButtonGroup) -> void:
+	self.metadata = metadata
+	self.button_group = button_group
+	title = metadata.title
+	is_free = metadata.is_free()
+	is_locked = not is_free
+
+
 ## Makes this selected, pressing the child button node and emitting the pressed signal.
 func select() -> void:
 	button.set_pressed_no_signal(true)
-	button_group.pressed.emit(button)
+	pressed.emit()
 
 
 func deselect() -> void:
@@ -97,4 +99,4 @@ func open() -> void:
 			await get_tree().process_frame
 			select()
 		break
-	button_group.pressed.emit(button)
+	pressed.emit()

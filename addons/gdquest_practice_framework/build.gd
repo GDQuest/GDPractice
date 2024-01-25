@@ -82,7 +82,7 @@ func _init() -> void:
 	if "--lesson-project" in user_args:
 		build_project("lesson", ["plug.gd", "makefile", ".import"])
 	if "--practices" in user_args:
-		build_practices(true)
+		build_practices("--enable-plugins" in user_args)
 	quit()
 
 
