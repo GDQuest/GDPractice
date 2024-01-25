@@ -3,7 +3,6 @@ extends Resource
 
 @export var title := &""
 @export var id := &""
-@export var is_free := false
 
 var scene_file_paths: Array[String] = []
 
@@ -19,3 +18,7 @@ func _get_property_list() -> Array[Dictionary]:
 			PROPERTY_USAGE_SCRIPT_VARIABLE | PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_EDITOR,
 		},
 	]
+
+
+func is_free() -> bool:
+	return not scene_file_paths.is_empty()

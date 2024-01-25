@@ -6,5 +6,4 @@
 script = ExtResource("1_bdy04")
 title = &"Bullet Spawn"
 id = &"bullet_spawn"
-is_free = true
-scene_file_paths = Array[String](["res://addons/gdquest_practice_framework/solutions/01.bullet/bullet_spawner.tscn"])
+scene_file_paths = Array[String](["res://practice_solutions/01.bullet/bullet_spawner.tscn"])

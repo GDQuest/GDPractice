@@ -61,7 +61,7 @@ func _ready() -> void:
 func setup(metadata: Metadata) -> void:
 	self.metadata = metadata
 	title = metadata.title
-	is_free = metadata.is_free
+	is_free = metadata.is_free()
 	is_locked = not is_free
 
 	if not Engine.is_editor_hint():

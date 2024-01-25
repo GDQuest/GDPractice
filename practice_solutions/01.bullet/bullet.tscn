@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://c6c3t31iabqkd"]
 
 [ext_resource type="Texture2D" uid="uid://bniyrxn3r2v8h" path="res://assets/ship.png" id="1_rad0k"]
-[ext_resource type="Script" path="res://addons/gdquest_practice_framework/solutions/01.bullet/bullet.gd" id="2_lwrnr"]
+[ext_resource type="Script" path="res://practice_solutions/01.bullet/bullet.gd" id="2_lwrnr"]
 
 [node name="Bullet" type="Sprite2D"]
 texture = ExtResource("1_rad0k")

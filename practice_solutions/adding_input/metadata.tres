@@ -6,5 +6,4 @@
 script = ExtResource("1_cok67")
 title = &"Adding Input"
 id = &"adding_input"
-is_free = true
-scene_file_paths = Array[String](["res://addons/gdquest_practice_framework/solutions/adding_input/adding_input.tscn"])
+scene_file_paths = Array[String](["res://practice_solutions/adding_input/adding_input.tscn"])

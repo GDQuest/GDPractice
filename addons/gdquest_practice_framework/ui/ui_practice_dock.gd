@@ -12,9 +12,7 @@ const MetadataList := preload("../metadata/metadata_list.gd")
 const UI_SELECTABLE_PRACTICE_SCENE := preload("ui_selectable_practice.tscn")
 
 var build := Build.new()
-var metadata_list: MetadataList = load(
-	"res://addons/gdquest_practice_framework/metadata/metadata_list.tres"
-)
+var metadata_list: MetadataList = load(Paths.SOLUTIONS_PATH.path_join("metadata_list.tres"))
 
 @onready var list: VBoxContainer = %List
 @onready var footer: HBoxContainer = %Footer

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://byxwnw6rqbvcl"]
 
 [ext_resource type="Texture2D" uid="uid://x18ctliprf48" path="res://shared/green_ship.png" id="1_sv48l"]
-[ext_resource type="Script" path="res://addons/gdquest_practice_framework/solutions/adding_timer/adding_timer.gd" id="2_1kv3b"]
+[ext_resource type="Script" path="res://practice_solutions/adding_timer/adding_timer.gd" id="2_1kv3b"]
 
 [node name="Sprite2D" type="Sprite2D"]
 position = Vector2(512, 512)

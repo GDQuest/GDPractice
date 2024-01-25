@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://c5vbwc37br2m5"]
 
-[ext_resource type="Script" path="res://addons/gdquest_practice_framework/solutions/01.bullet/bullet_spawner.gd" id="1_y5c21"]
+[ext_resource type="Script" path="res://practice_solutions/01.bullet/bullet_spawner.gd" id="1_y5c21"]
 
 [node name="BulletSpawner" type="Node2D"]
 position = Vector2(960, 540)

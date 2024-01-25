@@ -67,28 +67,105 @@ const Utils := preload("utils.gd")
 const Metadata := preload("metadata/metadata.gd")
 
 const DENTS := {"<": -1, ">": 1}
+const LOG_MESSAGE := "\t%s...%s"
+
+enum Continuation { STOP, CONTINUE }
 
 var regex_line := RegEx.create_from_string("^(\\h*)(.*)#\\h*(.*)$")
 var regex_shift := RegEx.create_from_string("^([<>]+)\\h*(.*)")
 
 
 func _init() -> void:
-	build_practices()
+	var user_args := OS.get_cmdline_user_args()
+	if "--practice-project" in user_args:
+		build_practice_project()
+	if "--practices" in user_args:
+		build_practices()
+	quit()
+
+
+func build_practice_project() -> void:
+	const RES := "res://"
+	const SOLUTION_SUFFIX := "_completed"
+	const PRACTICE_SUFFIX := "_practice"
+
+	var source_project_dir_path := ProjectSettings.globalize_path(RES).get_base_dir()
+	var source_solution_dir_path := ProjectSettings.globalize_path(Paths.SOLUTIONS_PATH)
+
+	var destination_project_dir_path := source_project_dir_path.replace(
+		SOLUTION_SUFFIX, PRACTICE_SUFFIX
+	)
+	if not destination_project_dir_path.ends_with(PRACTICE_SUFFIX):
+		destination_project_dir_path = "%s%s" % [destination_project_dir_path, PRACTICE_SUFFIX]
+
+	var plugin_dir_path: String = get_script().resource_path.get_base_dir()
+	var solution_dir_path := plugin_dir_path.path_join(Paths.SOLUTIONS_PATH.get_file())
+	var destination_plugin_dir_path := ProjectSettings.globalize_path(plugin_dir_path).replace(
+		source_project_dir_path, destination_project_dir_path
+	)
+
+	var predicate := func(x: String) -> bool: return not (
+		x.get_file() in ["plug.gd", "makefile"] or x.ends_with(".import")
+	)
+	var source_file_paths := Utils.fs_find().filter(predicate)
+	for source_file_path: String in source_file_paths:
+		source_file_path = ProjectSettings.globalize_path(source_file_path)
+		var destination_file_path := source_file_path.replace(
+			source_project_dir_path, destination_project_dir_path
+		)
+		if source_file_path.begins_with(source_solution_dir_path):
+			destination_file_path = source_file_path.replace(
+				source_project_dir_path, destination_plugin_dir_path
+			)
+		DirAccess.make_dir_recursive_absolute(destination_file_path.get_base_dir())
+		DirAccess.copy_absolute(source_file_path, destination_file_path)
+
+		var extension := source_file_path.get_extension()
+		var do_replace := (
+			destination_file_path == destination_plugin_dir_path.path_join("paths.gd")
+			or (
+				source_file_path.begins_with(source_solution_dir_path)
+				and extension in ["gd", "tscn", "tres"]
+			)
+		)
+		if do_replace:
+			var contents := FileAccess.get_file_as_string(destination_file_path)
+			contents = contents.replace(Paths.SOLUTIONS_PATH, solution_dir_path)
+			FileAccess.open(destination_file_path, FileAccess.WRITE).store_string(contents)
+	Utils.fs_remove_dir(
+		source_solution_dir_path.replace(source_project_dir_path, destination_project_dir_path)
+	)
+
+	var output := []
+	OS.execute(
+		"godot",
+		[
+			"--path",
+			destination_project_dir_path,
+			"--headless",
+			"--script",
+			plugin_dir_path.path_join("build.gd"),
+			"--",
+			"--practices"
+		],
+		output,
+		true
+	)
+	for line: String in output:
+		print_rich(line)
 
 
 func build_practices() -> void:
-	if "--script" in OS.get_cmdline_args():
-		for dir_name in DirAccess.get_directories_at(Paths.SOLUTIONS_PATH):
-			build_practice(dir_name)
-		quit()
+	for dir_name in DirAccess.get_directories_at(Paths.SOLUTIONS_PATH):
+		if build_practice(dir_name) == Continuation.STOP:
+			break
 
 
-func build_practice(dir_name: StringName, is_forced := false) -> void:
+func build_practice(dir_name: StringName, is_forced := false) -> Continuation:
 	print_rich("Building [b]%s[/b]..." % dir_name)
 	var solution_dir_path := Paths.SOLUTIONS_PATH.path_join(dir_name)
 	var solution_file_paths := Utils.fs_find("*", solution_dir_path)
 	var metadata_file_path := solution_dir_path.path_join("metadata.tres")
-	var log_message := "\t%s...%s"
 
 	var do_exit := false
 	if FileAccess.file_exists(metadata_file_path):
@@ -98,9 +175,8 @@ func build_practice(dir_name: StringName, is_forced := false) -> void:
 		do_exit = true
 
 	if do_exit:
-		print_rich(log_message % [metadata_file_path, "[color=red]FAIL[/color]"])
-		quit()
-		return
+		print_rich(LOG_MESSAGE % [metadata_file_path, "[color=red]FAIL[/color]"])
+		return Continuation.STOP
 
 	solution_file_paths.assign(
 		solution_file_paths.filter(
@@ -112,6 +188,9 @@ func build_practice(dir_name: StringName, is_forced := false) -> void:
 			)
 		)
 	)
+
+	if solution_file_paths.is_empty():
+		print_rich(LOG_MESSAGE % ["Nothing to do", "[color=orange]SKIP[/color]"])
 
 	var solution_diff_path := solution_dir_path.path_join("diff.gd")
 	var solution_diff: GDScript = null
@@ -132,7 +211,7 @@ func build_practice(dir_name: StringName, is_forced := false) -> void:
 			)
 			and not is_forced
 		):
-			print_rich(log_message % [practice_file_path, "[color=orange]SKIP[/color]"])
+			print_rich(LOG_MESSAGE % [practice_file_path, "[color=orange]SKIP[/color]"])
 			continue
 
 		DirAccess.make_dir_recursive_absolute(practice_file_path.get_base_dir())
@@ -144,11 +223,11 @@ func build_practice(dir_name: StringName, is_forced := false) -> void:
 				var practice_packed_scene := PackedScene.new()
 				practice_packed_scene.pack(solution_scene)
 				ResourceSaver.save(practice_packed_scene, practice_file_path)
-				print_rich(log_message % [solution_file_path, "[color=blue]DIFF[/color]"])
+				print_rich(LOG_MESSAGE % [solution_file_path, "[color=blue]DIFF[/color]"])
 
 		else:
 			DirAccess.copy_absolute(solution_file_path, practice_file_path)
-			print_rich(log_message % [practice_file_path, "[color=green]COPY[/color]"])
+			print_rich(LOG_MESSAGE % [practice_file_path, "[color=green]COPY[/color]"])
 
 		if extension in ["gd", "tscn", "tres"]:
 			var contents := FileAccess.get_file_as_string(practice_file_path)
@@ -156,7 +235,9 @@ func build_practice(dir_name: StringName, is_forced := false) -> void:
 				contents = _process_gd(contents)
 			contents = Paths.to_practice(contents)
 			FileAccess.open(practice_file_path, FileAccess.WRITE).store_string(contents)
-			print_rich(log_message % [practice_file_path, "[color=yellow]PROCESS[/color]"])
+			print_rich(LOG_MESSAGE % [practice_file_path, "[color=yellow]PROCESS[/color]"])
+
+	return Continuation.CONTINUE
 
 
 func _process_gd(contents: String) -> String:
