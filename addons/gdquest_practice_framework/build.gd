@@ -78,35 +78,35 @@ var regex_shift := RegEx.create_from_string("^([<>]+)\\h*(.*)")
 func _init() -> void:
 	var user_args := OS.get_cmdline_user_args()
 	if "--practice-project" in user_args:
-		build_practice_project()
+		build_project("practice", ["plug.gd", "makefile", ".import"])
+	if "--lesson-project" in user_args:
+		build_project("lesson", ["plug.gd", "makefile", ".import"])
 	if "--practices" in user_args:
-		build_practices()
+		build_practices(true)
 	quit()
 
 
-func build_practice_project() -> void:
-	const RES := "res://"
-	const SOLUTION_SUFFIX := "_completed"
-	const PRACTICE_SUFFIX := "_practice"
+func build_project(suffix: String, exclude: Array[String] = []) -> void:
+	const EXE := "godot"
 
-	var source_project_dir_path := ProjectSettings.globalize_path(RES).get_base_dir()
-	var source_solution_dir_path := ProjectSettings.globalize_path(Paths.SOLUTIONS_PATH)
-
-	var destination_project_dir_path := source_project_dir_path.replace(
-		SOLUTION_SUFFIX, PRACTICE_SUFFIX
-	)
-	if not destination_project_dir_path.ends_with(PRACTICE_SUFFIX):
-		destination_project_dir_path = "%s%s" % [destination_project_dir_path, PRACTICE_SUFFIX]
-
+	var lessons_dir_path := Paths.RES.path_join("lessons_reference")
 	var plugin_dir_path: String = get_script().resource_path.get_base_dir()
 	var solution_dir_path := plugin_dir_path.path_join(Paths.SOLUTIONS_PATH.get_file())
+
+	var source_project_dir_path := ProjectSettings.globalize_path(Paths.RES).get_base_dir()
+	var source_solution_dir_path := ProjectSettings.globalize_path(Paths.SOLUTIONS_PATH)
+	var destination_project_dir_path := "%s_%s" % [source_project_dir_path, suffix]
 	var destination_plugin_dir_path := ProjectSettings.globalize_path(plugin_dir_path).replace(
 		source_project_dir_path, destination_project_dir_path
 	)
 
-	var predicate := func(x: String) -> bool: return not (
-		x.get_file() in ["plug.gd", "makefile"] or x.ends_with(".import")
-	)
+	var predicate := func(p: String) -> bool:
+		return not (
+			(suffix == "lesson" and (p.begins_with(Paths.SOLUTIONS_PATH) or p.begins_with(plugin_dir_path)))
+			or p.begins_with(Paths.PRACTICES_PATH)
+			or p.begins_with(lessons_dir_path)
+			or exclude.any(func(e: String) -> bool: return (p.ends_with(e)))
+		)
 	var source_file_paths := Utils.fs_find().filter(predicate)
 	for source_file_path: String in source_file_paths:
 		source_file_path = ProjectSettings.globalize_path(source_file_path)
@@ -136,29 +136,41 @@ func build_practice_project() -> void:
 		source_solution_dir_path.replace(source_project_dir_path, destination_project_dir_path)
 	)
 
-	var output := []
-	OS.execute(
-		"godot",
-		[
-			"--path",
-			destination_project_dir_path,
-			"--headless",
-			"--script",
-			plugin_dir_path.path_join("build.gd"),
-			"--",
-			"--practices"
-		],
-		output,
-		true
-	)
-	for line: String in output:
-		print_rich(line)
+	var args := ["--path", destination_project_dir_path, "--headless"]
+	if suffix == "practice":
+		var output := []
+		OS.execute(
+			EXE,
+			args + ["--script", plugin_dir_path.path_join("build.gd"), "--", "--practices"],
+			output,
+			true
+		)
+		for line: String in output:
+			print_rich(line)
+	OS.execute(EXE, args + ["--editor", "--quit-after", 60])
 
 
-func build_practices() -> void:
+func build_practices(do_enable_plugins := false) -> void:
+	const PROJECT_FILE := "project.godot"
+	const SECTION := "editor_plugins"
+	const KEY := "enabled"
+	const CFG_FILE_NAME := "plugin.cfg"
+	const ADDONS_DIR_NAME := "addons"
+
+	var cfg := ConfigFile.new()
+	if do_enable_plugins:
+		cfg.load(PROJECT_FILE)
+		cfg.set_value(SECTION, KEY, PackedStringArray())
+		cfg.save(PROJECT_FILE)
+
 	for dir_name in DirAccess.get_directories_at(Paths.SOLUTIONS_PATH):
 		if build_practice(dir_name) == Continuation.STOP:
 			break
+
+	if do_enable_plugins:
+		var plugin_cfg_paths := Utils.fs_find(CFG_FILE_NAME, Paths.RES.path_join(ADDONS_DIR_NAME))
+		cfg.set_value(SECTION, KEY, PackedStringArray(plugin_cfg_paths))
+		cfg.save(PROJECT_FILE)
 
 
 func build_practice(dir_name: StringName, is_forced := false) -> Continuation:

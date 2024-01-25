@@ -76,6 +76,7 @@ func setup(metadata: Metadata) -> void:
 ## Makes this selected, pressing the child button node and emitting the pressed signal.
 func select() -> void:
 	button.set_pressed_no_signal(true)
+	button_group.pressed.emit(button)
 
 
 func deselect() -> void:
