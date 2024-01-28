@@ -1,6 +1,6 @@
-## Functions to process UI Theme properties. In particular, provides functions to scale theme values with the editor scale.
+## Provides functions to scale the theme resource and theme properties.
+## The editor scale is used to scale the theme.
 @tool
-class_name ThemeUtils
 extends RefCounted
 
 static var editor_scale := EditorInterface.get_editor_scale()

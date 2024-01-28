@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://addons/gdquest_practice_framework/ui/ui_practice_dock.gd" id="1_p3vi5"]
 
-[node name="GDQuestPractices" type="VBoxContainer"]
+[node name="GDQuest" type="VBoxContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

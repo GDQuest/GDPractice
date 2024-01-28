@@ -4,6 +4,7 @@ extends Control
 
 signal pressed
 
+const ThemeUtils := preload("res://addons/gdquest_practice_framework/utils/theme_utils.gd")
 const Paths := preload("../paths.gd")
 const Progress := preload("../db/progress.gd")
 const Metadata := preload("../metadata/metadata.gd")
@@ -43,6 +44,7 @@ const COLOR_DISABLED_TEXT := Color(0.51764708757401, 0.59607845544815, 0.7450980
 
 var metadata: Metadata = null
 var button_group: ButtonGroup = null
+
 
 @onready var icon_lock: TextureRect = %IconLock
 @onready var label_symbol: Label = %LabelSymbol
