@@ -132,10 +132,9 @@ func parse_command_line_arguments() -> void:
 	quit()
 
 
-func build_project(suffix: String, exclude: Array[String] = []) -> void:
+func build_project(suffix: String, exclude_slugs: Array[String] = []) -> void:
 	const EXE := "godot"
 
-	var lessons_dir_path := Paths.RES.path_join("lessons_reference")
 	var plugin_dir_path: String = get_script().resource_path.get_base_dir()
 	var solution_dir_path := plugin_dir_path.path_join(Paths.SOLUTIONS_PATH.get_file())
 
@@ -144,22 +143,26 @@ func build_project(suffix: String, exclude: Array[String] = []) -> void:
 	var destination_project_dir_path := "%s_%s" % [source_project_dir_path, suffix]
 	var destination_plugin_dir_path := ProjectSettings.globalize_path(plugin_dir_path).replace(
 		source_project_dir_path, destination_project_dir_path
-	)
-
-	var predicate := func(p: String) -> bool:
-		return not (
-			(suffix == "solutions" and (p.begins_with(Paths.SOLUTIONS_PATH) or p.begins_with(plugin_dir_path)))
-			or p.begins_with(Paths.PRACTICES_PATH)
-			or p.begins_with(lessons_dir_path)
-			or exclude.any(func(e: String) -> bool: return (p.ends_with(e)))
 		)
-	var source_file_paths := Utils.fs_find().filter(predicate)
+	var lessons_reference_dir_path := Paths.RES.path_join("lessons_reference")
+	var script_templates_dir_path = Paths.RES.path_join("script_templates")
+	var should_be_copied := func(path: String) -> bool:
+		var path_starts_to_exclude := [Paths.PRACTICES_PATH, script_templates_dir_path]
+		if suffix == "solutions":
+			path_starts_to_exclude.append(plugin_dir_path)
+		elif suffix == "workbook":
+			path_starts_to_exclude.append(lessons_reference_dir_path)
+		return not (
+			path_starts_to_exclude.any(func(path_start: String) -> bool: return path.begins_with(path_start))
+			or exclude_slugs.any(func(slug: String) -> bool: return (path.ends_with(slug)))
+		)
+	var source_file_paths := Utils.fs_find().filter(should_be_copied)
 	for source_file_path: String in source_file_paths:
 		source_file_path = ProjectSettings.globalize_path(source_file_path)
 		var destination_file_path := source_file_path.replace(
 			source_project_dir_path, destination_project_dir_path
 		)
-		if source_file_path.begins_with(source_solution_dir_path):
+		if suffix == "workbook" and source_file_path.begins_with(source_solution_dir_path):
 			destination_file_path = source_file_path.replace(
 				source_project_dir_path, destination_plugin_dir_path
 			)
@@ -178,12 +181,16 @@ func build_project(suffix: String, exclude: Array[String] = []) -> void:
 			var contents := FileAccess.get_file_as_string(destination_file_path)
 			contents = contents.replace(Paths.SOLUTIONS_PATH, solution_dir_path)
 			FileAccess.open(destination_file_path, FileAccess.WRITE).store_string(contents)
-	Utils.fs_remove_dir(
-		source_solution_dir_path.replace(source_project_dir_path, destination_project_dir_path)
-	)
-
-	# If generating the workbook project, generate practice files from solutions.
 	if suffix == "workbook":
+		Utils.fs_remove_dir(
+			source_solution_dir_path.replace(source_project_dir_path, destination_project_dir_path)
+		)
+
+	# If generating the workbook project, ensure lessons directory is present and generate practice files from solutions.
+	if suffix == "workbook":
+		if not DirAccess.dir_exists_absolute(destination_project_dir_path.path_join("lessons")):
+			DirAccess.make_dir_recursive_absolute(destination_project_dir_path.path_join("lessons"))
+
 		var args := ["--path", destination_project_dir_path, "--headless"]
 		var output := []
 		var return_code := OS.execute(
