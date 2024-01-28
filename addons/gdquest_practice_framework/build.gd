@@ -1,12 +1,14 @@
-#!/usr/bin/env -S godot --headless --script
-## Build script that converts solutions into practices. On Linux run with:
+## Build script that converts solutions into practices and optionally generates Godot project folders for course modules.
 ##
+## [b]Usage[/b]:
 ## [codeblock]
-## # might need to run:
-## chmod +x build.gd
-## ./build.gd
+## godot --headless --script addons/gdquest_practice_framework/build.gd -- arg1 arg2 ...
 ## [/codeblock]
 ##
+## Run with [code]--help[/code] to see the available arguments.
+##
+## [b]Generating practice starting files with the build script[/b]:
+## 
 ## The build script also processes practice code lines by replacing them with the given
 ## comments at the end of the line in [b]GDScript[/b] files.
 ##
@@ -55,10 +57,11 @@
 ##     generate_one_gem(cell)
 ## [/codeblock]
 ##
-## The build script [b]fails[/b] if there are solutions with no [code]metadata.tres[/code] file.[br]
-## [br]
-## [b]Note[/b] that:[br]
-## - Only-comment lines are also preserved in the practice.[br]
+## The build script [b]fails[/b] if there are solutions with no [code]metadata.tres[/code] file.
+## 
+## [b]Note[/b] that:
+##
+## - Only-comment lines are also preserved in the practice.
 ## - The special [code]<[/code] and [code]>[/code] symbols can be repeated multiple times.
 extends SceneTree
 
@@ -76,13 +79,56 @@ var regex_shift := RegEx.create_from_string("^([<>]+)\\h*(.*)")
 
 
 func _init() -> void:
+	parse_command_line_arguments()
+
+
+func parse_command_line_arguments() -> void:
+	const ARG_HELP := ["-h", "--help"]
+	const ARG_GENERATE_PROJECT_WORKBOOK := ["-w", "--generate-project-workbook"]
+	const ARG_GENERATE_PROJECT_SOLUTIONS := ["-s", "--generate-project-solutions"]
+	const ARG_PRACTICES := ["-p", "--generate-practices"]
+	var supported_args := [ARG_GENERATE_PROJECT_WORKBOOK, ARG_GENERATE_PROJECT_SOLUTIONS, ARG_PRACTICES]
+	var HELP_MESSAGE := "\n".join([
+		"""Build script that converts solutions into practices and optionally generates Godot project folders for course modules.
+
+	Note: The script must be run from the root folder of the Godot project.
+
+	Usage:
+
+	[color=yellow]godot --headless --script addons/gdquest_practice_framework/build.gd -- arg1 arg2 ...[/color]
+
+
+	Arguments:
+
+	[color=yellow]%s[/color] - Display this help message.
+	[color=yellow]%s[/color] - Generates a Godot project folder for the practice module.
+	[color=yellow]%s[/color] - Generates a Godot project folder for the lesson module and practices start files.
+	[color=yellow]%s[/color] - Generates practice files from solutions within this project (for testing).
+	""" % [
+		"/".join(ARG_HELP),
+		"/".join(ARG_GENERATE_PROJECT_WORKBOOK),
+		"/".join(ARG_GENERATE_PROJECT_SOLUTIONS),
+		"/".join(ARG_PRACTICES),
+	]])
+
 	var user_args := OS.get_cmdline_user_args()
-	if "--practice-project" in user_args:
-		build_project("practice", ["plug.gd", "makefile", ".import"])
-	if "--lesson-project" in user_args:
-		build_project("lesson", ["plug.gd", "makefile", ".import"])
-	if "--practices" in user_args:
-		build_practices("--enable-plugins" in user_args)
+	for arg in ARG_HELP:
+		if arg in user_args:
+			print_rich(HELP_MESSAGE)
+			quit()
+			return
+
+	for arg in user_args:
+		if arg in ARG_GENERATE_PROJECT_WORKBOOK:
+			build_project("workbook", ["plug.gd", "makefile", ".import"])
+		elif arg in ARG_GENERATE_PROJECT_SOLUTIONS:
+			build_project("solutions", ["plug.gd", "makefile", ".import"])
+		elif arg in ARG_PRACTICES:
+			var enable_plugins := "--enable-plugins" in user_args
+			build_practices(enable_plugins)
+		else:
+			print_rich("[color=red]ERROR: Unknown command-line argument '%s' (supported arguments: %s). Skipping[/color]" % [arg, supported_args])
+	
 	quit()
 
 
@@ -102,7 +148,7 @@ func build_project(suffix: String, exclude: Array[String] = []) -> void:
 
 	var predicate := func(p: String) -> bool:
 		return not (
-			(suffix == "lesson" and (p.begins_with(Paths.SOLUTIONS_PATH) or p.begins_with(plugin_dir_path)))
+			(suffix == "solutions" and (p.begins_with(Paths.SOLUTIONS_PATH) or p.begins_with(plugin_dir_path)))
 			or p.begins_with(Paths.PRACTICES_PATH)
 			or p.begins_with(lessons_dir_path)
 			or exclude.any(func(e: String) -> bool: return (p.ends_with(e)))
@@ -136,18 +182,22 @@ func build_project(suffix: String, exclude: Array[String] = []) -> void:
 		source_solution_dir_path.replace(source_project_dir_path, destination_project_dir_path)
 	)
 
-	var args := ["--path", destination_project_dir_path, "--headless"]
-	if suffix == "practice":
+	# If generating the workbook project, generate practice files from solutions.
+	if suffix == "workbook":
+		var args := ["--path", destination_project_dir_path, "--headless"]
 		var output := []
-		OS.execute(
+		var return_code := OS.execute(
 			EXE,
-			args + ["--script", plugin_dir_path.path_join("build.gd"), "--", "--practices"],
+			args + ["--script", plugin_dir_path.path_join("build.gd"), "--", "--generate-practices"],
 			output,
 			true
 		)
+		const RETURN_CODE_NOT_FOUND := 127
+		if return_code == RETURN_CODE_NOT_FOUND:
+			print_rich("[color=red]ERROR: Godot 4 executable expected at '%s' but not found. Aborting.[/color]" % EXE)
+			return
 		for line: String in output:
 			print_rich(line)
-	OS.execute(EXE, args + ["--editor", "--quit-after", 60])
 
 
 func build_practices(do_enable_plugins := false) -> void:
@@ -227,6 +277,7 @@ func build_practice(dir_name: StringName, is_forced := false) -> Continuation:
 			continue
 
 		DirAccess.make_dir_recursive_absolute(practice_file_path.get_base_dir())
+		var was_copied := false
 		if extension == "tscn" and solution_diff != null:
 			var solution_scene: Node = load(solution_file_path).instantiate()
 			var func_name := solution_file_path.get_file().get_basename()
@@ -235,9 +286,12 @@ func build_practice(dir_name: StringName, is_forced := false) -> Continuation:
 				var practice_packed_scene := PackedScene.new()
 				practice_packed_scene.pack(solution_scene)
 				ResourceSaver.save(practice_packed_scene, practice_file_path)
+				was_copied = true
 				print_rich(LOG_MESSAGE % [solution_file_path, "[color=blue]DIFF[/color]"])
+			else:
+				print_rich("[color=red]ERROR: Found diff.gd script for %s, and expected a function named %s, but it was not found. Copying the practice scene as-is.[/color]" % [solution_file_path, func_name])
 
-		else:
+		if not was_copied:
 			DirAccess.copy_absolute(solution_file_path, practice_file_path)
 			print_rich(LOG_MESSAGE % [practice_file_path, "[color=green]COPY[/color]"])
 
