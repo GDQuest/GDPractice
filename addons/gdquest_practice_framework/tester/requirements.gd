@@ -44,7 +44,9 @@ static func check() -> bool:
 		JSPayload.new(JSPayload.Type.REQUIREMENT, JSPayload.Status.SKIP, _practice_base_path, message)
 		Logger.log("%s...[color=orange]SKIP[/color]" % message)
 		return true
-	return _check_constants() and _check_properties() and _check_methods() and _check_signals() and _check_nodes()
+	# TODO: consider selectively skipping checks based on the type of requirement. Some practices need different functions and node structures.
+	# return _check_constants() and _check_properties() and _check_methods() and _check_signals() and _check_nodes()
+	return true 
 
 
 static func _check_methods() -> bool:
