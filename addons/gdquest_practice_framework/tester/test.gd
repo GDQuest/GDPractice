@@ -12,7 +12,7 @@ const COMMENT_REGEX := "#.*$"
 
 ## Used to store [b]practice[/b] and [b]solution[/b] as well as any needed extra data for
 ## testing with the framework. It needs to be populated before use.
-var _test_space: Array[Dictionary] = []
+var _test_space := []
 
 var _practice_base_path := ""
 
@@ -114,17 +114,18 @@ func _is_code_line_match(target_lines: Array) -> bool:
 	return false
 
 
-## Retruns [code]true[/code] if the [param fail_predicate] [Callable] is [code]true[/code] for all
-## pairs of consecutive items in [member _test_space]. Otherwise it returns [code]false[/code]. [br]
-## [br]
-## Parameters: [br]
-## - [param fail_predicate] is a [Callable] that expects a pair of parameters fed from
+## Retruns [code]true[/code] if the [param success_predicate] [Callable] returns [code]true[/code] for all
+## pairs of consecutive items in [member _test_space]. Otherwise it returns [code]false[/code].
+## 
+## Parameters:
+##
+## - [param success_predicate] is a [Callable] that expects a pair of parameters fed from
 ## [member _test_space].
-func _is_sliding_window_pass(fail_predicate: Callable) -> bool:
+func _is_sliding_window_pass(success_predicate: Callable) -> bool:
 	var result := true
-	var x: Dictionary = _test_space[0]
+	var x = _test_space[0]
 	for y in _test_space.slice(1):
-		if fail_predicate.call(x, y):
+		if not success_predicate.call(x, y):
 			result = false
 			break
 		x = y
