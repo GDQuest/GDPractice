@@ -5,22 +5,22 @@
 [ext_resource type="FontFile" uid="uid://deeixt6cs64ak" path="res://addons/gdquest_practice_framework/ui/assets/fonts/Inter-SemiBold.ttf" id="2_7q0co"]
 [ext_resource type="FontFile" uid="uid://btiybsu6acuy7" path="res://addons/gdquest_practice_framework/ui/assets/fonts/Montserrat-Bold.ttf" id="3_bbmgt"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jleb3"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kgui7"]
 bg_color = Color(0.0745098, 0.0352941, 0.14902, 1)
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.207843, 0.101961, 0.384314, 1)
+border_color = Color(0.552941, 0.0980392, 0.843137, 1)
 corner_radius_top_right = 2
 corner_radius_bottom_right = 2
 anti_aliasing = false
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2hl6e"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pwgsg"]
 bg_color = Color(0.0745098, 0.0352941, 0.14902, 1)
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.207843, 0.101961, 0.384314, 1)
+border_color = Color(0.552941, 0.0980392, 0.843137, 1)
 corner_radius_top_right = 2
 corner_radius_bottom_right = 2
 anti_aliasing = false
@@ -151,8 +151,8 @@ anti_aliasing = false
 default_font = ExtResource("1_3qvk3")
 default_font_size = 14
 ButtonPractice/base_type = &"Button"
-ButtonPractice/styles/focus = SubResource("StyleBoxFlat_jleb3")
-ButtonPractice/styles/hover = SubResource("StyleBoxFlat_2hl6e")
+ButtonPractice/styles/focus = SubResource("StyleBoxFlat_kgui7")
+ButtonPractice/styles/hover = SubResource("StyleBoxFlat_pwgsg")
 ButtonPractice/styles/normal = SubResource("StyleBoxFlat_jf6gu")
 ButtonPractice/styles/pressed = SubResource("StyleBoxFlat_mq11r")
 ButtonReset/base_type = &"Button"

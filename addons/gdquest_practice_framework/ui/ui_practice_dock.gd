@@ -29,7 +29,7 @@ func _ready() -> void:
 			ui_selectable_practice.setup(metadata, module_idx, practice_idx)
 	set_module_name()
 	update()
-	
+
 	gdquest_logo.pressed.connect(OS.shell_open.bind("https://www.gdquest.com/"))
 
 	if not Engine.is_editor_hint() or EditorInterface.get_edited_scene_root() == self:
