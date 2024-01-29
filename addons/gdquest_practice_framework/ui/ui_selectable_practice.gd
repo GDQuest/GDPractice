@@ -38,10 +38,10 @@ func _ready() -> void:
 	reset_button.pressed.connect(reset_practice)
 
 
-func setup(metadata: Metadata, module_idx: int, practice_idx: int) -> void:
+func setup(metadata: Metadata) -> void:
 	self.metadata = metadata
 	label_title.text = metadata.title
-	label_item.text = ITEM_FORMAT % [module_idx + 1, practice_idx + 1]
+	label_item.text = ITEM_FORMAT % [metadata.lesson_number, metadata.practice_number]
 
 
 ## Makes this selected, pressing the child button node and emitting the pressed signal.

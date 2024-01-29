@@ -21,12 +21,10 @@ var metadata_list: MetadataList = load(Paths.SOLUTIONS_PATH.path_join("metadata_
 
 
 func _ready() -> void:
-	for module_idx in range(metadata_list.metadatas.size()):
-		for practice_idx in range(metadata_list.metadatas[module_idx].size()):
-			var metadata: Metadata = metadata_list.metadatas[module_idx][practice_idx]
-			var ui_selectable_practice = UI_SELECTABLE_PRACTICE_SCENE.instantiate()
-			list.add_child(ui_selectable_practice)
-			ui_selectable_practice.setup(metadata, module_idx, practice_idx)
+	for metadata: Metadata in metadata_list.metadatas:
+		var ui_selectable_practice = UI_SELECTABLE_PRACTICE_SCENE.instantiate()
+		list.add_child(ui_selectable_practice)
+		ui_selectable_practice.setup(metadata)
 	set_module_name()
 	update()
 

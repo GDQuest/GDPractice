@@ -6,5 +6,6 @@
 script = ExtResource("1_bdy04")
 title = &"Bullet Spawn"
 id = &"bullet_spawn"
-lesson_number = 1
+lesson_number = 2
+practice_number = 1
 scene_file_paths = Array[String](["res://practice_solutions/01.bullet/bullet_spawner.tscn"])

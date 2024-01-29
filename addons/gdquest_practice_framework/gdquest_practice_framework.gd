@@ -25,6 +25,7 @@ func _exit_tree() -> void:
 	remove_autoload_singleton("Tester")
 	scene_changed.disconnect(ui_practice_dock.select_practice)
 	remove_control_from_docks(ui_practice_dock)
+	ui_practice_dock.queue_free()
 
 
 func add_templates() -> void:

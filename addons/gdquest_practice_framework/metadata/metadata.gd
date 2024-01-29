@@ -4,6 +4,7 @@ extends Resource
 @export var title := &""
 @export var id := &""
 @export var lesson_number := -1
+@export var practice_number := -1
 
 var scene_file_paths: Array[String] = []
 

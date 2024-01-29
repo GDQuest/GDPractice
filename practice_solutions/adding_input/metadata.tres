@@ -7,4 +7,5 @@ script = ExtResource("1_cok67")
 title = &"Adding Input"
 id = &"adding_input"
 lesson_number = 2
+practice_number = 2
 scene_file_paths = Array[String](["res://practice_solutions/adding_input/adding_input.tscn"])
