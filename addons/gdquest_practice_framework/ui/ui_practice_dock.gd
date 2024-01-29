@@ -17,6 +17,7 @@ var metadata_list: MetadataList = load(Paths.SOLUTIONS_PATH.path_join("metadata_
 
 @onready var list: VBoxContainer = %List
 @onready var module_labels: Array[Label] = [%LabelModuleNumber, %LabelModuleName]
+@onready var gdquest_logo: BaseButton = %GDQuestLogo
 
 
 func _ready() -> void:
@@ -28,10 +29,13 @@ func _ready() -> void:
 			ui_selectable_practice.setup(metadata, module_idx, practice_idx)
 	set_module_name()
 	update()
+	
+	gdquest_logo.pressed.connect(OS.shell_open.bind("https://www.gdquest.com/"))
 
 	if not Engine.is_editor_hint() or EditorInterface.get_edited_scene_root() == self:
 		return
 	theme = ThemeUtils.generate_scaled_theme(theme)
+	gdquest_logo.custom_minimum_size *= EditorInterface.get_editor_scale()
 
 
 func get_practice_index(path: String) -> int:

@@ -19,19 +19,26 @@ theme_override_constants/separation = 0
 
 [node name="PanelContainerHeader" type="PanelContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+mouse_filter = 2
 theme_type_variation = &"PanelContainerHeader"
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/PanelContainerHeader"]
 layout_mode = 2
+mouse_filter = 2
 theme_type_variation = &"MarginContainerHeader"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/PanelContainerHeader/MarginContainer"]
 layout_mode = 2
+mouse_filter = 2
 theme_type_variation = &"HBoxContainerHeader"
 
-[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/PanelContainerHeader/MarginContainer/HBoxContainer"]
+[node name="GDQuestLogo" type="TextureButton" parent="MarginContainer/VBoxContainer/PanelContainerHeader/MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(22, 22)
 layout_mode = 2
-texture = ExtResource("3_m6wos")
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("3_m6wos")
+stretch_mode = 5
 
 [node name="LabelTitle" type="Label" parent="MarginContainer/VBoxContainer/PanelContainerHeader/MarginContainer/HBoxContainer"]
 layout_mode = 2

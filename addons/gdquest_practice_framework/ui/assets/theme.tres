@@ -149,6 +149,7 @@ anti_aliasing = false
 
 [resource]
 default_font = ExtResource("1_3qvk3")
+default_font_size = 14
 ButtonPractice/base_type = &"Button"
 ButtonPractice/styles/focus = SubResource("StyleBoxFlat_jleb3")
 ButtonPractice/styles/hover = SubResource("StyleBoxFlat_2hl6e")
@@ -181,6 +182,8 @@ LabelModuleNumber/base_type = &"Label"
 LabelModuleNumber/colors/font_color = Color(1, 0.835294, 0, 1)
 LabelModuleNumber/font_sizes/font_size = 12
 LabelModuleNumber/fonts/font = ExtResource("2_7q0co")
+LabelPracticeTitle/base_type = &"Label"
+LabelPracticeTitle/font_sizes/font_size = 16
 LabelTitle/base_type = &"Label"
 LabelTitle/font_sizes/font_size = 14
 LabelTitle/fonts/font = ExtResource("3_bbmgt")

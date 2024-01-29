@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://cntr4eqyhedci" path="res://addons/gdquest_practice_framework/ui/assets/reset_button_icon.svg" id="3_br2dx"]
 [ext_resource type="Texture2D" uid="uid://cjrd8lw4g0wi" path="res://addons/gdquest_practice_framework/ui/assets/checkbox_empty.svg" id="3_u2byc"]
 
-[sub_resource type="ButtonGroup" id="ButtonGroup_hk27q"]
+[sub_resource type="ButtonGroup" id="ButtonGroup_h1lf7"]
 
 [node name="UISelectablePractice" type="MarginContainer"]
 custom_minimum_size = Vector2(256, 0)
@@ -19,7 +19,7 @@ layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_type_variation = &"ButtonPractice"
 toggle_mode = true
-button_group = SubResource("ButtonGroup_hk27q")
+button_group = SubResource("ButtonGroup_h1lf7")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 2
@@ -51,7 +51,7 @@ text = "L0.P0"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 20
+theme_type_variation = &"LabelPracticeTitle"
 text = "Title"
 
 [node name="ResetButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
