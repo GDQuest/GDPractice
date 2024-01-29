@@ -77,7 +77,6 @@ func update() -> void:
 func set_module_name() -> void:
 	const SUFFIX := "(Workbook)"
 	var project_name: String = ProjectSettings.get_setting("application/config/name")
-	project_name = "M4.Test Book (Workbook)"
 	if not project_name.is_empty():
 		var module_info := project_name.replace(SUFFIX, "").strip_edges().split(".")
 		var module_info_size := module_info.size()
