@@ -29,6 +29,7 @@ var metadata: Metadata = null
 @onready var reset_button: Button = %ResetButton
 @onready var run_button: Button = %RunButton
 @onready var icon_checkbox: TextureRect = %IconCheckbox
+@onready var run_button_container: VBoxContainer = %RunButtonContainer
 
 
 func _ready() -> void:
@@ -49,14 +50,14 @@ func select() -> void:
 	button.set_pressed_no_signal(true)
 	theme_type_variation = SELECTED_VARIATION
 	reset_button.visible = true
-	run_button.visible = true
+	run_button_container.visible = true
 
 
 func deselect() -> void:
 	button.set_pressed_no_signal(false)
 	theme_type_variation = DEFAULT_VARIATION
 	reset_button.visible = false
-	run_button.visible = false
+	run_button_container.visible = false
 
 
 func update(progress: Progress) -> void:

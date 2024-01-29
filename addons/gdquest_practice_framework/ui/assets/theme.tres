@@ -222,3 +222,5 @@ PanelContainerPractice/base_type = &"PanelContainer"
 PanelContainerPractice/styles/panel = SubResource("StyleBoxFlat_jpatc")
 PanelContainerPractices/base_type = &"PanelContainer"
 PanelContainerPractices/styles/panel = SubResource("StyleBoxFlat_wkr1x")
+RichTextLabel/fonts/bold_font = ExtResource("1_a0p2f")
+RichTextLabel/fonts/normal_font = ExtResource("1_3qvk3")

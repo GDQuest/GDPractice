@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://cntr4eqyhedci" path="res://addons/gdquest_practice_framework/ui/assets/reset_button_icon.svg" id="3_br2dx"]
 [ext_resource type="Texture2D" uid="uid://cjrd8lw4g0wi" path="res://addons/gdquest_practice_framework/ui/assets/checkbox_empty.svg" id="3_u2byc"]
 
-[sub_resource type="ButtonGroup" id="ButtonGroup_0wct4"]
+[sub_resource type="ButtonGroup" id="ButtonGroup_ayxon"]
 
 [node name="UISelectablePractice" type="MarginContainer"]
 custom_minimum_size = Vector2(256, 0)
@@ -24,7 +24,7 @@ layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_type_variation = &"ButtonPractice"
 toggle_mode = true
-button_group = SubResource("ButtonGroup_0wct4")
+button_group = SubResource("ButtonGroup_ayxon")
 
 [node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
 layout_mode = 2
@@ -53,12 +53,13 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"LabelPracticeTitle"
 text = "Title"
+autowrap_mode = 2
 
 [node name="ResetButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 size_flags_vertical = 4
+mouse_default_cursor_shape = 2
 theme_type_variation = &"ButtonReset"
 text = "RESET"
 icon = ExtResource("3_br2dx")
@@ -76,9 +77,20 @@ texture = ExtResource("3_u2byc")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="RunButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer"]
+[node name="RunButtonContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="RunButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/RunButtonContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_default_cursor_shape = 2
 theme_type_variation = &"ButtonRun"
 text = "RUN"
+
+[node name="ButtonShadowSpacer" type="Control" parent="PanelContainer/MarginContainer/VBoxContainer/RunButtonContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
