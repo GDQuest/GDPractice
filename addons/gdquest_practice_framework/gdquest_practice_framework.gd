@@ -16,18 +16,20 @@ func _enter_tree() -> void:
 	scene_changed.connect(ui_practice_dock.select_practice)
 	add_control_to_dock(DOCK_SLOT_RIGHT_UL, ui_practice_dock)
 	add_autoload_singleton("Tester", "tester/tester.tscn")
-	add_templates()
+	# Removed for now because this should not happen to the user's project. It's a tool for teachers creating practices.
+	# add_templates()
 
 
 func _exit_tree() -> void:
 	editor_run_bar.stop_pressed.disconnect(ui_practice_dock.update)
-	remove_templates()
+	# remove_templates()
 	remove_autoload_singleton("Tester")
 	scene_changed.disconnect(ui_practice_dock.select_practice)
 	remove_control_from_docks(ui_practice_dock)
 	ui_practice_dock.queue_free()
 
 
+## Copies practice template scripts to the project root directory.
 func add_templates() -> void:
 	var plugin_dir_path: String = get_script().resource_path.get_base_dir()
 	var plugin_template_dir_path := plugin_dir_path.path_join(TEMPLATES_DIR)
@@ -48,6 +50,7 @@ func add_templates() -> void:
 		DirAccess.copy_absolute(plugin_template_file_path, root_template_file_path)
 
 
+## Removes practice template scripts from the project.
 func remove_templates() -> void:
 	var templates_base_dir_path := ROOT_PATH.path_join(TEMPLATES_DIR.get_base_dir())
 	Utils.fs_remove_dir(ROOT_PATH.path_join(TEMPLATES_DIR))
