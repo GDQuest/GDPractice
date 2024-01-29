@@ -1,5 +1,5 @@
 @tool
-extends VBoxContainer
+extends PanelContainer
 
 const UISelectablePractice := preload("ui_selectable_practice.gd")
 
@@ -8,68 +8,30 @@ const Build := preload("../build.gd")
 const Paths := preload("../paths.gd")
 const Metadata := preload("../metadata/metadata.gd")
 const MetadataList := preload("../metadata/metadata_list.gd")
+const ThemeUtils := preload("../utils/theme_utils.gd")
 
 const UI_SELECTABLE_PRACTICE_SCENE := preload("ui_selectable_practice.tscn")
-
-var button_group: ButtonGroup = null
 
 var build := Build.new()
 var metadata_list: MetadataList = load(Paths.SOLUTIONS_PATH.path_join("metadata_list.tres"))
 
 @onready var list: VBoxContainer = %List
-@onready var footer: HBoxContainer = %Footer
-@onready var run_button: Button = %RunButton
-@onready var reset_button: Button = %ResetButton
+@onready var module_labels: Array[Label] = [%LabelModuleNumber, %LabelModuleName]
 
 
 func _ready() -> void:
-	button_group = ButtonGroup.new()
-	run_button.pressed.connect(run_practice)
-	reset_button.pressed.connect(reset_practice)
-	for metadata in metadata_list.metadatas:
-		var ui_selectable_practice = UI_SELECTABLE_PRACTICE_SCENE.instantiate()
-		ui_selectable_practice.setup(metadata, button_group)
-		list.add_child(ui_selectable_practice)
-		ui_selectable_practice.pressed.connect(_on_ui_selectable_practice_pressed)
+	for module_idx in range(metadata_list.metadatas.size()):
+		for practice_idx in range(metadata_list.metadatas[module_idx].size()):
+			var metadata: Metadata = metadata_list.metadatas[module_idx][practice_idx]
+			var ui_selectable_practice = UI_SELECTABLE_PRACTICE_SCENE.instantiate()
+			list.add_child(ui_selectable_practice)
+			ui_selectable_practice.setup(metadata, module_idx, practice_idx)
+	set_module_name()
 	update()
 
-
-func _on_ui_selectable_practice_pressed() -> void:
-	for footer_button: Button in footer.get_children():
-		footer_button.disabled = false
-
-
-func run_practice() -> void:
-	for practice_path: String in get_practice_paths():
-		EditorInterface.play_custom_scene(practice_path)
-		break
-
-
-func reset_practice() -> void:
-	var ui_selectable_practice: UISelectablePractice = (
-		button_group.get_pressed_button().get_parent()
-	)
-
-	var db := DB.new()
-	db.progress.state[ui_selectable_practice.metadata.id].completion = 0
-	db.save()
-	ui_selectable_practice.update(db.progress)
-
-	var metadata_path := metadata_list.metadatas[ui_selectable_practice.get_index()].resource_path
-	var solution_dir_name := metadata_path.get_base_dir().get_file()
-	build.build_practice(solution_dir_name, true)
-
-
-func get_practice_paths(index := -1) -> Array[String]:
-	var result: Array[String] = []
-	if index == -1:
-		index = button_group.get_pressed_button().get_parent().get_index()
-	result.assign(
-		list.get_child(index).metadata.scene_file_paths.map(
-			func(x: String) -> String: return Paths.to_practice(x)
-		)
-	)
-	return result
+	if not Engine.is_editor_hint() or EditorInterface.get_edited_scene_root() == self:
+		return
+	theme = ThemeUtils.generate_scaled_theme(theme)
 
 
 func get_practice_index(path: String) -> int:
@@ -80,7 +42,10 @@ func get_practice_index(path: String) -> int:
 		var metadata: Metadata = load(path.get_base_dir().path_join("metadata.tres"))
 		for scene_file_path in metadata.scene_file_paths:
 			if path == scene_file_path:
-				result = metadata_list.metadatas.find(metadata)
+				for idx in range(list.get_child_count()):
+					if metadata == list.get_child(idx).metadata:
+						result = idx
+						break
 			break
 	return result
 
@@ -98,11 +63,22 @@ func deselect() -> void:
 	for ui_selectable_practice in list.get_children():
 		ui_selectable_practice.deselect()
 
-	for footer_button: Button in footer.get_children():
-		footer_button.disabled = true
-
 
 func update() -> void:
 	var db := DB.new()
 	for ui_selectable_practice in list.get_children():
 		ui_selectable_practice.update(db.progress)
+
+
+func set_module_name() -> void:
+	const SUFFIX := "(Workbook)"
+	var project_name: String = ProjectSettings.get_setting("application/config/name")
+	project_name = "M4.Test Book (Workbook)"
+	if not project_name.is_empty():
+		var module_info := project_name.replace(SUFFIX, "").strip_edges().split(".")
+		var module_info_size := module_info.size()
+		if module_info_size != module_labels.size():
+			return
+
+		for idx in range(module_info_size):
+			module_labels[idx].text = ("%s." % module_info[idx]) if idx == 0 else module_info[idx]

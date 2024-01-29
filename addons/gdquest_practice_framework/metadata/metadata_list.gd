@@ -1,3 +1,3 @@
 extends Resource
 
-@export var metadatas: Array[Resource] = []
+@export var metadatas: Array[Array] = []

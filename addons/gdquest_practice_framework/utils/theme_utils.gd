@@ -11,6 +11,7 @@ static var editor_scale := EditorInterface.get_editor_scale()
 static func scale_font_size(text_node: Node) -> void:
 	var title_font_size: int = text_node.get_theme_font_size("font_size")
 	text_node.add_theme_font_size_override("font_size", title_font_size * editor_scale)
+	print(title_font_size * editor_scale)
 
 
 ## Gets and scales the margins of the input margin_container using the editor scale.

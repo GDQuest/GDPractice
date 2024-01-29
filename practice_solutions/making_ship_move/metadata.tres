@@ -6,4 +6,5 @@
 script = ExtResource("1_8jkvy")
 title = &"Making Ship Move"
 id = &"making_ship_move"
+lesson_number = 2
 scene_file_paths = Array[String](["res://practice_solutions/making_ship_move/making_ship_move.tscn"])
