@@ -35,7 +35,8 @@ static func setup(practice_base_path: String) -> void:
 			.filter(file_exists_predicate)
 			.map(load_transformer)
 		)
-	Logger.log("[b]Requirements...[/b]")
+	# TODO: consider readding along with the commented code in the check() function.
+	# Logger.log("[b]Requirements...[/b]")
 
 
 static func check() -> bool:

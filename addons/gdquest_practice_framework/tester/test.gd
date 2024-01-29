@@ -46,16 +46,16 @@ func setup(practice: Node, solution: Node) -> void:
 	_practice_code = _preprocess_practice_code(_practice_script)
 
 	Logger.add_separator()
-	Logger.log("[b]Tests...[/b]")
+	Logger.log("[b]Testing the practice...[/b]")
 	await _setup_state()
 
 	var message := "Setting practice <=> solution state"
 	JSPayload.new(JSPayload.Type.TEST, JSPayload.Status.DONE, _practice_base_path, message)
-	Logger.log("\t%s...[color=green]DONE[/color]" % message)
+	# Logger.log("\t%s...[color=green]DONE[/color]" % message)
 	await _setup_populate_test_space()
 	message = "Populating test space"
 	JSPayload.new(JSPayload.Type.TEST, JSPayload.Status.DONE, _practice_base_path, message)
-	Logger.log("\t%s...[color=green]DONE[/color]" % message)
+	# Logger.log("\t%s...[color=green]DONE[/color]" % message)
 
 
 ## Runs all functions with names that begin with [constant PREFIX].
@@ -67,20 +67,20 @@ func run() -> int:
 		var hint: String = await call(d.name)
 		Logger.log(
 			(
-				"\tTesting %s...%s"
+				"\n%s: %s"
 				% [
-					d.name.trim_prefix(PREFIX).capitalize(),
 					(
 						"[color=%s]%s[/color]"
-						% (["green", "PASS"] if hint.is_empty() else ["red", "FAIL"])
-					)
+						% (["green", "PASSED"] if hint.is_empty() else ["orange", "NOT PASSED"])
+					),
+					d.name.trim_prefix(PREFIX).capitalize(),
 				]
 			)
 		)
 		if not hint.is_empty():
 			result = 0
 			JSPayload.new(JSPayload.Type.TEST, JSPayload.Status.FAIL, _practice_base_path, hint)
-			Logger.log("\t\t%s" % hint)
+			Logger.log("[i]%s[/i]" % hint)
 	return result
 
 

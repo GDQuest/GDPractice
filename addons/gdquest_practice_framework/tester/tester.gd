@@ -110,7 +110,7 @@ func _restore_from_test() -> void:
 func _check_practice() -> void:
 	var message: String = _practice_info.dir_name.capitalize()
 	JSPayload.new(JSPayload.Type.TESTER, JSPayload.Status.TITLE, _practice_info.base_path, message)
-	Logger.log_title("Checking...\n[b]%s[/b]" % message)
+	# Logger.log_title("Checking...\n[b]%s[/b]" % message)
 
 	var solution_packed_scene := load(Paths.to_solution(_practice_info.file_path))
 	var solution: Node = solution_packed_scene.instantiate()
