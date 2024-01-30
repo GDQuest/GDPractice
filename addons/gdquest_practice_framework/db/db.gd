@@ -9,8 +9,9 @@ func _init() -> void:
 	var metadata_list := load(Paths.SOLUTIONS_PATH.path_join("metadata_list.tres"))
 	if not ResourceLoader.exists(Progress.PATH):
 		progress = Progress.new()
-		for metadata: Metadata in metadata_list.metadatas:
-			progress.state[metadata.id] = {completion = 0, tries = 0}
+		for metadatas in metadata_list.metadatas:
+			for metadata: Metadata in metadatas:
+				progress.state[metadata.id] = {completion = 0, tries = 0}
 		save()
 	reload()
 
@@ -26,7 +27,11 @@ func save() -> void:
 func update(dict: Dictionary) -> void:
 	for id in dict:
 		for key in dict[id]:
-			if key == "completion" and progress.state.has(id) and progress.state[id].completion == 1:
+			if (
+				key == "completion"
+				and progress.state.has(id)
+				and progress.state[id].completion == 1
+			):
 				continue
 			if not progress.state.has(id):
 				progress.state[id] = {}
