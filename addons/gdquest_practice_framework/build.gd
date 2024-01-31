@@ -85,7 +85,8 @@ var regex_shift := RegEx.create_from_string("^([<>]+)\\h*(.*)")
 
 
 func _init() -> void:
-	parse_command_line_arguments()
+	if "--script" in OS.get_cmdline_args():
+		parse_command_line_arguments()
 
 
 func parse_command_line_arguments() -> void:
