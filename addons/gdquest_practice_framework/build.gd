@@ -69,6 +69,12 @@ const Paths := preload("paths.gd")
 const Utils := preload("utils.gd")
 const Metadata := preload("metadata/metadata.gd")
 
+const PROJECT_FILE := "project.godot"
+const PLUGINS_SECTION := "editor_plugins"
+const AUTOLOAD_SECTION := "autoload"
+const APP_SECTION := "application"
+const APP_NAME_KEY := "config/name"
+
 const DENTS := {"<": -1, ">": 1}
 const LOG_MESSAGE := "\t%s...%s"
 
@@ -87,34 +93,35 @@ func parse_command_line_arguments() -> void:
 	const ARG_GENERATE_PROJECT_WORKBOOK := ["-w", "--generate-project-workbook"]
 	const ARG_GENERATE_PROJECT_SOLUTIONS := ["-s", "--generate-project-solutions"]
 	const ARG_PRACTICES := ["-p", "--generate-practices"]
+	const ARG_EXTRA := ["--disable-plugins"]
 	var supported_args := [ARG_GENERATE_PROJECT_WORKBOOK, ARG_GENERATE_PROJECT_SOLUTIONS, ARG_PRACTICES]
-	var HELP_MESSAGE := "\n".join([
-		"""Build script that converts solutions into practices and optionally generates Godot project folders for course modules.
-
-	Note: The script must be run from the root folder of the Godot project.
-
-	Usage:
-
-	[color=yellow]godot --headless --script addons/gdquest_practice_framework/build.gd -- arg1 arg2 ...[/color]
-
-
-	Arguments:
-
-	[color=yellow]%s[/color] - Display this help message.
-	[color=yellow]%s[/color] - Generates a Godot project folder for the practice module.
-	[color=yellow]%s[/color] - Generates a Godot project folder for the lesson module and practices start files.
-	[color=yellow]%s[/color] - Generates practice files from solutions within this project (for testing).
-	""" % [
-		"/".join(ARG_HELP),
-		"/".join(ARG_GENERATE_PROJECT_WORKBOOK),
-		"/".join(ARG_GENERATE_PROJECT_SOLUTIONS),
-		"/".join(ARG_PRACTICES),
-	]])
+	var help_message := "\n".join([
+		"Build script that converts solutions into practices and optionally generates Godot project folders for course modules.",
+		"Note: The script must be run from the root folder of the Godot project.",
+		"",
+		"Usage:",
+		"",
+		"[color=yellow]godot --headless --script addons/gdquest_practice_framework/build.gd -- [ARGS] ...[/color]",
+		"",
+		"ARGS:",
+		"",
+		"  [color=yellow]%s[/color]: Display this help message.",
+		"  [color=yellow]%s[/color]: Generates a Godot project folder for the practice module.",
+		"  [color=yellow]%s[/color]: Generates a Godot project folder for the lesson module and practices start files.",
+		"  [color=yellow]%s[/color]: Generates practice files from solutions within this project (for testing).",
+		"  [color=yellow]%s[/color]: Disable plugins.",
+	]) % [
+		ARG_HELP,
+		ARG_GENERATE_PROJECT_WORKBOOK,
+		ARG_GENERATE_PROJECT_SOLUTIONS,
+		ARG_PRACTICES,
+		ARG_EXTRA,
+	].map(func(args: Array) -> String: return ", ".join(args))
 
 	var user_args := OS.get_cmdline_user_args()
 	for arg in ARG_HELP:
-		if arg in user_args:
-			print_rich(HELP_MESSAGE)
+		if user_args.is_empty() or arg in user_args:
+			print_rich(help_message)
 			quit()
 			return
 
@@ -122,13 +129,14 @@ func parse_command_line_arguments() -> void:
 		if arg in ARG_GENERATE_PROJECT_WORKBOOK:
 			build_project("workbook", ["plug.gd", "makefile", ".import"])
 		elif arg in ARG_GENERATE_PROJECT_SOLUTIONS:
-			build_project("solutions", ["plug.gd", "makefile", ".import"])
+			build_project("solutions", ["plug.gd", "makefile", ".import", "test.gd", "diff.gd", "metadata.tres", "metadata_list.tres"])
 		elif arg in ARG_PRACTICES:
-			var enable_plugins := "--enable-plugins" in user_args
-			build_practices(enable_plugins)
+			var do_disable_plugins := "--disable-plugins" in user_args
+			build_practices(do_disable_plugins)
+		elif arg in ARG_EXTRA:
+			continue
 		else:
 			print_rich("[color=red]ERROR: Unknown command-line argument '%s' (supported arguments: %s). Skipping[/color]" % [arg, supported_args])
-	
 	quit()
 
 
@@ -172,22 +180,28 @@ func build_project(suffix: String, exclude_slugs: Array[String] = []) -> void:
 		var extension := source_file_path.get_extension()
 		var do_replace := (
 			destination_file_path == destination_plugin_dir_path.path_join("paths.gd")
-			or (
-				source_file_path.begins_with(source_solution_dir_path)
-				and extension in ["gd", "tscn", "tres"]
-			)
+			or (suffix == "workbook" and source_file_path.begins_with(source_solution_dir_path) and extension in ["gd", "tscn", "tres"])
 		)
 		if do_replace:
 			var contents := FileAccess.get_file_as_string(destination_file_path)
 			contents = contents.replace(Paths.SOLUTIONS_PATH, solution_dir_path)
 			FileAccess.open(destination_file_path, FileAccess.WRITE).store_string(contents)
+
+	var project_file_path := destination_project_dir_path.path_join(PROJECT_FILE)
+	var cfg = ConfigFile.new()
+	cfg.load(project_file_path)
+	cfg.set_value(APP_SECTION, APP_NAME_KEY, "%s (%s)" % [ProjectSettings.get_setting(APP_SECTION.path_join(APP_NAME_KEY)), suffix.capitalize()])
+	for section in [PLUGINS_SECTION, AUTOLOAD_SECTION]:
+		if cfg.has_section(section):
+			cfg.erase_section(section)
+	cfg.save(project_file_path)
+
+	# If generating the workbook project, ensure lessons directory is present and generate practice files from solutions.
 	if suffix == "workbook":
 		Utils.fs_remove_dir(
 			source_solution_dir_path.replace(source_project_dir_path, destination_project_dir_path)
 		)
 
-	# If generating the workbook project, ensure lessons directory is present and generate practice files from solutions.
-	if suffix == "workbook":
 		if not DirAccess.dir_exists_absolute(destination_project_dir_path.path_join("lessons")):
 			DirAccess.make_dir_recursive_absolute(destination_project_dir_path.path_join("lessons"))
 
@@ -195,7 +209,7 @@ func build_project(suffix: String, exclude_slugs: Array[String] = []) -> void:
 		var output := []
 		var return_code := OS.execute(
 			EXE,
-			args + ["--script", plugin_dir_path.path_join("build.gd"), "--", "--generate-practices"],
+			args + ["--script", plugin_dir_path.path_join("build.gd"), "--", "--generate-practices", "--disable-plugins"],
 			output,
 			true
 		)
@@ -207,27 +221,18 @@ func build_project(suffix: String, exclude_slugs: Array[String] = []) -> void:
 			print_rich(line)
 
 
-func build_practices(do_enable_plugins := false) -> void:
-	const PROJECT_FILE := "project.godot"
-	const SECTION := "editor_plugins"
-	const KEY := "enabled"
-	const CFG_FILE_NAME := "plugin.cfg"
-	const ADDONS_DIR_NAME := "addons"
-
-	var cfg := ConfigFile.new()
-	if do_enable_plugins:
+func build_practices(do_disable_plugins := false) -> void:
+	if do_disable_plugins:
+		var cfg = ConfigFile.new()
 		cfg.load(PROJECT_FILE)
-		cfg.set_value(SECTION, KEY, PackedStringArray())
+		for section in [PLUGINS_SECTION, AUTOLOAD_SECTION]:
+			if cfg.has_section(section):
+				cfg.erase_section(section)
 		cfg.save(PROJECT_FILE)
 
 	for dir_name in DirAccess.get_directories_at(Paths.SOLUTIONS_PATH):
 		if build_practice(dir_name) == Continuation.STOP:
 			break
-
-	if do_enable_plugins:
-		var plugin_cfg_paths := Utils.fs_find(CFG_FILE_NAME, Paths.RES.path_join(ADDONS_DIR_NAME))
-		cfg.set_value(SECTION, KEY, PackedStringArray(plugin_cfg_paths))
-		cfg.save(PROJECT_FILE)
 
 
 func build_practice(dir_name: StringName, is_forced := false) -> Continuation:
