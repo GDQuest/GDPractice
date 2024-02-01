@@ -38,6 +38,9 @@ func _ready() -> void:
 
 func get_practice_index(path: String) -> int:
 	var result := -1
+	if path == Paths.to_solution(path):
+		return result
+
 	path = Paths.to_solution(path)
 	var metadata_path := path.get_base_dir().path_join("metadata.tres")
 	if FileAccess.file_exists(path) and FileAccess.file_exists(metadata_path):
