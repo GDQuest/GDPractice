@@ -18,5 +18,5 @@ func set_solution(value: Node) -> void:
 	if solution_parent:
 		solution_parent.remove_child.call_deferred(solution)
 	solution_sub_viewport.add_child.call_deferred(solution)
-	if solution is Node2D:
+	if solution is CanvasItem:
 		solution.modulate.a = 1.0
