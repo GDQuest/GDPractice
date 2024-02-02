@@ -42,16 +42,17 @@ func setup(practice: Node, solution: Node) -> void:
 	_solution = solution
 
 	var _practice_script: Script = _practice.get_script()
-	_practice_base_path = _practice_script.resource_path.get_base_dir()
-	_practice_code = _preprocess_practice_code(_practice_script)
+	if _practice_script != null:
+		_practice_base_path = _practice_script.resource_path.get_base_dir()
+		_practice_code = _preprocess_practice_code(_practice_script)
 
 	Logger.add_separator()
 	Logger.log("[b]Testing the practice...[/b]")
-	await _setup_state()
 
 	var message := "Setting practice <=> solution state"
 	JSPayload.new(JSPayload.Type.TEST, JSPayload.Status.DONE, _practice_base_path, message)
 	# Logger.log("\t%s...[color=green]DONE[/color]" % message)
+	await _setup_state()
 	await _setup_populate_test_space()
 	message = "Populating test space"
 	JSPayload.new(JSPayload.Type.TEST, JSPayload.Status.DONE, _practice_base_path, message)
@@ -65,18 +66,11 @@ func run() -> int:
 		func(x: Dictionary) -> bool: return x.name.begins_with(PREFIX)
 	):
 		var hint: String = await call(d.name)
-		Logger.log(
-			(
-				"\n%s: %s"
-				% [
-					(
-						"[color=%s]%s[/color]"
-						% (["green", "PASSED"] if hint.is_empty() else ["orange", "NOT PASSED"])
-					),
-					d.name.trim_prefix(PREFIX).capitalize(),
-				]
-			)
+		var state_msg := (
+			"[color=%s]%s[/color]"
+			% (["green", "PASSED"] if hint.is_empty() else ["orange", "NOT PASSED"])
 		)
+		Logger.log("\n%s: %s" % [state_msg, d.name.trim_prefix(PREFIX).capitalize()])
 		if not hint.is_empty():
 			result = 0
 			JSPayload.new(JSPayload.Type.TEST, JSPayload.Status.FAIL, _practice_base_path, hint)
@@ -116,7 +110,7 @@ func _is_code_line_match(target_lines: Array) -> bool:
 
 ## Retruns [code]true[/code] if the [param success_predicate] [Callable] returns [code]true[/code] for all
 ## pairs of consecutive items in [member _test_space]. Otherwise it returns [code]false[/code].
-## 
+##
 ## Parameters:
 ##
 ## - [param success_predicate] is a [Callable] that expects a pair of parameters fed from
