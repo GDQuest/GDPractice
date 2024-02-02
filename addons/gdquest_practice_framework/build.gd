@@ -8,7 +8,7 @@
 ## Run with [code]--help[/code] to see the available arguments.
 ##
 ## [b]Generating practice starting files with the build script[/b]:
-## 
+##
 ## The build script also processes practice code lines by replacing them with the given
 ## comments at the end of the line in [b]GDScript[/b] files.
 ##
@@ -59,12 +59,17 @@
 ## 
 ## [b]Note[/b] that:
 ##
-## - Only-comment lines are also preserved in the practice.
-## - The special [code]<[/code] and [code]>[/code] symbols can be repeated multiple times.
+## [b]Note[/b] that: [br]
+##
+## - Only-comment lines are also preserved in the practice. [br]
+## - The special [code]<[/code] and [code]>[/code] symbols can be repeated multiple times. [br]
+## - It also strips the ["addons/gdquest_practice_framework/tester/layout.gd"] [code]VISIBILITY_GROUP[/code] group from nodes. [br]
 extends SceneTree
 
 const Paths := preload("paths.gd")
 const Utils := preload("utils.gd")
+const Metadata := preload("metadata/metadata.gd")
+const Layout := preload("tester/layout.gd")
 
 const PROJECT_FILE := "project.godot"
 const PLUGINS_SECTION := "editor_plugins"
@@ -295,23 +300,24 @@ func build_practice(dir_name: StringName, is_forced := false) -> ReturnCode:
 			continue
 
 		DirAccess.make_dir_recursive_absolute(practice_file_path.get_base_dir())
-		var was_copied := false
-		if extension == "tscn" and solution_diff != null:
+		if extension == "tscn":
 			var solution_scene: Node = load(solution_file_path).instantiate()
-			var func_name := solution_file_path.get_file().get_basename()
-			if func_name in solution_diff:
-				solution_diff.call(func_name, solution_scene)
-				var practice_packed_scene := PackedScene.new()
-				practice_packed_scene.pack(solution_scene)
-				ResourceSaver.save(practice_packed_scene, practice_file_path)
-				was_copied = true
-				print_rich(LOG_MESSAGE % [solution_file_path, "[color=blue]DIFF[/color]"])
-			else:
-				print_rich("[color=red]ERROR: Found diff.gd script for %s, and expected a function named %s, but it was not found. Copying the practice scene as-is.[/color]" % [solution_file_path, func_name])
+			for node in solution_scene.find_children("*"):
+				node.remove_from_group(Layout.VISIBILITY_GROUP)
 
-		if not was_copied:
-			DirAccess.copy_absolute(solution_file_path, practice_file_path)
-			print_rich(LOG_MESSAGE % [practice_file_path, "[color=green]COPY[/color]"])
+			if solution_diff != null:
+				var func_name := solution_file_path.get_file().get_basename()
+				if func_name in solution_diff:
+					solution_diff.call(func_name, solution_scene)
+					print_rich(LOG_MESSAGE % [solution_file_path, "[color=blue]DIFF[/color]"])
+				else:
+					print_rich("[color=red]ERROR: Found diff.gd script for %s, and expected a function named %s, but it was not found.[/color]" % [solution_file_path, func_name])
+					return Continuation.STOP
+
+			var practice_packed_scene := PackedScene.new()
+			practice_packed_scene.pack(solution_scene)
+			ResourceSaver.save(practice_packed_scene, practice_file_path)
+			print_rich(LOG_MESSAGE % [practice_file_path, "[color=green]PROCESS[/color]"])
 
 		if extension in ["gd", "tscn", "tres"]:
 			var contents := FileAccess.get_file_as_string(practice_file_path)

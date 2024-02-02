@@ -8,9 +8,6 @@ const DB := preload("../db/db.gd")
 const Test := preload("../tester/test.gd")
 const Metadata := preload("../metadata.gd")
 
-const GhostLayoutScene := preload("ghost_layout.tscn")
-const SplitLayoutScene := preload("split_layout.tscn")
-
 var _practice_info := {}
 var _input_map := {}
 
