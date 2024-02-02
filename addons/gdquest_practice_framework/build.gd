@@ -300,6 +300,7 @@ func build_practice(dir_name: StringName, is_forced := false) -> ReturnCode:
 			continue
 
 		DirAccess.make_dir_recursive_absolute(practice_file_path.get_base_dir())
+		var was_copied := false
 		if extension == "tscn":
 			var solution_scene: Node = load(solution_file_path).instantiate()
 			for node in solution_scene.find_children("*"):
@@ -318,6 +319,11 @@ func build_practice(dir_name: StringName, is_forced := false) -> ReturnCode:
 			practice_packed_scene.pack(solution_scene)
 			ResourceSaver.save(practice_packed_scene, practice_file_path)
 			print_rich(LOG_MESSAGE % [practice_file_path, "[color=green]PROCESS[/color]"])
+			was_copied = true
+
+		if not was_copied:
+			DirAccess.copy_absolute(solution_file_path, practice_file_path)
+			print_rich(LOG_MESSAGE % [practice_file_path, "[color=green]COPY[/color]"])
 
 		if extension in ["gd", "tscn", "tres"]:
 			var contents := FileAccess.get_file_as_string(practice_file_path)
