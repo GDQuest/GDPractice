@@ -41,3 +41,12 @@ func set_solution(value: Node) -> void:
 	if solution_parent:
 		solution_parent.remove_child.call_deferred(solution)
 	solution_sub_viewport.add_child.call_deferred(solution)
+
+
+func fix_tile_map_transparencty() -> void:
+	var tile_maps := get_tree().get_nodes_in_group(VISIBILITY_GROUP).filter(
+		func(n: Node) -> bool: return n is TileMap
+	)
+	for tile_map: TileMap in tile_maps:
+		tile_map.visible = !tile_map.visible
+		tile_map.set_visible.call_deferred(!tile_map.visible)
