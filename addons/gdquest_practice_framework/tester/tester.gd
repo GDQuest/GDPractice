@@ -36,19 +36,17 @@ func _ready() -> void:
 
 	Logger.setup(title_rich_text_label, checks_v_box_container)
 	_prepare_practice_info()
-	if not _is_practice_scene():
+	if _is_practice_scene():
+		_prepare_for_test()
+		await _check_practice()
+		_restore_from_test()
+	else:
 		var message := "Not a practice"
 		JSPayload.new(
 			JSPayload.Type.TESTER, JSPayload.Status.SKIP, _practice_info.file_path, message
 		)
 		Logger.log("%s...[color=orange]SKIP[/color]" % message)
-
 		queue_free()
-		return
-
-	_prepare_for_test()
-	await _check_practice()
-	_restore_from_test()
 
 
 func _on_toggle_x5_button_toggled(is_toggled: bool) -> void:

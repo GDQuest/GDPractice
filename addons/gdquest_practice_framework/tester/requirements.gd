@@ -47,7 +47,7 @@ static func check() -> bool:
 		return true
 	# TODO: consider selectively skipping checks based on the type of requirement. Some practices need different functions and node structures.
 	# return _check_constants() and _check_properties() and _check_methods() and _check_signals() and _check_nodes()
-	return true 
+	return true
 
 
 static func _check_methods() -> bool:
