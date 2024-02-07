@@ -30,7 +30,11 @@ static func fs_find(pattern: String = "*", path: String = "res://") -> Array[Str
 static func fs_remove_dir(base_path: String) -> void:
 	if not DirAccess.dir_exists_absolute(base_path):
 		return
-	for paths in ["*", "*/"].map(func(x: String) -> Array[String]: return fs_find(x, base_path)):
-		for path in paths:
-			DirAccess.remove_absolute(path)
+	for path in fs_find("*", base_path):
+		DirAccess.remove_absolute(path)
+
+	var paths := fs_find("*/", base_path)
+	paths.reverse()
+	for path in paths:
+		DirAccess.remove_absolute(path)
 	DirAccess.remove_absolute(base_path)
