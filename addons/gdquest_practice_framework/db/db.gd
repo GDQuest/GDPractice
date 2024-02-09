@@ -1,17 +1,16 @@
 const Progress := preload("progress.gd")
-const Metadata := preload("../metadata/metadata.gd")
+const Metadata := preload("../metadata.gd")
 const Paths := preload("../paths.gd")
 
 var progress: Progress = null
 
 
 func _init() -> void:
-	var metadata_list := load(Paths.SOLUTIONS_PATH.path_join("metadata_list.tres"))
+	var metadata := Metadata.load()
 	if not ResourceLoader.exists(Progress.PATH):
 		progress = Progress.new()
-		for metadatas in metadata_list.metadatas:
-			for metadata: Metadata in metadatas:
-				progress.state[metadata.id] = {completion = 0, tries = 0}
+		for metadata_item: Metadata.Item in metadata:
+			progress.state[metadata_item.id] = {completion = 0, tries = 0}
 		save()
 	reload()
 

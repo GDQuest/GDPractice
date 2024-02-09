@@ -6,14 +6,12 @@ const UISelectablePractice := preload("ui_selectable_practice.gd")
 const DB := preload("../db/db.gd")
 const Build := preload("../build.gd")
 const Paths := preload("../paths.gd")
-const Metadata := preload("../metadata/metadata.gd")
-const MetadataList := preload("../metadata/metadata_list.gd")
+const Metadata := preload("../metadata.gd")
 const ThemeUtils := preload("../utils/theme_utils.gd")
 
 const UI_SELECTABLE_PRACTICE_SCENE := preload("ui_selectable_practice.tscn")
 
 var build := Build.new()
-var metadata_list: MetadataList = load(Paths.SOLUTIONS_PATH.path_join("metadata_list.tres"))
 
 @onready var list: VBoxContainer = %List
 @onready var module_labels: Array[Label] = [%LabelModuleNumber, %LabelModuleName]
@@ -21,10 +19,11 @@ var metadata_list: MetadataList = load(Paths.SOLUTIONS_PATH.path_join("metadata_
 
 
 func _ready() -> void:
-	for metadata: Metadata in metadata_list.metadatas:
+	var metadata := Metadata.load()
+	for metadata_item: Metadata.Item in metadata:
 		var ui_selectable_practice = UI_SELECTABLE_PRACTICE_SCENE.instantiate()
 		list.add_child(ui_selectable_practice)
-		ui_selectable_practice.setup(metadata)
+		ui_selectable_practice.setup(metadata_item)
 	set_module_name()
 	update()
 
@@ -38,19 +37,15 @@ func _ready() -> void:
 
 func get_practice_index(path: String) -> int:
 	var result := -1
-	if path == Paths.to_solution(path):
+	if not path.begins_with(Paths.PRACTICES_PATH):
 		return result
 
 	path = Paths.to_solution(path)
-	var metadata_path := path.get_base_dir().path_join("metadata.tres")
-	if FileAccess.file_exists(path) and FileAccess.file_exists(metadata_path):
-		var metadata: Metadata = load(path.get_base_dir().path_join("metadata.tres"))
-		for scene_file_path in metadata.scene_file_paths:
-			if path == scene_file_path:
-				for idx in range(list.get_child_count()):
-					if metadata == list.get_child(idx).metadata:
-						result = idx
-						break
+	var checker := func(p: PackedScene) -> bool: return path == p.resource_path
+	for idx in range(list.get_child_count()):
+		var ui_selectable_practice: UISelectablePractice = list.get_child(idx)
+		if ui_selectable_practice.metadata_item.scenes.any(checker):
+			result = idx
 			break
 	return result
 

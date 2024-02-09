@@ -6,7 +6,7 @@ const DB := preload("../db/db.gd")
 const Build := preload("../build.gd")
 const Paths := preload("../paths.gd")
 const Progress := preload("../db/progress.gd")
-const Metadata := preload("../metadata/metadata.gd")
+const Metadata := preload("../metadata.gd")
 
 const DEFAULT_VARIATION := &"MarginContainerPractice"
 const SELECTED_VARIATION := &"MarginContainerSelectedPractice"
@@ -21,7 +21,7 @@ const CHECKBOX_TEXTURES := {
 static var button_group := ButtonGroup.new()
 static var build := Build.new()
 
-var metadata: Metadata = null
+var metadata_item: Metadata.Item = null
 
 @onready var label_item: Label = %LabelItem
 @onready var label_title: Label = %LabelTitle
@@ -39,8 +39,8 @@ func _ready() -> void:
 	reset_button.pressed.connect(reset_practice)
 
 
-func setup(metadata: Metadata) -> void:
-	self.metadata = metadata
+func setup(metadata: Metadata.Item) -> void:
+	self.metadata_item = metadata
 	label_title.text = metadata.title
 	label_item.text = ITEM_FORMAT % [metadata.lesson_number, metadata.practice_number]
 
@@ -61,16 +61,16 @@ func deselect() -> void:
 
 
 func update(progress: Progress) -> void:
-	if not metadata.id in progress.state:
+	if not metadata_item.id in progress.state:
 		return
-	icon_checkbox.texture = CHECKBOX_TEXTURES[progress.state[metadata.id].completion == 1]
+	icon_checkbox.texture = CHECKBOX_TEXTURES[progress.state[metadata_item.id].completion == 1]
 
 
 func open() -> void:
-	for scene_file_path in metadata.scene_file_paths:
-		scene_file_path = Paths.to_practice(scene_file_path)
-		if FileAccess.file_exists(scene_file_path):
-			EditorInterface.open_scene_from_path(scene_file_path)
+	for scene in metadata_item.scenes:
+		var practice_scene_path = Paths.to_practice(scene.resource_path)
+		if FileAccess.file_exists(practice_scene_path):
+			EditorInterface.open_scene_from_path(practice_scene_path)
 			await get_tree().process_frame
 			select()
 		break
@@ -78,10 +78,14 @@ func open() -> void:
 
 func reset_practice() -> void:
 	var db := DB.new()
-	db.progress.state[metadata.id].completion = 0
+	db.progress.state[metadata_item.id].completion = 0
 	db.save()
 
-	var metadata_path := metadata.resource_path
-	var solution_dir_name := metadata_path.get_base_dir().get_file()
-	build.build_practice(solution_dir_name, true)
-	update(db.progress)
+	var solution_dir_name := ""
+	for scene: PackedScene in metadata_item.scenes:
+		solution_dir_name = scene.resource_path.get_base_dir().get_file()
+		break
+
+	if not solution_dir_name.is_empty():
+		build.build_practice(solution_dir_name, true)
+		update(db.progress)

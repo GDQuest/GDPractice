@@ -56,8 +56,6 @@
 ##     var cell := Vector2(0, 0)
 ##     generate_one_gem(cell)
 ## [/codeblock]
-##
-## The build script [b]fails[/b] if there are solutions with no [code]metadata.tres[/code] file.
 ## 
 ## [b]Note[/b] that:
 ##
@@ -67,7 +65,6 @@ extends SceneTree
 
 const Paths := preload("paths.gd")
 const Utils := preload("utils.gd")
-const Metadata := preload("metadata/metadata.gd")
 
 const PROJECT_FILE := "project.godot"
 const PLUGINS_SECTION := "editor_plugins"
@@ -140,7 +137,7 @@ func parse_command_line_arguments() -> void:
 			return_code = build_project("workbook", args["--output-path"], ["plug.gd", "makefile", ".import"])
 
 		if key in ARG_GENERATE_PROJECT_SOLUTIONS:
-			return_code = build_project("solutions", args["--output-path"], ["plug.gd", "makefile", ".import", "test.gd", "diff.gd", "metadata.tres", "metadata_list.tres"])
+			return_code = build_project("solutions", args["--output-path"], ["plug.gd", "makefile", ".import", "test.gd", "diff.gd",])
 
 		if key in ARG_PRACTICES:
 			var do_disable_plugins := "--disable-plugins" in user_args
@@ -261,25 +258,12 @@ func build_practice(dir_name: StringName, is_forced := false) -> ReturnCode:
 	print_rich("Building [b]%s[/b]..." % dir_name)
 	var solution_dir_path := Paths.SOLUTIONS_PATH.path_join(dir_name)
 	var solution_file_paths := Utils.fs_find("*", solution_dir_path)
-	var metadata_file_path := solution_dir_path.path_join("metadata.tres")
-
-	var do_exit := false
-	if FileAccess.file_exists(metadata_file_path):
-		var metadata: Metadata = load(metadata_file_path)
-		do_exit = metadata.title.is_empty() or metadata.id.is_empty()
-	else:
-		do_exit = true
-
-	if do_exit:
-		print_rich(LOG_MESSAGE % [metadata_file_path, "[color=red]FAIL[/color]"])
-		return ReturnCode.FAIL
 
 	solution_file_paths.assign(
 		solution_file_paths.filter(
 			func(x: String) -> bool: return not (
 				x.ends_with("/test.gd")
 				or x.ends_with("/diff.gd")
-				or x.ends_with("/metadata.tres")
 				or x.get_extension() == "import"
 			)
 		)
