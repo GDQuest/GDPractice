@@ -6,7 +6,7 @@ const Paths := preload("../paths.gd")
 const Requirements := preload("requirements.gd")
 const DB := preload("../db/db.gd")
 const Test := preload("../tester/test.gd")
-const Metadata := preload("../metadata/metadata.gd")
+const Metadata := preload("../metadata.gd")
 
 const GhostLayoutScene := preload("ghost_layout.tscn")
 const SplitLayoutScene := preload("split_layout.tscn")
