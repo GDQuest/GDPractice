@@ -11,6 +11,7 @@ const ThemeUtils := preload("../utils/theme_utils.gd")
 
 const UI_SELECTABLE_PRACTICE_SCENE := preload("ui_selectable_practice.tscn")
 
+var metadata_modified_time := 0
 var build := Build.new()
 
 @onready var list: VBoxContainer = %List
@@ -19,6 +20,24 @@ var build := Build.new()
 
 
 func _ready() -> void:
+	gdquest_logo.pressed.connect(OS.shell_open.bind("https://www.gdquest.com/"))
+	EditorInterface.get_resource_filesystem().filesystem_changed.connect(construct_panel_list)
+	construct_panel_list()
+	if not Engine.is_editor_hint() or EditorInterface.get_edited_scene_root() == self:
+		return
+	theme = ThemeUtils.generate_scaled_theme(theme)
+	gdquest_logo.custom_minimum_size *= EditorInterface.get_editor_scale()
+
+
+func construct_panel_list() -> void:
+	var new_metadata_modified_time := Metadata.get_modified_time()
+	if metadata_modified_time == new_metadata_modified_time:
+		return
+
+	metadata_modified_time = new_metadata_modified_time
+	for ui_selectable_practice: UISelectablePractice in list.get_children():
+		ui_selectable_practice.queue_free()
+
 	var metadata := Metadata.load()
 	for metadata_item: Metadata.Item in metadata:
 		var ui_selectable_practice = UI_SELECTABLE_PRACTICE_SCENE.instantiate()
@@ -26,13 +45,6 @@ func _ready() -> void:
 		ui_selectable_practice.setup(metadata_item)
 	set_module_name()
 	update()
-
-	gdquest_logo.pressed.connect(OS.shell_open.bind("https://www.gdquest.com/"))
-
-	if not Engine.is_editor_hint() or EditorInterface.get_edited_scene_root() == self:
-		return
-	theme = ThemeUtils.generate_scaled_theme(theme)
-	gdquest_logo.custom_minimum_size *= EditorInterface.get_editor_scale()
 
 
 func get_practice_index(path: String) -> int:

@@ -1,4 +1,4 @@
-const PATH := "res://practice_solutions/metadatas.cfg"
+const PATH := "res://practice_solutions/metadata.cfg"
 
 
 class Item:
@@ -18,7 +18,10 @@ class Item:
 static func load() -> Array[Item]:
 	var result: Array[Item] = []
 	var cfg := ConfigFile.new()
-	cfg.load(PATH)
+	var error_code := cfg.load(PATH)
+	if error_code != OK:
+		push_error("Failed to load '%s', error code: %d" % [PATH, error_code])
+		return result
 
 	var lesson_number := 0
 	var practice_number := 1
@@ -35,3 +38,7 @@ static func load() -> Array[Item]:
 		practice_number += 1
 		result.push_back(metadata)
 	return result
+
+
+static func get_modified_time() -> int:
+	return FileAccess.get_modified_time(PATH)
