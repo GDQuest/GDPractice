@@ -75,16 +75,22 @@ func _prepare_practice_info() -> void:
 	_practice_info.file_name = _practice_info.file_path.get_file()
 	_practice_info.base_path = _practice_info.file_path.get_base_dir()
 	_practice_info.dir_name = _practice_info.base_path.get_file()
-	_practice_info.metadata = load(
-		Paths.to_solution(_practice_info.base_path).path_join("metadata.tres")
-	)
+
+	var metadata_path := Paths.to_solution(_practice_info.base_path).path_join("metadata.tres")
+	_practice_info.metadata = null
+	if FileAccess.file_exists(metadata_path):
+		_practice_info.metadata = load(metadata_path)
 
 
 func _is_practice_scene() -> bool:
 	return (
 		_practice_info.file_path.begins_with(Paths.PRACTICES_PATH)
 		and (
-			Paths.to_solution(_practice_info.file_path) in _practice_info.metadata.scene_file_paths
+			_practice_info.metadata != null
+			and (
+				Paths.to_solution(_practice_info.file_path)
+				in _practice_info.metadata.scene_file_paths
+			)
 		)
 	)
 
