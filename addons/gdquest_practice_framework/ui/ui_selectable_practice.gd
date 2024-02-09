@@ -21,7 +21,7 @@ const CHECKBOX_TEXTURES := {
 static var button_group := ButtonGroup.new()
 static var build := Build.new()
 
-var metadata_item: Metadata.Item = null
+var practice_metadata: Metadata.PracticeMetadata = null
 
 @onready var label_item: Label = %LabelItem
 @onready var label_title: Label = %LabelTitle
@@ -39,8 +39,8 @@ func _ready() -> void:
 	reset_button.pressed.connect(reset_practice)
 
 
-func setup(metadata: Metadata.Item) -> void:
-	self.metadata_item = metadata
+func setup(metadata: Metadata.PracticeMetadata) -> void:
+	self.practice_metadata = metadata
 	label_title.text = metadata.title
 	label_item.text = ITEM_FORMAT % [metadata.lesson_number, metadata.practice_number]
 
@@ -61,13 +61,13 @@ func deselect() -> void:
 
 
 func update(progress: Progress) -> void:
-	if not metadata_item.id in progress.state:
+	if not practice_metadata.id in progress.state:
 		return
-	icon_checkbox.texture = CHECKBOX_TEXTURES[progress.state[metadata_item.id].completion == 1]
+	icon_checkbox.texture = CHECKBOX_TEXTURES[progress.state[practice_metadata.id].completion == 1]
 
 
 func open() -> void:
-	for scene in metadata_item.scenes:
+	for scene in practice_metadata.scenes:
 		var practice_scene_path = Paths.to_practice(scene.resource_path)
 		if FileAccess.file_exists(practice_scene_path):
 			EditorInterface.open_scene_from_path(practice_scene_path)
@@ -78,11 +78,11 @@ func open() -> void:
 
 func reset_practice() -> void:
 	var db := DB.new()
-	db.progress.state[metadata_item.id].completion = 0
+	db.progress.state[practice_metadata.id].completion = 0
 	db.save()
 
 	var solution_dir_name := ""
-	for scene: PackedScene in metadata_item.scenes:
+	for scene: PackedScene in practice_metadata.scenes:
 		solution_dir_name = scene.resource_path.get_base_dir().get_file()
 		break
 

@@ -39,10 +39,10 @@ func construct_panel_list() -> void:
 		ui_selectable_practice.queue_free()
 
 	var metadata := Metadata.load()
-	for metadata_item: Metadata.Item in metadata:
+	for practice_metadata: Metadata.PracticeMetadata in metadata:
 		var ui_selectable_practice = UI_SELECTABLE_PRACTICE_SCENE.instantiate()
 		list.add_child(ui_selectable_practice)
-		ui_selectable_practice.setup(metadata_item)
+		ui_selectable_practice.setup(practice_metadata)
 	set_module_name()
 	update()
 
@@ -56,7 +56,7 @@ func get_practice_index(path: String) -> int:
 	var checker := func(p: PackedScene) -> bool: return path == p.resource_path
 	for idx in range(list.get_child_count()):
 		var ui_selectable_practice: UISelectablePractice = list.get_child(idx)
-		if ui_selectable_practice.metadata_item.scenes.any(checker):
+		if ui_selectable_practice.practice_metadata.scenes.any(checker):
 			result = idx
 			break
 	return result

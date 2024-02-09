@@ -1,7 +1,9 @@
+## Saves and loads metadata for practices using the ConfigFile format of Godot.
 const PATH := "res://practice_solutions/metadata.cfg"
 
 
-class Item:
+## Represents the metadata of a practice.
+class PracticeMetadata:
 	var lesson_number := 0
 	var practice_number := 0
 	var id := &""
@@ -15,18 +17,18 @@ class Item:
 		)
 
 
-static func load() -> Array[Item]:
-	var result: Array[Item] = []
+static func load() -> Array[PracticeMetadata]:
+	var result: Array[PracticeMetadata] = []
 	var cfg := ConfigFile.new()
 	var error_code := cfg.load(PATH)
 	if error_code != OK:
-		push_error("Failed to load '%s', error code: %d" % [PATH, error_code])
+		push_error("Failed to load practices metadata file '%s', error code: %d" % [PATH, error_code])
 		return result
 
 	var lesson_number := 0
 	var practice_number := 1
 	for section in cfg.get_sections():
-		var metadata := Item.new()
+		var metadata := PracticeMetadata.new()
 		metadata.id = section
 		for key in cfg.get_section_keys(section):
 			metadata.set(key, cfg.get_value(section, key))

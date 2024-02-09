@@ -9,8 +9,8 @@ func _init() -> void:
 	var metadata := Metadata.load()
 	if not ResourceLoader.exists(Progress.PATH):
 		progress = Progress.new()
-		for metadata_item: Metadata.Item in metadata:
-			progress.state[metadata_item.id] = {completion = 0, tries = 0}
+		for practice_metadata: Metadata.PracticeMetadata in metadata:
+			progress.state[practice_metadata.id] = {completion = 0, tries = 0}
 		save()
 	reload()
 
