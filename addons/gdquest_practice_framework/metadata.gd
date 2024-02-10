@@ -22,7 +22,9 @@ static func load() -> Array[PracticeMetadata]:
 	var cfg := ConfigFile.new()
 	var error_code := cfg.load(PATH)
 	if error_code != OK:
-		push_error("Failed to load practices metadata file '%s', error code: %d" % [PATH, error_code])
+		push_error(
+			"Failed to load practices metadata file '%s', error code: %d" % [PATH, error_code]
+		)
 		return result
 
 	var lesson_number := 0

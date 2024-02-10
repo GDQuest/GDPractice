@@ -72,26 +72,22 @@ func _on_toggle_layout_button_toggled(is_toggled: bool) -> void:
 func _prepare_practice_info() -> void:
 	_practice_info.scene = get_tree().current_scene
 	_practice_info.file_path = _practice_info.scene.scene_file_path
-	_practice_info.file_name = _practice_info.file_path.get_file()
-	_practice_info.base_path = _practice_info.file_path.get_base_dir()
-	_practice_info.dir_name = _practice_info.base_path.get_file()
+	_practice_info.dir_name = Paths.get_dir_name(_practice_info.file_path, Paths.PRACTICES_PATH)
+	_practice_info.base_path = Paths.PRACTICES_PATH.path_join(_practice_info.dir_name)
 
-	var metadata_path := Paths.to_solution(_practice_info.base_path).path_join("metadata.tres")
-	_practice_info.metadata = null
-	if FileAccess.file_exists(metadata_path):
-		_practice_info.metadata = load(metadata_path)
+	var metadata := Metadata.load()
+	var matcher := func(s: PackedScene) -> bool: return (
+		Paths.to_practice(s.resource_path) == _practice_info.file_path
+	)
+	for practice_metadata: Metadata.PracticeMetadata in metadata:
+		if practice_metadata.scenes.any(matcher):
+			_practice_info.metadata = practice_metadata
+			break
 
 
 func _is_practice_scene() -> bool:
 	return (
-		_practice_info.file_path.begins_with(Paths.PRACTICES_PATH)
-		and (
-			_practice_info.metadata != null
-			and (
-				Paths.to_solution(_practice_info.file_path)
-				in _practice_info.metadata.scene_file_paths
-			)
-		)
+		_practice_info.file_path.begins_with(Paths.PRACTICES_PATH) and "metadata" in _practice_info
 	)
 
 
