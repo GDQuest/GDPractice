@@ -67,13 +67,11 @@ func update(progress: Progress) -> void:
 
 
 func open() -> void:
-	for scene in practice_metadata.scenes:
-		var practice_scene_path = Paths.to_practice(scene.resource_path)
-		if FileAccess.file_exists(practice_scene_path):
-			EditorInterface.open_scene_from_path(practice_scene_path)
-			await get_tree().process_frame
-			select()
-		break
+	var practice_scene_path = Paths.to_practice(practice_metadata.main_scene)
+	if FileAccess.file_exists(practice_scene_path):
+		EditorInterface.open_scene_from_path(practice_scene_path)
+		await get_tree().process_frame
+		select()
 
 
 func reset_practice() -> void:
@@ -81,11 +79,7 @@ func reset_practice() -> void:
 	db.progress.state[practice_metadata.id].completion = 0
 	db.save()
 
-	var solution_dir_name := ""
-	for scene: PackedScene in practice_metadata.scenes:
-		solution_dir_name = scene.resource_path.get_base_dir().get_file()
-		break
-
+	var solution_dir_name := Paths.get_dir_name(practice_metadata.main_scene)
 	if not solution_dir_name.is_empty():
 		build.build_practice(solution_dir_name, true)
 		update(db.progress)

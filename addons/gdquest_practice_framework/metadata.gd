@@ -6,14 +6,14 @@ const PATH := "res://practice_solutions/metadata.cfg"
 class PracticeMetadata:
 	var lesson_number := 0
 	var practice_number := 0
-	var id := &""
-	var title := &""
-	var scenes: Array = []
+	var id := ""
+	var title := ""
+	var main_scene := ""
 
 	func _to_string() -> String:
 		return (
-			'{ "id": %s, "lesson_number": %d, "practice_number": %d, "title": %s, "scenes": %s }'
-			% [id, lesson_number, practice_number, title, scenes]
+			'{ "id": %s, "lesson_number": %d, "practice_number": %d, "title": %s, "main_scene": %s }'
+			% [id, lesson_number, practice_number, title, main_scene]
 		)
 
 

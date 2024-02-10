@@ -56,7 +56,7 @@ func get_practice_index(path: String) -> int:
 	var checker := func(p: PackedScene) -> bool: return path == p.resource_path
 	for idx in range(list.get_child_count()):
 		var ui_selectable_practice: UISelectablePractice = list.get_child(idx)
-		if ui_selectable_practice.practice_metadata.scenes.any(checker):
+		if path == ui_selectable_practice.practice_metadata.main_scene:
 			result = idx
 			break
 	return result

@@ -76,11 +76,9 @@ func _prepare_practice_info() -> void:
 	_practice_info.base_path = Paths.PRACTICES_PATH.path_join(_practice_info.dir_name)
 
 	var metadata := Metadata.load()
-	var matcher := func(s: PackedScene) -> bool: return (
-		Paths.to_practice(s.resource_path) == _practice_info.file_path
-	)
 	for practice_metadata: Metadata.PracticeMetadata in metadata:
-		if practice_metadata.scenes.any(matcher):
+		var path := Paths.to_practice(practice_metadata.main_scene)
+		if path == _practice_info.file_path:
 			_practice_info.metadata = practice_metadata
 			break
 
