@@ -2,13 +2,13 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://bhubmlwupfvt5"
-path="res://.godot/imported/Inter-Medium.ttf-41ca40e37315239c3441df39f369ab27.fontdata"
+uid="uid://d3u2nhkuevn1l"
+path="res://.godot/imported/Inter-Bold.ttf-263f6ad3098fabd0a0bc2715ebf80b47.fontdata"
 
 [deps]
 
-source_file="res://addons/gdquest_practice_framework/ui/assets/fonts/Inter-Medium.ttf"
-dest_files=["res://.godot/imported/Inter-Medium.ttf-41ca40e37315239c3441df39f369ab27.fontdata"]
+source_file="res://addons/gdquest_practice_framework/assets/fonts/Inter-Bold.ttf"
+dest_files=["res://.godot/imported/Inter-Bold.ttf-263f6ad3098fabd0a0bc2715ebf80b47.fontdata"]
 
 [params]
 

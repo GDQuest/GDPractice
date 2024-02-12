@@ -2,13 +2,13 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://deeixt6cs64ak"
-path="res://.godot/imported/Inter-SemiBold.ttf-9fdfad838d9c23f0f6255f65acbf3bf6.fontdata"
+uid="uid://btiybsu6acuy7"
+path="res://.godot/imported/Montserrat-Bold.ttf-edabf7c7c8ebed1b828ef8c478a02a4c.fontdata"
 
 [deps]
 
-source_file="res://addons/gdquest_practice_framework/ui/assets/fonts/Inter-SemiBold.ttf"
-dest_files=["res://.godot/imported/Inter-SemiBold.ttf-9fdfad838d9c23f0f6255f65acbf3bf6.fontdata"]
+source_file="res://addons/gdquest_practice_framework/assets/fonts/Montserrat-Bold.ttf"
+dest_files=["res://.godot/imported/Montserrat-Bold.ttf-edabf7c7c8ebed1b828ef8c478a02a4c.fontdata"]
 
 [params]
 

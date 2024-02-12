@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cntr4eqyhedci"
-path="res://.godot/imported/reset_button_icon.svg-8ae1930d2264117bf3ac3228a6b5b261.ctex"
+uid="uid://ct8uumbpfehb2"
+path="res://.godot/imported/video-game-controller-on.svg-4ef016f01a3b066d4aba4ee22b16c80e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/gdquest_practice_framework/ui/assets/reset_button_icon.svg"
-dest_files=["res://.godot/imported/reset_button_icon.svg-8ae1930d2264117bf3ac3228a6b5b261.ctex"]
+source_file="res://addons/gdquest_practice_framework/assets/icons/video-game-controller-on.svg"
+dest_files=["res://.godot/imported/video-game-controller-on.svg-4ef016f01a3b066d4aba4ee22b16c80e.ctex"]
 
 [params]
 
@@ -32,6 +32,6 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=3.0
+svg/scale=1.0
 editor/scale_with_editor_scale=false
 editor/convert_colors_with_editor_theme=false

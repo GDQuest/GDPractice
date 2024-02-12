@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cdge3jy3oa3h0"
-path="res://.godot/imported/video-game-controller-off.svg-9a393aad0ad997219d38dd6e895648d0.ctex"
+uid="uid://bslm4lxba0pwq"
+path="res://.godot/imported/input_note.svg-b555bf24b0b2301e68f8afd1f9ca636f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/gdquest_practice_framework/tester/icons/video-game-controller-off.svg"
-dest_files=["res://.godot/imported/video-game-controller-off.svg-9a393aad0ad997219d38dd6e895648d0.ctex"]
+source_file="res://addons/gdquest_practice_framework/tester/input_panel_container/input_note.svg"
+dest_files=["res://.godot/imported/input_note.svg-b555bf24b0b2301e68f8afd1f9ca636f.ctex"]
 
 [params]
 

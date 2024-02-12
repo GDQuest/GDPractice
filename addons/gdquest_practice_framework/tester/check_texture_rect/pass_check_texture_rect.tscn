@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://7fojk2k8l6fw"]
+
+[ext_resource type="PackedScene" uid="uid://duqe01kuj486l" path="res://addons/gdquest_practice_framework/tester/check_texture_rect/fail_check_texture_rect.tscn" id="1_rj0mj"]
+[ext_resource type="Texture2D" uid="uid://wgr4gdu7syvg" path="res://addons/gdquest_practice_framework/assets/icons/pass.svg" id="2_xd5gg"]
+
+[node name="ReportTextureRect" instance=ExtResource("1_rj0mj")]
+custom_minimum_size = Vector2(20, 0)
+texture = ExtResource("2_xd5gg")

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="36.000889"
+   height="35.400002"
+   viewBox="0 0 36.000885 35.399999"
+   fill="none"
+   version="1.1"
+   id="svg4"
+   sodipodi:docname="dash_border.svg"
+   inkscape:version="1.3 (0e150ed, 2023-07-21)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="namedview4"
+     pagecolor="#ffffff"
+     bordercolor="#999999"
+     borderopacity="1"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="14.00995"
+     inkscape:cx="16.131392"
+     inkscape:cy="15.167791"
+     inkscape:window-width="1920"
+     inkscape:window-height="1043"
+     inkscape:window-x="1920"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4"
+     showguides="true" />
+  <rect
+     x="0.50088859"
+     y="0.5"
+     width="35"
+     height="34.400002"
+     rx="2"
+     stroke="#ffd500"
+     stroke-linejoin="round"
+     stroke-dasharray="2, 2"
+     id="rect1"
+     style="stroke-linecap:butt;stroke-linejoin:round;stroke-dasharray:2, 2;stroke-dashoffset:0"
+     ry="2" />
+</svg>

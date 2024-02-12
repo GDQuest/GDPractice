@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://cgapgijqoed5y"]
+
+[ext_resource type="PackedScene" uid="uid://c3ere1qqhai67" path="res://addons/gdquest_practice_framework/tester/input_panel_container/warn_input_panel_container.tscn" id="1_ryr2g"]
+[ext_resource type="Texture2D" uid="uid://cmovmuxppt8hk" path="res://addons/gdquest_practice_framework/tester/input_panel_container/input_safe.svg" id="3_jb7eh"]
+
+[node name="InputPanelContainer" instance=ExtResource("1_ryr2g")]
+
+[node name="TextureRect" parent="MarginContainer/HBoxContainer" index="0"]
+texture = ExtResource("3_jb7eh")
+
+[node name="RichTextLabel" parent="MarginContainer/HBoxContainer/CenterContainer" index="0"]
+text = "[i][b]ENJOY PLAYING YOUR OWN GAME.[/b]
+YOU EARNED IT![/i]"

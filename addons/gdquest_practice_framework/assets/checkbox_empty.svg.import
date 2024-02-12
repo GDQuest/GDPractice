@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b5iik06y7nxib"
-path="res://.godot/imported/gdquest_logo_gear.svg-478a050c5ff3c02f07c009f8cc8e1ae3.ctex"
+uid="uid://cjrd8lw4g0wi"
+path="res://.godot/imported/checkbox_empty.svg-17bdc1fe7cddff1c426d0d255f99efb4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/gdquest_practice_framework/ui/assets/gdquest_logo_gear.svg"
-dest_files=["res://.godot/imported/gdquest_logo_gear.svg-478a050c5ff3c02f07c009f8cc8e1ae3.ctex"]
+source_file="res://addons/gdquest_practice_framework/assets/checkbox_empty.svg"
+dest_files=["res://.godot/imported/checkbox_empty.svg-17bdc1fe7cddff1c426d0d255f99efb4.ctex"]
 
 [params]
 
@@ -32,6 +32,6 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=2.0
+svg/scale=4.0
 editor/scale_with_editor_scale=false
 editor/convert_colors_with_editor_theme=false

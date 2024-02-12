@@ -1,0 +1,45 @@
+[gd_scene load_steps=4 format=3 uid="uid://c3ere1qqhai67"]
+
+[ext_resource type="Texture2D" uid="uid://tiyc2q2h37gv" path="res://addons/gdquest_practice_framework/assets/dash_border.svg" id="1_3gini"]
+[ext_resource type="Theme" uid="uid://bk3rqtt0xeorm" path="res://addons/gdquest_practice_framework/assets/theme.tres" id="1_6xxvo"]
+[ext_resource type="Texture2D" uid="uid://c7ixw14rotrsw" path="res://addons/gdquest_practice_framework/tester/input_panel_container/input_warn.svg" id="2_r3gsq"]
+
+[node name="InputPanelContainer" type="PanelContainer"]
+theme = ExtResource("1_6xxvo")
+
+[node name="NinePatchRect" type="NinePatchRect" parent="."]
+layout_mode = 2
+texture = ExtResource("1_3gini")
+patch_margin_left = 10
+patch_margin_top = 8
+patch_margin_right = 10
+patch_margin_bottom = 8
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_type_variation = &"MarginContainerInnerPractice"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_type_variation = &"HBoxContainerTesterInput"
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+texture = ExtResource("2_r3gsq")
+expand_mode = 5
+stretch_mode = 4
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(308, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_type_variation = &"RichTextLabelTesterInput"
+bbcode_enabled = true
+text = "[color=ffd500][i][b]WARNING:[/b]
+DO NOT TOUCH INPUTS WHILE THE TEST IS RUNNING. IT COULD INTERFERE WITH RESULTS.[/i][/color]"
+fit_content = true
+scroll_active = false

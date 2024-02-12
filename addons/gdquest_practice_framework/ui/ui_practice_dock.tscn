@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://c2bdexvumy07m"]
 
-[ext_resource type="Theme" uid="uid://bk3rqtt0xeorm" path="res://addons/gdquest_practice_framework/ui/assets/theme.tres" id="1_cljkq"]
+[ext_resource type="Theme" uid="uid://bk3rqtt0xeorm" path="res://addons/gdquest_practice_framework/assets/theme.tres" id="1_cljkq"]
 [ext_resource type="Script" path="res://addons/gdquest_practice_framework/ui/ui_practice_dock.gd" id="1_p3vi5"]
-[ext_resource type="Texture2D" uid="uid://b5iik06y7nxib" path="res://addons/gdquest_practice_framework/ui/assets/gdquest_logo_gear.svg" id="3_m6wos"]
+[ext_resource type="Texture2D" uid="uid://b5iik06y7nxib" path="res://addons/gdquest_practice_framework/assets/gdquest_logo_gear.svg" id="3_m6wos"]
 
 [node name="GDQuest" type="PanelContainer"]
 offset_right = 418.0

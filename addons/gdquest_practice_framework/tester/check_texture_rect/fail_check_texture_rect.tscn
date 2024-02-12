@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://duqe01kuj486l"]
+
+[ext_resource type="Texture2D" uid="uid://bmnsj7r5yi08u" path="res://addons/gdquest_practice_framework/assets/icons/fail.svg" id="1_ojhjd"]
+
+[node name="ReportTextureRect" type="TextureRect"]
+custom_minimum_size = Vector2(15, 0)
+size_flags_vertical = 0
+texture = ExtResource("1_ojhjd")
+expand_mode = 5
+stretch_mode = 5
