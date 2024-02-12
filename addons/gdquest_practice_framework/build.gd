@@ -68,7 +68,6 @@ extends SceneTree
 
 const Paths := preload("paths.gd")
 const Utils := preload("utils.gd")
-const Metadata := preload("metadata/metadata.gd")
 const Layout := preload("tester/layout.gd")
 
 const PROJECT_FILE := "project.godot"
@@ -87,7 +86,8 @@ var regex_shift := RegEx.create_from_string("^([<>]+)\\h*(.*)")
 
 
 func _init() -> void:
-	if "--script" in OS.get_cmdline_args():
+	var cmdline_args := OS.get_cmdline_args()
+	if "--script" in cmdline_args or "-s" in cmdline_args:
 		parse_command_line_arguments()
 
 
@@ -313,7 +313,7 @@ func build_practice(dir_name: StringName, is_forced := false) -> ReturnCode:
 					print_rich(LOG_MESSAGE % [solution_file_path, "[color=blue]DIFF[/color]"])
 				else:
 					print_rich("[color=red]ERROR: Found diff.gd script for %s, and expected a function named %s, but it was not found.[/color]" % [solution_file_path, func_name])
-					return Continuation.STOP
+					return ReturnCode.FAIL
 
 			var practice_packed_scene := PackedScene.new()
 			practice_packed_scene.pack(solution_scene)
