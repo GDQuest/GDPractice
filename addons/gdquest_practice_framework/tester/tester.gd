@@ -19,8 +19,9 @@ var db := DB.new()
 @onready var ghost_layout: Control = %GhostLayout
 @onready var split_layout: Control = %SplitLayout
 @onready var toggle_x5_button: Button = %ToggleX5Button
-@onready var toggle_layout_button: Button = %ToggleLayoutButton
-@onready var input_animation_player: AnimationPlayer = %InputAnimationPlayer
+@onready var ghost_button: Button = %GhostButton
+@onready var split_button: Button = %SplitButton
+@onready var input_panel_container: PanelContainer = %InputPanelContainer
 
 
 func _ready() -> void:
@@ -38,8 +39,8 @@ func _ready() -> void:
 	_prepare_practice_info()
 	if _is_practice_scene():
 		_prepare_for_test()
-		await _check_practice()
-		_restore_from_test()
+		var completion := await _check_practice()
+		_restore_from_test(completion)
 	else:
 		var message := "Not a practice"
 		JSPayload.new(
@@ -53,15 +54,15 @@ func _on_toggle_x5_button_toggled(is_toggled: bool) -> void:
 	Engine.set_time_scale(5 if is_toggled else 1)
 
 
-func _on_toggle_layout_button_toggled(is_toggled: bool) -> void:
-	if is_toggled:
-		ghost_layout.visible = false
-		split_layout.visible = true
-		split_layout.refresh(ghost_layout.scenes)
-	else:
+func _on_layout_button_group_pressed(button: BaseButton) -> void:
+	if button == ghost_button:
 		ghost_layout.visible = true
 		split_layout.visible = false
 		ghost_layout.refresh(split_layout.scenes)
+	elif button == split_button:
+		ghost_layout.visible = false
+		split_layout.visible = true
+		split_layout.refresh(ghost_layout.scenes)
 
 
 func _prepare_practice_info() -> void:
@@ -86,23 +87,25 @@ func _is_practice_scene() -> bool:
 
 func _prepare_for_test() -> void:
 	toggle_x5_button.toggled.connect(_on_toggle_x5_button_toggled)
-	toggle_layout_button.toggled.connect(_on_toggle_layout_button_toggled)
+	ghost_button.button_group.pressed.connect(_on_layout_button_group_pressed)
+	input_panel_container.warn()
 	for action in InputMap.get_actions():
 		_input_map[action] = InputMap.action_get_events(action)
 		InputMap.action_erase_events(action)
 
 
-func _restore_from_test() -> void:
+func _restore_from_test(completion: int) -> void:
 	toggle_x5_button.toggled.disconnect(_on_toggle_x5_button_toggled)
 	toggle_x5_button.disabled = true
 	Engine.time_scale = 1
-	input_animation_player.play("input-on")
+	input_panel_container.safe()
 	for action in _input_map:
 		for event in _input_map[action]:
 			InputMap.action_add_event(action, event)
 
 
-func _check_practice() -> void:
+func _check_practice() -> int:
+	var result := 0
 	var message: String = _practice_info.dir_name.capitalize()
 	JSPayload.new(JSPayload.Type.TESTER, JSPayload.Status.TITLE, _practice_info.base_path, message)
 	# Logger.log_title("Checking...\n[b]%s[/b]" % message)
@@ -113,13 +116,14 @@ func _check_practice() -> void:
 
 	Requirements.setup(_practice_info.base_path)
 	if not Requirements.check():
-		return
+		return result
 
 	var test_script := load(Paths.to_solution(_practice_info.base_path).path_join("test.gd"))
 	var test: Test = test_script.new()
 	add_child(test)
 
 	await test.setup(_practice_info.scene, solution)
-	var completion := await test.run()
-	db.update({_practice_info.metadata.id: {completion = completion}})
+	result = await test.run()
+	db.update({_practice_info.metadata.id: {completion = result}})
 	db.save()
+	return result

@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=38 format=3 uid="uid://bk3rqtt0xeorm"]
+[gd_resource type="Theme" load_steps=36 format=3 uid="uid://bk3rqtt0xeorm"]
 
 [ext_resource type="FontFile" uid="uid://d3u2nhkuevn1l" path="res://addons/gdquest_practice_framework/assets/fonts/Inter-Bold.ttf" id="1_guogc"]
 [ext_resource type="FontFile" uid="uid://deeixt6cs64ak" path="res://addons/gdquest_practice_framework/assets/fonts/Inter-SemiBold.ttf" id="2_r3hcp"]
@@ -121,19 +121,6 @@ corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 anti_aliasing = false
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q8ovr"]
-bg_color = Color(0.552941, 0.0980392, 0.843137, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.533333, 0.486275, 0.615686, 1)
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
-anti_aliasing = false
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_axa1v"]
 bg_color = Color(0.552941, 0.0980392, 0.843137, 1)
 border_width_left = 1
@@ -172,9 +159,6 @@ corner_radius_top_right = 2
 corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 anti_aliasing = false
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c7lk2"]
-bg_color = Color(0.552941, 0.0980392, 0.843137, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jvgdf"]
 bg_color = Color(0.552941, 0.0980392, 0.843137, 1)
@@ -306,12 +290,10 @@ ButtonShowHide/base_type = &"Button"
 ButtonShowHide/styles/normal = SubResource("StyleBoxFlat_6ueq4")
 ButtonTester/base_type = &"Button"
 ButtonTester/font_sizes/font_size = 12
-ButtonTester/styles/focus = SubResource("StyleBoxFlat_q8ovr")
 ButtonTester/styles/hover = SubResource("StyleBoxFlat_axa1v")
 ButtonTester/styles/normal = SubResource("StyleBoxFlat_ksejr")
 ButtonTester/styles/pressed = SubResource("StyleBoxFlat_u02mp")
 ButtonTesterRadio/base_type = &"ButtonTester"
-ButtonTesterRadio/styles/focus = SubResource("StyleBoxFlat_c7lk2")
 ButtonTesterRadio/styles/hover = SubResource("StyleBoxFlat_jvgdf")
 ButtonTesterRadio/styles/normal = SubResource("StyleBoxEmpty_thwtw")
 ButtonTesterRadio/styles/pressed = SubResource("StyleBoxFlat_78ac8")
@@ -437,19 +419,40 @@ PanelSeparator/styles/panel = SubResource("StyleBoxLine_fh8oh")
 RichTextLabel/fonts/bold_font = ExtResource("1_guogc")
 RichTextLabel/fonts/bold_italics_font = ExtResource("5_gv20d")
 RichTextLabel/fonts/italics_font = ExtResource("6_s8153")
-RichTextLabel/fonts/normal_font = ExtResource("4_8s5s2")
 RichTextLabelTesterCheckHint/base_type = &"RichTextLabel"
 RichTextLabelTesterCheckHint/fonts/bold_font = ExtResource("1_guogc")
 RichTextLabelTesterCheckHint/fonts/bold_italics_font = ExtResource("5_gv20d")
 RichTextLabelTesterCheckHint/fonts/italics_font = ExtResource("6_s8153")
 RichTextLabelTesterCheckHint/styles/normal = SubResource("StyleBoxLine_xgy5q")
-RichTextLabelTesterInput/base_type = &"RichTextLabel"
-RichTextLabelTesterInput/font_sizes/bold_font_size = 12
-RichTextLabelTesterInput/font_sizes/bold_italics_font_size = 12
-RichTextLabelTesterInput/font_sizes/italics_font_size = 12
-RichTextLabelTesterInput/font_sizes/normal_font_size = 12
-RichTextLabelTesterInput/fonts/bold_font = ExtResource("1_guogc")
-RichTextLabelTesterInput/fonts/bold_italics_font = ExtResource("5_gv20d")
-RichTextLabelTesterInput/fonts/italics_font = ExtResource("6_s8153")
+RichTextLabelTesterInputNote/base_type = &"RichTextLabel"
+RichTextLabelTesterInputNote/colors/default_color = Color(0.533333, 0.486275, 0.615686, 1)
+RichTextLabelTesterInputNote/font_sizes/bold_font_size = 12
+RichTextLabelTesterInputNote/font_sizes/bold_italics_font_size = 12
+RichTextLabelTesterInputNote/font_sizes/italics_font_size = 12
+RichTextLabelTesterInputNote/font_sizes/mono_font_size = 12
+RichTextLabelTesterInputNote/font_sizes/normal_font_size = 12
+RichTextLabelTesterInputNote/fonts/bold_font = ExtResource("1_guogc")
+RichTextLabelTesterInputNote/fonts/bold_italics_font = ExtResource("5_gv20d")
+RichTextLabelTesterInputNote/fonts/italics_font = ExtResource("6_s8153")
+RichTextLabelTesterInputSafe/base_type = &"RichTextLabel"
+RichTextLabelTesterInputSafe/colors/default_color = Color(0.921569, 0.878431, 1, 1)
+RichTextLabelTesterInputSafe/font_sizes/bold_font_size = 12
+RichTextLabelTesterInputSafe/font_sizes/bold_italics_font_size = 12
+RichTextLabelTesterInputSafe/font_sizes/italics_font_size = 12
+RichTextLabelTesterInputSafe/font_sizes/mono_font_size = 12
+RichTextLabelTesterInputSafe/font_sizes/normal_font_size = 12
+RichTextLabelTesterInputSafe/fonts/bold_font = ExtResource("1_guogc")
+RichTextLabelTesterInputSafe/fonts/bold_italics_font = ExtResource("5_gv20d")
+RichTextLabelTesterInputSafe/fonts/italics_font = ExtResource("6_s8153")
+RichTextLabelTesterInputWarn/base_type = &"RichTextLabel"
+RichTextLabelTesterInputWarn/colors/default_color = Color(1, 0.835294, 0, 1)
+RichTextLabelTesterInputWarn/font_sizes/bold_font_size = 12
+RichTextLabelTesterInputWarn/font_sizes/bold_italics_font_size = 12
+RichTextLabelTesterInputWarn/font_sizes/italics_font_size = 12
+RichTextLabelTesterInputWarn/font_sizes/mono_font_size = 12
+RichTextLabelTesterInputWarn/font_sizes/normal_font_size = 12
+RichTextLabelTesterInputWarn/fonts/bold_font = ExtResource("1_guogc")
+RichTextLabelTesterInputWarn/fonts/bold_italics_font = ExtResource("5_gv20d")
+RichTextLabelTesterInputWarn/fonts/italics_font = ExtResource("6_s8153")
 VBoxContainerTester/base_type = &"VBoxContainer"
 VBoxContainerTester/constants/separation = 0

@@ -14,8 +14,8 @@ const SELECTED_VARIATION := &"MarginContainerSelectedPractice"
 const ITEM_FORMAT := "L%d.P%d"
 const COLOR_DISABLED_TEXT := Color(0.51764708757401, 0.59607845544815, 0.74509805440903)
 const CHECKBOX_TEXTURES := {
-	false: preload("res://addons/gdquest_practice_framework/ui/assets/checkbox_empty.svg"),
-	true: preload("res://addons/gdquest_practice_framework/ui/assets/checkbox_ticked.svg"),
+	false: preload("../assets/checkbox_empty.svg"),
+	true: preload("../assets/checkbox_ticked.svg"),
 }
 
 static var button_group := ButtonGroup.new()
