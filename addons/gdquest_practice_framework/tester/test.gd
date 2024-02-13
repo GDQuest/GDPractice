@@ -2,6 +2,44 @@
 ## with the solution.
 extends Node
 
+
+class Check:
+	var cache := {}
+
+	var check := func() -> bool: return true
+	var dependencies: Array[Check] = []
+	var subchecks: Array[Check] = []
+
+	var description: String = ""
+	var hint: String = ""
+
+	func is_disabled() -> bool:
+		if "is_disabled" in cache:
+			return cache.is_disabled
+
+		var result := false
+		for dependency in dependencies:
+			if not await dependency.has_passed():
+				result = true
+				break
+
+		cache.is_disabled = result
+		return result
+
+	func has_passed() -> bool:
+		if "has_passed" in cache:
+			return cache.has_passed
+
+		var result := check.call()
+		for task in subchecks:
+			result = result and await task.has_passed()
+			if not result:
+				break
+
+		cache.has_passed = result
+		return result
+
+
 const Logger := preload("../logger/logger.gd")
 const JSPayload := preload("../logger/js_payload.gd")
 
@@ -9,6 +47,12 @@ const JSPayload := preload("../logger/js_payload.gd")
 ## automatically.
 const PREFIX := "_test_"
 const COMMENT_REGEX := "#.*$"
+const STATE_MSG := "[color=%s]%s[/color]"
+const DISABLED := ["darkgray", "DISABLED"]
+const PASSED := ["green", "PASSED"]
+const NOT_PASSED := ["orange", "NOT PASSED"]
+
+var _checks: Array[Check] = []
 
 ## Used to store [b]practice[/b] and [b]solution[/b] as well as any needed extra data for
 ## testing with the framework. It needs to be populated before use.
@@ -57,25 +101,52 @@ func setup(practice: Node, solution: Node) -> void:
 	message = "Populating test space"
 	JSPayload.new(JSPayload.Type.TEST, JSPayload.Status.DONE, _practice_base_path, message)
 	# Logger.log("\t%s...[color=green]DONE[/color]" % message)
+	_build()
 
 
-## Runs all functions with names that begin with [constant PREFIX].
 func run() -> int:
 	var result := 1
-	for d in get_method_list().filter(
-		func(x: Dictionary) -> bool: return x.name.begins_with(PREFIX)
-	):
-		var hint: String = await call(d.name)
-		var state_msg := (
-			"[color=%s]%s[/color]"
-			% (["green", "PASSED"] if hint.is_empty() else ["orange", "NOT PASSED"])
-		)
-		Logger.log("\n%s: %s" % [state_msg, d.name.trim_prefix(PREFIX).capitalize()])
-		if not hint.is_empty():
+	for check in _checks:
+		var is_disabled := await check.is_disabled()
+		var has_passed := false
+		var state_msg := ""
+		if is_disabled:
+			state_msg = STATE_MSG % DISABLED
+		else:
+			has_passed = await check.has_passed()
+			state_msg = STATE_MSG % (PASSED if has_passed else NOT_PASSED)
+
+		Logger.log("\n%s: %s" % [state_msg, check.description])
+		if not has_passed:
 			result = 0
-			JSPayload.new(JSPayload.Type.TEST, JSPayload.Status.FAIL, _practice_base_path, hint)
-			Logger.log("[i]%s[/i]" % hint)
+			JSPayload.new(
+				JSPayload.Type.TEST, JSPayload.Status.FAIL, _practice_base_path, check.hint
+			)
+			Logger.log("[i]%s[/i]" % check.hint)
 	return result
+
+
+# ## Runs all functions with names that begin with [constant PREFIX].
+# func run() -> int:
+# 	var result := 1
+# 	for d in get_method_list().filter(
+# 		func(x: Dictionary) -> bool: return x.name.begins_with(PREFIX)
+# 	):
+# 		var hint: String = await call(d.name)
+# 		var state_msg := (
+# 			"[color=%s]%s[/color]"
+# 			% (["green", "PASSED"] if hint.is_empty() else ["orange", "NOT PASSED"])
+# 		)
+# 		Logger.log("\n%s: %s" % [state_msg, d.name.trim_prefix(PREFIX).capitalize()])
+# 		if not hint.is_empty():
+# 			result = 0
+# 			JSPayload.new(JSPayload.Type.TEST, JSPayload.Status.FAIL, _practice_base_path, hint)
+# 			Logger.log("[i]%s[/i]" % hint)
+# 	return result
+
+
+func _build() -> void:
+	pass
 
 
 ## Assign here the [b]practice[/b] state to the [b]solution[/b] state so they both start with the
