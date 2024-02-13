@@ -68,7 +68,7 @@ extends SceneTree
 
 const Paths := preload("paths.gd")
 const Utils := preload("utils.gd")
-const Layout := preload("tester/layout.gd")
+const Layout := preload("tester/layouts/layout.gd")
 
 const PROJECT_FILE := "project.godot"
 const PLUGINS_SECTION := "editor_plugins"
