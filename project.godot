@@ -14,9 +14,22 @@ config/name="Godot Practice Framework"
 config/features=PackedStringArray("4.2", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+Tester="*res://addons/gdquest_practice_framework/tester/tester.tscn"
+
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+
 [dotnet]
 
 project/assembly_name="Godot Practice Framework"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gdquest_practice_framework/plugin.cfg")
 
 [input]
 

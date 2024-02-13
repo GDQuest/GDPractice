@@ -1,4 +1,4 @@
-const CheckRichTextLabel := preload("../tester/check_rich_text_label.gd")
+const CheckRichTextLabel := preload("check_rich_text_label.gd")
 
 static var _js_interface: JavaScriptObject = null
 static var _title_rich_text_label: RichTextLabel = null
@@ -6,8 +6,7 @@ static var _checks_v_box_container: VBoxContainer = null
 
 
 static func setup(
-	title_rich_text_label: RichTextLabel,
-	checks_v_box_container: VBoxContainer
+	title_rich_text_label: RichTextLabel, checks_v_box_container: VBoxContainer
 ) -> void:
 	if is_instance_valid(title_rich_text_label):
 		_title_rich_text_label = title_rich_text_label

@@ -8,25 +8,28 @@ const Bullet := preload("bullet.gd")
 var bullets: Array[Bullet] = []
 
 
-func build() -> void:
+func _build() -> void:
 	var c1 := Check.new()
 	c1.description = "Check 1"
 
 	var c1_1 := Check.new()
-	c1_1.description = "Check 1 Sub"
-	c1_1.check = func() -> bool: return true
+	c1_1.description = "Check 1.1 Sub"
+	c1_1.hint = "Check 1.1 Hint"
+	c1_1.check = func() -> bool: return false
 	c1.subchecks.push_back(c1_1)
 
 	var c1_2 := Check.new()
-	c1_2.description = "Check 1 Sub"
+	c1_2.description = "Check 1.2 Sub"
+	c1_2.hint = "Check 1.2 Hint"
 	c1_2.check = func() -> bool: return true
 	c1.subchecks.push_back(c1_2)
 
 	var c2 := Check.new()
 	c2.description = "Check 2 (Depends)"
-	c2.check = func() -> bool: return false
+	c2.hint = "Check 2 Hint"
+	c2.check = func() -> bool: return true
 	c2.dependencies.push_back(c1)
-	_checks.append_array([c1, c2])
+	checks.append_array([c1, c2])
 
 
 func test_bullet_position_is_affected():
