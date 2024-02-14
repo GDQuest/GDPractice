@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://bnnxfl3thl8qk"]
+[gd_scene load_steps=15 format=3 uid="uid://bnnxfl3thl8qk"]
 
 [ext_resource type="Theme" uid="uid://bk3rqtt0xeorm" path="res://addons/gdquest_practice_framework/assets/theme.tres" id="1_5xw4w"]
 [ext_resource type="Script" path="res://addons/gdquest_practice_framework/tester/tester.gd" id="1_awhsl"]
@@ -9,6 +9,61 @@
 [ext_resource type="Texture2D" uid="uid://dr3pj5w8kbxeb" path="res://addons/gdquest_practice_framework/assets/icons/split.svg" id="5_ffo30"]
 [ext_resource type="Texture2D" uid="uid://wgr4gdu7syvg" path="res://addons/gdquest_practice_framework/assets/icons/pass.svg" id="6_e1gh3"]
 [ext_resource type="PackedScene" uid="uid://c3ere1qqhai67" path="res://addons/gdquest_practice_framework/tester/input_panel_container/input_panel_container.tscn" id="6_i08uq"]
+
+[sub_resource type="Animation" id="Animation_p88ms"]
+resource_name = "testing"
+length = 1.2
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible_characters")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.6, 0.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [7, 8, 9, 10]
+}
+
+[sub_resource type="Animation" id="Animation_y1jah"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible_characters")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [-1]
+}
+
+[sub_resource type="Animation" id="Animation_yyykk"]
+resource_name = "default"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible_characters")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [-1]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_lbhxb"]
+_data = {
+"RESET": SubResource("Animation_y1jah"),
+"default": SubResource("Animation_yyykk"),
+"testing": SubResource("Animation_p88ms")
+}
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_natww"]
 
@@ -86,6 +141,14 @@ text = "testing..."
 horizontal_alignment = 2
 uppercase = true
 visible_characters_behavior = 2
+visible_ratio = -0.1
+
+[node name="StatusAnimationPlayer" type="AnimationPlayer" parent="HBoxContainer/PanelContainer/VBoxContainer/MarginContainerHeader/PanelContainer/HBoxContainer/MarginContainer/HBoxContainer/StatusLabel"]
+unique_name_in_owner = true
+libraries = {
+"": SubResource("AnimationLibrary_lbhxb")
+}
+autoplay = "testing"
 
 [node name="ToggleShowButton" type="Button" parent="HBoxContainer/PanelContainer/VBoxContainer/MarginContainerHeader/PanelContainer/HBoxContainer"]
 unique_name_in_owner = true

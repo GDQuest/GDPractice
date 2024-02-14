@@ -15,22 +15,22 @@ const REPORT_STATUS := {
 	0: {text = "FAIL", theme_type_variation = &"LabelTesterStatusFail"},
 	1: {text = "PASS", theme_type_variation = &"LabelTesterStatusPass"},
 }
-const REPORT_STEPS = {
+
+const REPORT_PHASES = {
 	prep = {text = "Setting up the test..."},
 	setup_fail = {text = "Test setup failed."},
-	testing = {text = "Verifying your practice tasks..."},
+	checking = {text = "Verifying your practice tasks..."},
 	test_fail = {text = "Looks like you've got some things to fix."},
 	test_pass = {text = "Congradulations! You aced this practice."},
 }
-
 var _practice_info := {}
-var _input_map := {}
 
 var db := DB.new()
 
 @onready var item_label: Label = %ItemLabel
 @onready var title_label: Label = %TitleLabel
 @onready var status_label: Label = %StatusLabel
+@onready var status_animation_player: AnimationPlayer = %StatusAnimationPlayer
 
 @onready var report_texture_rect: TextureRect = %ReportTextureRect
 @onready var report_label: Label = %ReportLabel
@@ -61,14 +61,14 @@ func _ready() -> void:
 
 	if _is_practice_scene():
 		_prepare_for_test()
-		_report({report_label: REPORT_STEPS.testing})
+		_report_checking()
 
 		var test := await _check_practice()
 		var completion := test.get_completion()
 		db.update({_practice_info.metadata.id: {completion = completion}})
 		db.save()
+		_restore_from_test(completion)
 
-		_restore_from_test()
 		_report_checks(test)
 		_report_test(completion)
 	else:
@@ -125,19 +125,13 @@ func _prepare_for_test() -> void:
 	toggle_x5_button.toggled.connect(_on_toggle_x5_button_toggled)
 	ghost_button.button_group.pressed.connect(_on_layout_button_group_pressed)
 	input_panel_container.warn()
-	for action in InputMap.get_actions():
-		_input_map[action] = InputMap.action_get_events(action)
-		InputMap.action_erase_events(action)
 
 
-func _restore_from_test() -> void:
+func _restore_from_test(completion: int) -> void:
 	toggle_x5_button.toggled.disconnect(_on_toggle_x5_button_toggled)
 	toggle_x5_button.disabled = true
 	Engine.time_scale = 1
-	input_panel_container.safe()
-	for action in _input_map:
-		for event in _input_map[action]:
-			InputMap.action_add_event(action, event)
+	input_panel_container.safe() if completion == 1 else input_panel_container.note()
 
 
 func _check_practice() -> Test:
@@ -168,17 +162,21 @@ func _report_prep() -> void:
 	if not "metadata" in _practice_info:
 		return
 
+	status_animation_player.play("testing")
 	var pm: Metadata.PracticeMetadata = _practice_info.metadata
-	_report(
-		{
-			item_label: {text = ITEM % [pm.lesson_number, pm.practice_number]},
-			title_label: {text = pm.title},
-			report_label: REPORT_STEPS.prep,
-		}
-	)
+	var info := {}
+	info[report_label] = REPORT_PHASES.prep
+	info[item_label] = {text = ITEM % [pm.lesson_number, pm.practice_number]}
+	info[title_label] = {text = pm.title}
+	_report(info)
+
+
+func _report_checking() -> void:
+	_report({report_label: REPORT_PHASES.checking})
 
 
 func _report_checks(test: Test) -> void:
+	status_animation_player.play("default")
 	for check in test.checks:
 		_report_check(check)
 		for subcheck in check.subchecks:
@@ -190,22 +188,24 @@ func _report_check(check: Test.Check, is_subcheck := false) -> void:
 	log_v_box_container.add_child(log_entry)
 
 	var has_subchecks := not check.subchecks.is_empty()
-	var info: Dictionary = log_entry.get_variation("check_default")
-	if is_subcheck and check.status == Test.Status.FAIL:
-		info = log_entry.get_variation("subcheck_fail")
-	elif is_subcheck and check.status == Test.Status.PASS:
-		info = log_entry.get_variation("subcheck_pass")
-	elif is_subcheck and check.status == Test.Status.DISABLE:
-		info = log_entry.get_variation("subcheck_default")
-	elif not is_subcheck and has_subchecks and check.status == Test.Status.FAIL:
-		info = log_entry.get_variation("check_fail")
-	elif not is_subcheck and has_subchecks and check.status == Test.Status.PASS:
-		info = log_entry.get_variation("check_pass")
-	elif not is_subcheck and not has_subchecks and check.status == Test.Status.FAIL:
-		info = log_entry.get_variation("check_no_subchecks_fail")
-	elif not is_subcheck and not has_subchecks and check.status == Test.Status.PASS:
-		info = log_entry.get_variation("check_no_subchecks_pass")
+	var variation := "check_default"
+	match [is_subcheck, has_subchecks, check.status]:
+		[true, _, Test.Status.FAIL]:
+			variation = "subcheck_fail"
+		[true, _, Test.Status.PASS]:
+			variation = "subcheck_pass"
+		[true, _, Test.Status.DISABLED]:
+			variation = "subcheck_default"
+		[false, true, Test.Status.FAIL]:
+			variation = "check_fail"
+		[false, true, Test.Status.PASS]:
+			variation = "check_pass"
+		[false, false, Test.Status.FAIL]:
+			variation = "check_no_subchecks_fail"
+		[false, false, Test.Status.PASS]:
+			variation = "check_no_subchecks_pass"
 
+	var info: Dictionary = log_entry.get_variation(variation)
 	info[log_entry.rich_text_label].merge({text = check.description})
 	info[log_entry.extra_rich_text_label].merge({text = check.hint})
 	_report(info)
@@ -215,9 +215,9 @@ func _report_test(completion: int) -> void:
 	var info := {}
 	info[status_label] = REPORT_STATUS[completion]
 	if completion == 0:
-		info[report_label] = REPORT_STEPS.test_fail
+		info[report_label] = REPORT_PHASES.test_fail
 		info[report_texture_rect] = {visible = false, texture = preload(ICON_PATH % "fail")}
 	else:
-		info[report_label] = REPORT_STEPS.test_pass
+		info[report_label] = REPORT_PHASES.test_pass
 		info[report_texture_rect] = {visible = true, texture = preload(ICON_PATH % "pass")}
 	_report(info)

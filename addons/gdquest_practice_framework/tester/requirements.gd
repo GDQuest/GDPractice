@@ -1,5 +1,3 @@
-const Logger := preload("../logger/logger.gd")
-const JSPayload := preload("../logger/js_payload.gd")
 const Paths := preload("../paths.gd")
 const Utils := preload("../utils.gd")
 
@@ -35,15 +33,11 @@ static func setup(practice_base_path: String) -> void:
 			.filter(file_exists_predicate)
 			.map(load_transformer)
 		)
-	# TODO: consider readding along with the commented code in the check() function.
-	# Logger.log("[b]Requirements...[/b]")
 
 
 static func check() -> bool:
 	if _list.scripts.is_empty():
 		var message := "Nothing to do"
-		JSPayload.new(JSPayload.Type.REQUIREMENT, JSPayload.Status.SKIP, _practice_base_path, message)
-		Logger.log("%s...[color=orange]SKIP[/color]" % message)
 		return true
 	# TODO: consider selectively skipping checks based on the type of requirement. Some practices need different functions and node structures.
 	# return _check_constants() and _check_properties() and _check_methods() and _check_signals() and _check_nodes()
@@ -51,7 +45,6 @@ static func check() -> bool:
 
 
 static func _check_methods() -> bool:
-	Logger.log("Methods...")
 	return _list.scripts.all(func(script: Dictionary) -> bool:
 		var practice_method_list: Array[Dictionary] = script.practice.get_script_method_list()
 		var solution_method_list: Array[Dictionary] = script.solution.get_script_method_list()
@@ -59,13 +52,11 @@ static func _check_methods() -> bool:
 		solution_method_list.sort_custom(_name_sorter)
 
 		var result := practice_method_list.map(_erase_arg_name_transformer) == solution_method_list.map(_erase_arg_name_transformer)
-		_log_item(script, result, JSPayload.Type.REQUIREMENT_METHODS)
 		return result
 	)
 
 
 static func _check_properties() -> bool:
-	Logger.log("Properties...")
 	return _list.scripts.all(func(script: Dictionary) -> bool:
 		var script_file_name: String = script.practice.resource_path.get_file()
 		var predicate := func(prop: Dictionary) -> bool: return prop.name != script_file_name and prop.name != "metadata"
@@ -75,13 +66,11 @@ static func _check_properties() -> bool:
 		solution_property_list.sort_custom(_name_sorter)
 
 		var result := practice_property_list == solution_property_list
-		_log_item(script, result, JSPayload.Type.REQUIREMENT_PROPERTIES)
 		return result
 	)
 
 
 static func _check_signals() -> bool:
-	Logger.log("Signals...")
 	return _list.scripts.all(func(script: Dictionary) -> bool:
 		var practice_signal_list: Array[Dictionary] = script.practice.get_script_signal_list()
 		var solution_signal_list: Array[Dictionary] = script.solution.get_script_signal_list()
@@ -89,25 +78,21 @@ static func _check_signals() -> bool:
 		solution_signal_list.sort_custom(_name_sorter)
 
 		var result := practice_signal_list.map(_erase_arg_name_transformer) == solution_signal_list.map(_erase_arg_name_transformer)
-		_log_item(script, result, JSPayload.Type.REQUIREMENT_SIGNALS)
 		return result
 	)
 
 
 static func _check_constants() -> bool:
-	Logger.log("Constants...")
 	return _list.scripts.all(func(script: Dictionary) -> bool:
 		var practice_constant_map: Dictionary = script.practice.get_script_constant_map()
 		var solution_constant_map: Dictionary = script.solution.get_script_constant_map()
 
 		var result := practice_constant_map == solution_constant_map
-		_log_item(script, result, JSPayload.Type.REQUIREMENT_CONSTANTS)
 		return result
 	)
 
 
 static func _check_nodes() -> bool:
-	Logger.log("Nodes...")
 	return _list.scenes.all(func(scene: Dictionary) -> bool:
 		var practice_scene_tree_proxy := _get_scene_tree_proxy(scene.practice.get_state())
 		var solution_scene_tree_proxy := _get_scene_tree_proxy(scene.solution.get_state())
@@ -123,7 +108,6 @@ static func _check_nodes() -> bool:
 				)
 				if not result:
 					break
-		_log_item(scene, result, JSPayload.Type.REQUIREMENT_METHODS)
 		return result
 	)
 
@@ -166,17 +150,3 @@ static func _get_scene_tree_proxy(state: SceneState) -> Dictionary:
 	for key in result:
 		result[key].sort_custom(func(x: Dictionary, y: Dictionary) -> bool: return x.type < y.type)
 	return result
-
-
-static func _log_item(item: Dictionary, is_valid: bool, js_payload_requirement: JSPayload.Type) -> void:
-	var file_name: String = item.practice.resource_path.get_file()
-	JSPayload.new(
-		js_payload_requirement,
-		JSPayload.Status.PASS if is_valid else JSPayload.Status.FAIL,
-		_practice_base_path,
-		file_name,
-	)
-	Logger.log(
-		"\t%s...[color=%s]%s[/color]"
-		% ([file_name] + (["green", "PASS"] if is_valid else ["red", "FAIL"]))
-	)

@@ -12,14 +12,14 @@ class Check:
 
 	var description := ""
 	var hint := ""
-	var status := Status.DISABLE
+	var status := Status.DISABLED
 
 	func is_disabled() -> bool:
 		if "is_disabled" in cache:
 			return cache.is_disabled
 
 		var result := false
-		for dependency in dependencies:
+		for dependency: Check in dependencies:
 			if not await dependency.has_passed():
 				result = true
 				break
@@ -44,23 +44,16 @@ class Check:
 	func run() -> void:
 		var is_disabled := await is_disabled()
 		status = (
-			Status.DISABLE if is_disabled else (Status.PASS if await has_passed() else Status.FAIL)
+			Status.DISABLED if is_disabled else (Status.PASS if await has_passed() else Status.FAIL)
 		)
 
-
-const Logger := preload("../logger/logger.gd")
-const JSPayload := preload("../logger/js_payload.gd")
 
 ## Functions that have names beginning with this string will be called in [method run]
 ## automatically.
 const PREFIX := "_test_"
 const COMMENT_REGEX := "#.*$"
-# const STATE_MSG := "[color=%s]%s[/color]"
-# const DISABLED := ["darkgray", "DISABLED"]
-# const PASSED := ["green", "PASSED"]
-# const NOT_PASSED := ["orange", "NOT PASSED"]
 
-enum Status { DISABLE, PASS, FAIL }
+enum Status { DISABLED, PASS, FAIL }
 
 var checks: Array[Check] = []
 
@@ -100,40 +93,14 @@ func setup(practice: Node, solution: Node) -> void:
 		_practice_base_path = _practice_script.resource_path.get_base_dir()
 		_practice_code = _preprocess_practice_code(_practice_script)
 
-	# Logger.add_separator()
-	# Logger.log("[b]Testing the practice...[/b]")
-
-	# var message := "Setting practice <=> solution state"
-	# JSPayload.new(JSPayload.Type.TEST, JSPayload.Status.DONE, _practice_base_path, message)
-	# Logger.log("\t%s...[color=green]DONE[/color]" % message)
 	await _setup_state()
 	await _setup_populate_test_space()
-	# message = "Populating test space"
-	# JSPayload.new(JSPayload.Type.TEST, JSPayload.Status.DONE, _practice_base_path, message)
-	# Logger.log("\t%s...[color=green]DONE[/color]" % message)
 	_build()
 
 
 func run() -> void:
 	for check in checks:
 		check.run()
-		# var has_passed := false
-		# var state_msg := ""
-		# if is_disabled:
-		# state_msg = STATE_MSG % DISABLED
-		# result = Status.DISABLE
-		# else:
-		# result = Status.PASS if await check.has_passed() else Status.FAIL
-		# has_passed = await check.has_passed()
-		# state_msg = STATE_MSG % (PASSED if has_passed else NOT_PASSED)
-
-		# Logger.log("\n%s: %s" % [state_msg, check.description])
-		# if not has_passed:
-		# 	result.completion = 0
-		# JSPayload.new(
-		# 	JSPayload.Type.TEST, JSPayload.Status.FAIL, _practice_base_path, check.hint
-		# )
-		# Logger.log("[i]%s[/i]" % check.hint)
 
 
 func get_completion() -> int:
