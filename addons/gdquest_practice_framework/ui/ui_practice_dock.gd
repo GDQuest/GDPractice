@@ -26,7 +26,8 @@ func _ready() -> void:
 	if not Engine.is_editor_hint() or EditorInterface.get_edited_scene_root() == self:
 		return
 	theme = ThemeUtils.generate_scaled_theme(theme)
-	gdquest_logo.custom_minimum_size *= EditorInterface.get_editor_scale()
+	for control: Control in find_children("", "TextureRect") + find_children("", "TextureButton"):
+		control.custom_minimum_size *= EditorInterface.get_editor_scale()
 
 
 func construct_panel_list() -> void:

@@ -488,5 +488,7 @@ RichTextLabelTesterRequirement/font_sizes/normal_font_size = 14
 RichTextLabelTesterRequirement/fonts/bold_font = ExtResource("1_guogc")
 RichTextLabelTesterRequirement/fonts/bold_italics_font = ExtResource("5_gv20d")
 RichTextLabelTesterRequirement/fonts/italics_font = ExtResource("6_s8153")
+VBoxContainerPracticesList/base_type = &"VBoxContainer"
+VBoxContainerPracticesList/constants/separation = 5
 VBoxContainerTester/base_type = &"VBoxContainer"
 VBoxContainerTester/constants/separation = 0

@@ -7,6 +7,7 @@ const Build := preload("../build.gd")
 const Paths := preload("../paths.gd")
 const Progress := preload("../db/progress.gd")
 const Metadata := preload("../metadata.gd")
+const ThemeUtils := preload("../utils/theme_utils.gd")
 
 const DEFAULT_VARIATION := &"MarginContainerPractice"
 const SELECTED_VARIATION := &"MarginContainerSelectedPractice"
@@ -37,6 +38,11 @@ func _ready() -> void:
 	button.pressed.connect(open)
 	run_button.pressed.connect(EditorInterface.play_current_scene)
 	reset_button.pressed.connect(reset_practice)
+	if not Engine.is_editor_hint() or EditorInterface.get_edited_scene_root() == self:
+		return
+	theme = ThemeUtils.generate_scaled_theme(theme)
+	for control: Control in find_children("", "TextureRect") + find_children("", "TextureButton"):
+		control.custom_minimum_size *= EditorInterface.get_editor_scale()
 
 
 func setup(metadata: Metadata.PracticeMetadata) -> void:
