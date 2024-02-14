@@ -1,3 +1,6 @@
+## Keeps track of the student's progress. Most importantly which practices have been completed.
+extends RefCounted
+
 const Progress := preload("progress.gd")
 const Metadata := preload("../metadata.gd")
 const Paths := preload("../paths.gd")

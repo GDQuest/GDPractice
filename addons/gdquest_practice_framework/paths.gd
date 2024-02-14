@@ -1,3 +1,6 @@
+## Utility script to handle paths and file names for practice and solution files.
+extends RefCounted
+
 const RES := "res://"
 const PRACTICES_PATH := RES + "practices"
 const SOLUTIONS_PATH := RES + "practice_solutions"

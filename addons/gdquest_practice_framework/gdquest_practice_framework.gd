@@ -15,7 +15,7 @@ func _enter_tree() -> void:
 	editor_run_bar.stop_pressed.connect(ui_practice_dock.update)
 	scene_changed.connect(ui_practice_dock.select_practice)
 	add_control_to_dock(DOCK_SLOT_RIGHT_UL, ui_practice_dock)
-	add_autoload_singleton("Tester", "tester/tester.tscn")
+	add_autoload_singleton("Tester", "tester/ui_test_panel.tscn")
 	# Removed for now because this should not happen to the user's project. It's a tool for teachers creating practices.
 	# add_templates()
 

@@ -1,4 +1,7 @@
 ## Saves and loads metadata for practices using the ConfigFile format of Godot.
+extends RefCounted
+
+## The path to the file containing the metadata of all practices.
 const PATH := "res://practice_solutions/metadata.cfg"
 
 
@@ -17,6 +20,8 @@ class PracticeMetadata:
 		)
 
 
+
+## Loads the metadata of all practices contained in a config file.
 static func load() -> Array[PracticeMetadata]:
 	var result: Array[PracticeMetadata] = []
 	var cfg := ConfigFile.new()

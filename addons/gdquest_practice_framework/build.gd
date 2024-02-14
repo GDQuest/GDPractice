@@ -204,6 +204,7 @@ func build_project(suffix: String, output_path: String, exclude_slugs: Array[Str
 			contents = contents.replace(Paths.SOLUTIONS_PATH, solution_dir_path)
 			FileAccess.open(destination_file_path, FileAccess.WRITE).store_string(contents)
 
+	# Clean up the project.godot file. Remove enabled plugins and autoloads and update the project name.
 	var project_file_path := destination_project_dir_path.path_join(PROJECT_FILE)
 	var cfg = ConfigFile.new()
 	cfg.load(project_file_path)
