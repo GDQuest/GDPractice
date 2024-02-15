@@ -14,7 +14,7 @@ const ICON_WIDTH := {"fail": 15, "pass": 20}
 		self: {theme_type_variation = &"MarginContainerTesterCheck"},
 		panel_container: {theme_type_variation = &"PanelContainerTesterCheck"},
 		rich_text_label: {theme_type_variation = &"RichTextLabelTesterDefault"},
-		extra_rich_text_label: {visible = false},
+		extra_rich_text_label: {theme_type_variation = &"RichTextLabelTesterCheckHint", visible = false},
 		report_texture_rect: {modulate = Color.TRANSPARENT},
 	},
 	check_fail =
@@ -22,7 +22,7 @@ const ICON_WIDTH := {"fail": 15, "pass": 20}
 		self: {theme_type_variation = &"MarginContainerTesterCheck"},
 		panel_container: {theme_type_variation = &"PanelContainerTesterCheck"},
 		rich_text_label: {theme_type_variation = &"RichTextLabelTesterFail"},
-		extra_rich_text_label: {visible = false},
+		extra_rich_text_label: {theme_type_variation = &"RichTextLabelTesterCheckHint", visible = false},
 		report_texture_rect:
 		{
 			texture = preload(ICON_PATH % "fail"),
@@ -35,7 +35,7 @@ const ICON_WIDTH := {"fail": 15, "pass": 20}
 		self: {theme_type_variation = &"MarginContainerTesterCheck"},
 		panel_container: {theme_type_variation = &"PanelContainerTesterCheck"},
 		rich_text_label: {theme_type_variation = &"RichTextLabelTesterPass"},
-		extra_rich_text_label: {visible = false},
+		extra_rich_text_label: {theme_type_variation = &"RichTextLabelTesterCheckHint", visible = false},
 		report_texture_rect:
 		{
 			texture = preload(ICON_PATH % "pass"),
@@ -48,7 +48,7 @@ const ICON_WIDTH := {"fail": 15, "pass": 20}
 		self: {theme_type_variation = &"MarginContainerTesterCheck"},
 		panel_container: {theme_type_variation = &"PanelContainerTesterCheck"},
 		rich_text_label: {theme_type_variation = &"RichTextLabelTesterFail"},
-		extra_rich_text_label: {theme_type_variation = &"RichTextLabelTesterHint", visible = true},
+		extra_rich_text_label: {theme_type_variation = &"RichTextLabelTesterCheckHint", visible = true},
 		report_texture_rect:
 		{
 			texture = preload(ICON_PATH % "fail"),
@@ -61,7 +61,7 @@ const ICON_WIDTH := {"fail": 15, "pass": 20}
 		self: {theme_type_variation = &"MarginContainerTesterCheck"},
 		panel_container: {theme_type_variation = &"PanelContainerTesterCheck"},
 		rich_text_label: {theme_type_variation = &"RichTextLabelTesterPass"},
-		extra_rich_text_label: {theme_type_variation = &"RichTextLabelTesterHint", visible = false},
+		extra_rich_text_label: {theme_type_variation = &"RichTextLabelTesterCheckHint", visible = false},
 		report_texture_rect:
 		{
 			texture = preload(ICON_PATH % "pass"),
@@ -74,7 +74,7 @@ const ICON_WIDTH := {"fail": 15, "pass": 20}
 		self: {theme_type_variation = &"MarginContainerTesterSubCheck"},
 		panel_container: {theme_type_variation = &"PanelContainerTesterCheck"},
 		rich_text_label: {theme_type_variation = &"RichTextLabelTesterDefault"},
-		extra_rich_text_label: {theme_type_variation = &"RichTextLabelTesterHint", visible = false},
+		extra_rich_text_label: {theme_type_variation = &"RichTextLabelTesterCheckHint", visible = false},
 		report_texture_rect: {modulate = Color.TRANSPARENT},
 	},
 	subcheck_fail =
@@ -82,7 +82,7 @@ const ICON_WIDTH := {"fail": 15, "pass": 20}
 		self: {theme_type_variation = &"MarginContainerTesterSubCheck"},
 		panel_container: {theme_type_variation = &"PanelContainerTesterCheck"},
 		rich_text_label: {theme_type_variation = &"RichTextLabelTesterFail"},
-		extra_rich_text_label: {theme_type_variation = &"RichTextLabelTesterHint", visible = true},
+		extra_rich_text_label: {theme_type_variation = &"RichTextLabelTesterCheckHint", visible = true},
 		report_texture_rect:
 		{
 			texture = preload(ICON_PATH % "fail"),
@@ -95,7 +95,7 @@ const ICON_WIDTH := {"fail": 15, "pass": 20}
 		self: {theme_type_variation = &"MarginContainerTesterSubCheck"},
 		panel_container: {theme_type_variation = &"PanelContainerTesterCheck"},
 		rich_text_label: {theme_type_variation = &"RichTextLabelTesterPass"},
-		extra_rich_text_label: {theme_type_variation = &"RichTextLabelTesterHint", visible = false},
+		extra_rich_text_label: {theme_type_variation = &"RichTextLabelTesterCheckHint", visible = false},
 		report_texture_rect:
 		{
 			texture = preload(ICON_PATH % "pass"),
@@ -103,6 +103,19 @@ const ICON_WIDTH := {"fail": 15, "pass": 20}
 			custom_minimum_size = ICON_WIDTH.pass * Vector2.RIGHT
 		},
 	},
+	requirement =
+	{
+		self: {theme_type_variation = &"MarginContainerTesterCheck"},
+		panel_container: {theme_type_variation = &""},
+		rich_text_label: {theme_type_variation = &"RichTextLabelTesterFail"},
+		extra_rich_text_label: {theme_type_variation = &"RichTextLabelTesterRequirementHint", visible = true},
+		report_texture_rect:
+		{
+			texture = preload(ICON_PATH % "fail"),
+			modulate = Color.WHITE,
+			custom_minimum_size = ICON_WIDTH.fail * Vector2.RIGHT
+		},
+	}
 }
 
 

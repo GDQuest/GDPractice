@@ -3,16 +3,26 @@
 extends Node
 
 
+class Requirement:
+	var description := ""
+	var checker: Callable = func() -> String: return ""
+	var params := []
+
+	func check() -> String:
+		return await checker.callv(params)
+
+
 class Check:
 	var cache := {}
-
-	var check := func() -> bool: return true
-	var dependencies: Array[Check] = []
-	var subchecks: Array[Check] = []
 
 	var description := ""
 	var hint := ""
 	var status := Status.DISABLED
+
+	var checker := func() -> String: return ""
+	var dependencies: Array[Check] = []
+	var subchecks: Array[Check] = []
+
 
 	func is_disabled() -> bool:
 		if "is_disabled" in cache:
@@ -31,12 +41,14 @@ class Check:
 		if "has_passed" in cache:
 			return cache.has_passed
 
-		var result := check.call()
-		for subcheck: Check in subchecks:
-			await subcheck.run()
-			result = subcheck.status == Status.PASS
-			if not result:
-				break
+		hint = checker.call()
+		var result := hint.is_empty()
+		if result:
+			for subcheck: Check in subchecks:
+				await subcheck.run()
+				result = subcheck.status == Status.PASS
+				if not result:
+					break
 
 		cache.has_passed = result
 		return result
@@ -50,12 +62,12 @@ class Check:
 
 ## Functions that have names beginning with this string will be called in [method run]
 ## automatically.
-const PREFIX := "_test_"
 const COMMENT_REGEX := "#.*$"
 
 enum Status { DISABLED, PASS, FAIL }
 
 var checks: Array[Check] = []
+var requirements: Array[Requirement] = []
 
 ## Used to store [b]practice[/b] and [b]solution[/b] as well as any needed extra data for
 ## testing with the framework. It needs to be populated before use.
@@ -120,6 +132,34 @@ func _setup_state() -> void:
 ## Acquire both [b]practice[/b] and [b]solution[/b] state data for test validation.
 func _setup_populate_test_space() -> void:
 	pass
+
+
+func _add_simple_check(description: String, checker) -> Check:
+	var check := Check.new()
+	check.description = description
+	check.checker = checker
+	checks.push_back(check)
+	return check
+
+
+func _add_actions_requirement(actions: Array[StringName]) -> void:
+	var requirement := Requirement.new()
+	requirement.description = tr("Missing input actions")
+	requirement.checker =  func() -> String:
+		var result := []
+		for action in actions:
+			if not InputMap.has_action(action):
+				result.push_back("- [b]%s[/b]" % action)
+		return "" if result.is_empty() else "\n".join(result)
+	requirements.push_back(requirement)
+
+
+func _add_callable_requirement(description: String, checker: Callable, params := []) -> void:
+	var requirement := Requirement.new()
+	requirement.description = description
+	requirement.checker = checker
+	requirement.params = params
+	requirements.push_back(requirement)
 
 
 ## Connects [param callback] to [param sig] signal for the given amount of [param time] by waiting

@@ -20,6 +20,7 @@ const REPORT_PHASES = {
 	prep = {text = "Setting up the test..."},
 	setup_fail = {text = "Test setup failed."},
 	checking = {text = "Verifying your practice tasks..."},
+	requirements_fail = {text = "Test setup failed."},
 	test_fail = {text = "Looks like you've got some things to fix."},
 	test_pass = {text = "Congradulations! You aced this practice."},
 }
@@ -59,20 +60,26 @@ func _ready() -> void:
 	_prepare_practice_info()
 	_report_prep()
 
-	if _is_practice_scene():
-		_prepare_for_test()
-		_report_checking()
-
-		var test := await _check_practice()
-		var completion := test.get_completion()
-		db.update({_practice_info.metadata.id: {completion = completion}})
-		db.save()
-		_restore_from_test(completion)
-
-		_report_checks(test)
-		_report_test(completion)
-	else:
+	if not _is_practice_scene():
 		queue_free()
+		return
+
+	_prepare_for_test()
+	_report_checking()
+
+	var test := await _setup_practice()
+	if not await _report_requirements(test):
+		_restore_from_test(-1)
+		return
+
+	await test.run()
+	var completion := test.get_completion()
+	db.update({_practice_info.metadata.id: {completion = completion}})
+	db.save()
+	_restore_from_test(completion)
+
+	_report_checks(test)
+	_report_test(completion)
 
 
 func _on_toggle_show_button(is_toggled: bool) -> void:
@@ -131,25 +138,22 @@ func _restore_from_test(completion: int) -> void:
 	toggle_x5_button.toggled.disconnect(_on_toggle_x5_button_toggled)
 	toggle_x5_button.disabled = true
 	Engine.time_scale = 1
-	input_panel_container.safe() if completion == 1 else input_panel_container.note()
+	if completion == 0:
+		input_panel_container.note()
+	elif completion == 1:
+		input_panel_container.safe()
 
 
-func _check_practice() -> Test:
-	var result: Test = null
+func _setup_practice() -> Test:
 	var solution_packed_scene := load(Paths.to_solution(_practice_info.file_path))
 	var solution: Node = solution_packed_scene.instantiate()
 	ghost_layout.refresh([_practice_info.scene, solution])
 
-	Requirements.setup(_practice_info.base_path)
-	if Requirements.check():
-		var test_script := load(Paths.to_solution(_practice_info.base_path).path_join("test.gd"))
-		var test: Test = test_script.new()
-		add_child(test)
-
-		await test.setup(_practice_info.scene, solution)
-		await test.run()
-		result = test
-	return result
+	var test_script := load(Paths.to_solution(_practice_info.base_path).path_join("test.gd"))
+	var test: Test = test_script.new()
+	add_child(test)
+	await test.setup(_practice_info.scene, solution)
+	return test
 
 
 func _report(info: Dictionary) -> void:
@@ -209,6 +213,27 @@ func _report_check(check: Test.Check, is_subcheck := false) -> void:
 	info[log_entry.rich_text_label].merge({text = check.description})
 	info[log_entry.extra_rich_text_label].merge({text = check.hint})
 	_report(info)
+
+
+func _report_requirements(test: Test) -> bool:
+	var has_passed := true
+	for requirement in test.requirements:
+		var hint := await requirement.check()
+		if not hint.is_empty():
+			var log_entry := LogEntryPackedScene.instantiate()
+			log_v_box_container.add_child(log_entry)
+
+			var info: Dictionary = log_entry.get_variation("requirement")
+			info[log_entry.rich_text_label].merge({text = requirement.description})
+			info[log_entry.extra_rich_text_label].merge({text = hint})
+			_report(info)
+			has_passed = false
+
+	if not has_passed:
+		input_panel_container.off()
+		_report({report_label: REPORT_PHASES.requirements_fail, status_label: REPORT_STATUS[0]})
+
+	return has_passed
 
 
 func _report_test(completion: int) -> void:
