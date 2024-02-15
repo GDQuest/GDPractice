@@ -105,9 +105,15 @@ func setup(practice: Node, solution: Node) -> void:
 		_practice_base_path = _practice_script.resource_path.get_base_dir()
 		_practice_code = _preprocess_practice_code(_practice_script)
 
+
+func setup_requirements() -> void:
+	_build_requirements()
+
+
+func setup_checks() -> void:
 	await _setup_state()
 	await _setup_populate_test_space()
-	_build()
+	_build_checks()
 
 
 func run() -> void:
@@ -119,7 +125,11 @@ func get_completion() -> int:
 	return 0 if checks.any(func(c: Check) -> bool: return c.status != Status.PASS) else 1
 
 
-func _build() -> void:
+func _build_requirements() -> void:
+	pass
+
+
+func _build_checks() -> void:
 	pass
 
 
@@ -142,15 +152,15 @@ func _add_simple_check(description: String, checker) -> Check:
 	return check
 
 
-func _add_actions_requirement(actions: Array[StringName]) -> void:
+func _add_actions_requirement(actions: Array) -> void:
 	var requirement := Requirement.new()
 	requirement.description = tr("Missing input actions")
 	requirement.checker =  func() -> String:
 		var result := []
-		for action in actions:
+		for action: StringName in actions:
 			if not InputMap.has_action(action):
-				result.push_back("- [b]%s[/b]" % action)
-		return "" if result.is_empty() else "\n".join(result)
+				result.push_back("[b]%s[/b]" % action)
+		return "" if result.is_empty() else " ".join([tr("Your Godot project is missing the input actions"), "%s," % ", ".join(result), tr("but they're needed for the practice to work. If you ran this practice before completing the corresponding lesson, please follow along the lesson first.")])
 	requirements.push_back(requirement)
 
 

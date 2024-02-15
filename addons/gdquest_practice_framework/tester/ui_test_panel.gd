@@ -3,7 +3,7 @@ extends Control
 const Test := preload("test.gd")
 const LogEntry := preload("log_entry/log_entry.gd")
 const Paths := preload("../paths.gd")
-const Requirements := preload("requirements.gd")
+# const Requirements := preload("requirements.gd")
 const DB := preload("../db/db.gd")
 const Metadata := preload("../metadata.gd")
 
@@ -67,12 +67,15 @@ func _ready() -> void:
 	_prepare_for_test()
 	_report_checking()
 
-	var test := await _setup_practice()
+	var test := await _setup_test()
+	test.setup_requirements()
 	if not await _report_requirements(test):
 		_restore_from_test(-1)
 		return
 
+	await test.setup_checks()
 	await test.run()
+
 	var completion := test.get_completion()
 	db.update({_practice_info.metadata.id: {completion = completion}})
 	db.save()
@@ -134,17 +137,7 @@ func _prepare_for_test() -> void:
 	input_panel_container.warn()
 
 
-func _restore_from_test(completion: int) -> void:
-	toggle_x5_button.toggled.disconnect(_on_toggle_x5_button_toggled)
-	toggle_x5_button.disabled = true
-	Engine.time_scale = 1
-	if completion == 0:
-		input_panel_container.note()
-	elif completion == 1:
-		input_panel_container.safe()
-
-
-func _setup_practice() -> Test:
+func _setup_test() -> Test:
 	var solution_packed_scene := load(Paths.to_solution(_practice_info.file_path))
 	var solution: Node = solution_packed_scene.instantiate()
 	ghost_layout.refresh([_practice_info.scene, solution])
@@ -154,6 +147,16 @@ func _setup_practice() -> Test:
 	add_child(test)
 	await test.setup(_practice_info.scene, solution)
 	return test
+
+
+func _restore_from_test(completion: int) -> void:
+	toggle_x5_button.toggled.disconnect(_on_toggle_x5_button_toggled)
+	toggle_x5_button.disabled = true
+	Engine.time_scale = 1
+	if completion == 0:
+		input_panel_container.note()
+	elif completion == 1:
+		input_panel_container.safe()
 
 
 func _report(info: Dictionary) -> void:

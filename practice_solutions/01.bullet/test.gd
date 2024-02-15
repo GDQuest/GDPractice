@@ -1,9 +1,11 @@
 extends "res://addons/gdquest_practice_framework/tester/test.gd"
 
 
-func _build() -> void:
+func _build_requirements() -> void:
 	_add_actions_requirement(["missing_input_action_1", "missing_input_action_2"])
 
+
+func _build_checks() -> void:
 	var c1 := Check.new()
 	c1.description = "Check 1"
 

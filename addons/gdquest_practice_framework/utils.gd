@@ -40,3 +40,16 @@ static func fs_remove_dir(base_path: String) -> void:
 	for path in paths:
 		DirAccess.remove_absolute(path)
 	DirAccess.remove_absolute(base_path)
+
+
+static func flatten_unique(array: Array) -> Array:
+	var result := {}
+	for key in flatten(array):
+		result[key] = null
+	return result.keys()
+
+
+static func flatten(array: Array) -> Array:
+	return array.reduce(func(acc: Array, xs: Array) -> Array:
+		return acc + xs, []
+	)
