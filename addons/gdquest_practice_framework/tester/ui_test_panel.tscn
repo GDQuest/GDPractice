@@ -100,6 +100,7 @@ size_flags_vertical = 0
 theme_type_variation = &"MarginContainerTesterHeader"
 
 [node name="PanelContainer" type="PanelContainer" parent="HBoxContainer/PanelContainer/VBoxContainer/MarginContainerHeader"]
+z_index = 999
 custom_minimum_size = Vector2(0, 38)
 layout_mode = 2
 theme_type_variation = &"PanelContainerTester"
