@@ -43,8 +43,7 @@ var db := DB.new()
 
 @onready var toggle_show_button: Button = %ToggleShowButton
 @onready var toggle_x5_button: Button = %ToggleX5Button
-@onready var ghost_button: Button = %GhostButton
-@onready var split_button: Button = %SplitButton
+@onready var toggle_ghost_split_button: Button = %ToggleGhostSplitButton
 
 @onready var tween: Tween = create_tween()
 
@@ -100,15 +99,15 @@ func _on_toggle_x5_button_toggled(is_toggled: bool) -> void:
 	Engine.set_time_scale(5 if is_toggled else 1)
 
 
-func _on_layout_button_group_pressed(button: BaseButton) -> void:
-	if button == ghost_button:
-		ghost_layout.visible = true
-		split_layout.visible = false
-		ghost_layout.refresh(split_layout.scenes)
-	elif button == split_button:
+func _on_toggle_ghost_split_button_toggled(is_toggled: bool) -> void:
+	if is_toggled:
 		ghost_layout.visible = false
 		split_layout.visible = true
 		split_layout.refresh(ghost_layout.scenes)
+	else:
+		ghost_layout.visible = true
+		split_layout.visible = false
+		ghost_layout.refresh(split_layout.scenes)
 
 
 func _prepare_practice_info() -> void:
@@ -132,8 +131,8 @@ func _is_practice_scene() -> bool:
 
 
 func _prepare_for_test() -> void:
+	toggle_ghost_split_button.toggled.connect(_on_toggle_ghost_split_button_toggled)
 	toggle_x5_button.toggled.connect(_on_toggle_x5_button_toggled)
-	ghost_button.button_group.pressed.connect(_on_layout_button_group_pressed)
 	input_panel_container.warn()
 
 

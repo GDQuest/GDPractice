@@ -1,11 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://24w1un2neyn1"]
+[gd_scene load_steps=3 format=3 uid="uid://24w1un2neyn1"]
 
-[ext_resource type="Theme" uid="uid://bk3rqtt0xeorm" path="res://addons/gdquest_practice_framework/assets/theme.tres" id="1_ne0fk"]
 [ext_resource type="Script" path="res://addons/gdquest_practice_framework/tester/log_entry/log_entry.gd" id="2_jdqln"]
 [ext_resource type="Texture2D" uid="uid://bmnsj7r5yi08u" path="res://addons/gdquest_practice_framework/assets/icons/fail.svg" id="3_pbwd5"]
 
 [node name="LogEntry" type="MarginContainer"]
-theme = ExtResource("1_ne0fk")
 theme_type_variation = &"MarginContainerTesterCheck"
 script = ExtResource("2_jdqln")
 

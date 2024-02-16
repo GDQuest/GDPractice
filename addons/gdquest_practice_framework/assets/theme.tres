@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=35 format=3 uid="uid://bk3rqtt0xeorm"]
+[gd_resource type="Theme" load_steps=36 format=3 uid="uid://bk3rqtt0xeorm"]
 
 [ext_resource type="FontFile" uid="uid://d3u2nhkuevn1l" path="res://addons/gdquest_practice_framework/assets/fonts/Inter-Bold.ttf" id="1_guogc"]
 [ext_resource type="FontFile" uid="uid://deeixt6cs64ak" path="res://addons/gdquest_practice_framework/assets/fonts/Inter-SemiBold.ttf" id="2_r3hcp"]
@@ -112,52 +112,29 @@ shadow_size = 1
 shadow_offset = Vector2(0, 4)
 anti_aliasing = false
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_axa1v"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i8djt"]
 bg_color = Color(0.552941, 0.0980392, 0.843137, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.533333, 0.486275, 0.615686, 1)
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
+corner_radius_top_left = 1
+corner_radius_top_right = 1
+corner_radius_bottom_right = 1
+corner_radius_bottom_left = 1
 anti_aliasing = false
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ksejr"]
-draw_center = false
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.533333, 0.486275, 0.615686, 1)
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_epvrv"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vby0n"]
+bg_color = Color(0.552941, 0.0980392, 0.843137, 1)
+corner_radius_top_left = 1
+corner_radius_top_right = 1
+corner_radius_bottom_right = 1
+corner_radius_bottom_left = 1
 anti_aliasing = false
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u02mp"]
-bg_color = Color(0.552941, 0.0980392, 0.843137, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.533333, 0.486275, 0.615686, 1)
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
-anti_aliasing = false
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1kv8x"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jvgdf"]
-bg_color = Color(0.552941, 0.0980392, 0.843137, 1)
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ejyac"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_thwtw"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_78ac8"]
-bg_color = Color(0.552941, 0.0980392, 0.843137, 1)
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cvwvd"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sj2re"]
 content_margin_left = 8.0
@@ -182,6 +159,23 @@ corner_detail = 1
 anti_aliasing = false
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k6urd"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wqakg"]
+content_margin_left = 3.0
+content_margin_top = 3.0
+content_margin_right = 3.0
+content_margin_bottom = 3.0
+draw_center = false
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.533333, 0.486275, 0.615686, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+anti_aliasing = false
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wfwvj"]
 bg_color = Color(0.282353, 0.105882, 0.588235, 1)
@@ -214,7 +208,7 @@ anti_aliasing = false
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_54gv8"]
 draw_center = false
-border_width_bottom = 2
+border_width_bottom = 1
 border_color = Color(0.282353, 0.105882, 0.588235, 1)
 anti_aliasing = false
 
@@ -278,14 +272,25 @@ ButtonRun/styles/hover = SubResource("StyleBoxFlat_w73fc")
 ButtonRun/styles/normal = SubResource("StyleBoxFlat_dn46q")
 ButtonRun/styles/pressed = SubResource("StyleBoxFlat_h1p1q")
 ButtonTester/base_type = &"Button"
+ButtonTester/colors/font_color = Color(0.533333, 0.486275, 0.615686, 1)
+ButtonTester/colors/font_focus_color = Color(0.921569, 0.878431, 1, 1)
+ButtonTester/colors/font_hover_color = Color(0.921569, 0.878431, 1, 1)
+ButtonTester/colors/font_hover_pressed_color = Color(0.921569, 0.878431, 1, 1)
+ButtonTester/colors/font_pressed_color = Color(0.921569, 0.878431, 1, 1)
 ButtonTester/font_sizes/font_size = 12
-ButtonTester/styles/hover = SubResource("StyleBoxFlat_axa1v")
-ButtonTester/styles/normal = SubResource("StyleBoxFlat_ksejr")
-ButtonTester/styles/pressed = SubResource("StyleBoxFlat_u02mp")
-ButtonTesterRadio/base_type = &"ButtonTester"
-ButtonTesterRadio/styles/hover = SubResource("StyleBoxFlat_jvgdf")
-ButtonTesterRadio/styles/normal = SubResource("StyleBoxEmpty_thwtw")
-ButtonTesterRadio/styles/pressed = SubResource("StyleBoxFlat_78ac8")
+ButtonTester/styles/hover = SubResource("StyleBoxFlat_i8djt")
+ButtonTester/styles/normal = SubResource("StyleBoxEmpty_epvrv")
+ButtonTester/styles/pressed = SubResource("StyleBoxFlat_vby0n")
+ButtonTesterCheckbox/base_type = &"Button"
+ButtonTesterCheckbox/colors/font_color = Color(0.533333, 0.486275, 0.615686, 1)
+ButtonTesterCheckbox/colors/font_focus_color = Color(0.921569, 0.878431, 1, 1)
+ButtonTesterCheckbox/colors/font_hover_color = Color(0.921569, 0.878431, 1, 1)
+ButtonTesterCheckbox/colors/font_hover_pressed_color = Color(0.921569, 0.878431, 1, 1)
+ButtonTesterCheckbox/colors/font_pressed_color = Color(0.921569, 0.878431, 1, 1)
+ButtonTesterCheckbox/font_sizes/font_size = 12
+ButtonTesterCheckbox/styles/hover = SubResource("StyleBoxEmpty_1kv8x")
+ButtonTesterCheckbox/styles/normal = SubResource("StyleBoxEmpty_ejyac")
+ButtonTesterCheckbox/styles/pressed = SubResource("StyleBoxEmpty_cvwvd")
 HBoxContainerHeader/base_type = &"HBoxContainer"
 HBoxContainerHeader/constants/separation = 2
 HBoxContainerTester/base_type = &"HBoxContainer"
@@ -393,6 +398,8 @@ MarginContainerTesterReport/constants/margin_top = 0
 MarginContainerTesterSubCheck/base_type = &"MarginContainerTesterCheck"
 MarginContainerTesterSubCheck/constants/margin_left = 26
 PanelContainer/styles/panel = SubResource("StyleBoxEmpty_k6urd")
+PanelContainerButtonTester/base_type = &"PanelContainer"
+PanelContainerButtonTester/styles/panel = SubResource("StyleBoxFlat_wqakg")
 PanelContainerHeader/base_type = &"PanelContainer"
 PanelContainerHeader/styles/panel = SubResource("StyleBoxFlat_wfwvj")
 PanelContainerPractice/base_type = &"PanelContainer"

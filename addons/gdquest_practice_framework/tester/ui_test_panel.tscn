@@ -1,10 +1,10 @@
-[gd_scene load_steps=15 format=3 uid="uid://bnnxfl3thl8qk"]
+[gd_scene load_steps=14 format=3 uid="uid://bnnxfl3thl8qk"]
 
 [ext_resource type="Theme" uid="uid://bk3rqtt0xeorm" path="res://addons/gdquest_practice_framework/assets/theme.tres" id="1_n7obm"]
 [ext_resource type="Script" path="res://addons/gdquest_practice_framework/tester/ui_test_panel.gd" id="2_vgmr1"]
 [ext_resource type="Texture2D" uid="uid://dc6w5203e7i4w" path="res://addons/gdquest_practice_framework/assets/icons/hide.svg" id="3_iivbp"]
-[ext_resource type="Texture2D" uid="uid://b0y4aa61cd423" path="res://addons/gdquest_practice_framework/assets/icons/ghost.svg" id="4_r8hh3"]
-[ext_resource type="Texture2D" uid="uid://dr3pj5w8kbxeb" path="res://addons/gdquest_practice_framework/assets/icons/split.svg" id="5_dew8m"]
+[ext_resource type="Script" path="res://addons/gdquest_practice_framework/tester/toggle_ghost_split_button.gd" id="5_ctffa"]
+[ext_resource type="Texture2D" uid="uid://cdjdtfiogmekj" path="res://addons/gdquest_practice_framework/assets/icons/ghost_on_split.svg" id="5_mhsfd"]
 [ext_resource type="Texture2D" uid="uid://wgr4gdu7syvg" path="res://addons/gdquest_practice_framework/assets/icons/pass.svg" id="6_7jrhn"]
 [ext_resource type="PackedScene" uid="uid://c3ere1qqhai67" path="res://addons/gdquest_practice_framework/tester/input_panel_container/input_panel_container.tscn" id="7_uxwio"]
 [ext_resource type="PackedScene" uid="uid://c553h2n1lu6uh" path="res://addons/gdquest_practice_framework/tester/layouts/ghost_layout.tscn" id="8_th6wj"]
@@ -64,8 +64,6 @@ _data = {
 "default": SubResource("Animation_yyykk"),
 "testing": SubResource("Animation_p88ms")
 }
-
-[sub_resource type="ButtonGroup" id="ButtonGroup_natww"]
 
 [node name="UITestPanel" type="Control"]
 custom_minimum_size = Vector2(1920, 0)
@@ -152,6 +150,7 @@ autoplay = "testing"
 
 [node name="ToggleShowButton" type="Button" parent="HBoxContainer/PanelContainer/VBoxContainer/MarginContainerHeader/PanelContainer/HBoxContainer"]
 unique_name_in_owner = true
+z_index = 999
 custom_minimum_size = Vector2(33, 0)
 layout_mode = 2
 toggle_mode = true
@@ -180,48 +179,28 @@ layout_mode = 2
 layout_mode = 2
 alignment = 2
 
-[node name="GhostSplitPanelContainer" type="PanelContainer" parent="HBoxContainer/PanelContainer/VBoxContainer/MarginContainerBody/PanelContainer/MarginContainer/VBoxContainer/ButtonsHBoxContainer"]
+[node name="ToggleGhostSplitContainer" type="PanelContainer" parent="HBoxContainer/PanelContainer/VBoxContainer/MarginContainerBody/PanelContainer/MarginContainer/VBoxContainer/ButtonsHBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 8
-theme_type_variation = &"PanelContainerTesterRadioButtons"
+theme_type_variation = &"PanelContainerButtonTester"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/PanelContainer/VBoxContainer/MarginContainerBody/PanelContainer/MarginContainer/VBoxContainer/ButtonsHBoxContainer/GhostSplitPanelContainer"]
-layout_mode = 2
-theme_type_variation = &"HBoxContainerTester"
-
-[node name="GhostButton" type="Button" parent="HBoxContainer/PanelContainer/VBoxContainer/MarginContainerBody/PanelContainer/MarginContainer/VBoxContainer/ButtonsHBoxContainer/GhostSplitPanelContainer/HBoxContainer"]
+[node name="ToggleGhostSplitButton" type="Button" parent="HBoxContainer/PanelContainer/VBoxContainer/MarginContainerBody/PanelContainer/MarginContainer/VBoxContainer/ButtonsHBoxContainer/ToggleGhostSplitContainer"]
 unique_name_in_owner = true
-show_behind_parent = true
-custom_minimum_size = Vector2(31, 31)
+custom_minimum_size = Vector2(84, 21)
 layout_mode = 2
-theme_type_variation = &"ButtonTesterRadio"
+theme_type_variation = &"ButtonTesterCheckbox"
 toggle_mode = true
-button_pressed = true
-button_group = SubResource("ButtonGroup_natww")
-icon = ExtResource("4_r8hh3")
+icon = ExtResource("5_mhsfd")
 icon_alignment = 1
 expand_icon = true
+script = ExtResource("5_ctffa")
 
-[node name="SeparatorPanel" type="Panel" parent="HBoxContainer/PanelContainer/VBoxContainer/MarginContainerBody/PanelContainer/MarginContainer/VBoxContainer/ButtonsHBoxContainer/GhostSplitPanelContainer/HBoxContainer"]
-custom_minimum_size = Vector2(1, 0)
+[node name="ToggleX5PanelContainer" type="PanelContainer" parent="HBoxContainer/PanelContainer/VBoxContainer/MarginContainerBody/PanelContainer/MarginContainer/VBoxContainer/ButtonsHBoxContainer"]
 layout_mode = 2
-theme_type_variation = &"PanelSeparator"
+theme_type_variation = &"PanelContainerButtonTester"
 
-[node name="SplitButton" type="Button" parent="HBoxContainer/PanelContainer/VBoxContainer/MarginContainerBody/PanelContainer/MarginContainer/VBoxContainer/ButtonsHBoxContainer/GhostSplitPanelContainer/HBoxContainer"]
+[node name="ToggleX5Button" type="Button" parent="HBoxContainer/PanelContainer/VBoxContainer/MarginContainerBody/PanelContainer/MarginContainer/VBoxContainer/ButtonsHBoxContainer/ToggleX5PanelContainer"]
 unique_name_in_owner = true
-show_behind_parent = true
-custom_minimum_size = Vector2(31, 31)
-layout_mode = 2
-theme_type_variation = &"ButtonTesterRadio"
-toggle_mode = true
-button_group = SubResource("ButtonGroup_natww")
-icon = ExtResource("5_dew8m")
-icon_alignment = 1
-expand_icon = true
-
-[node name="ToggleX5Button" type="Button" parent="HBoxContainer/PanelContainer/VBoxContainer/MarginContainerBody/PanelContainer/MarginContainer/VBoxContainer/ButtonsHBoxContainer"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(31, 31)
+custom_minimum_size = Vector2(24, 21)
 layout_mode = 2
 theme_type_variation = &"ButtonTester"
 toggle_mode = true

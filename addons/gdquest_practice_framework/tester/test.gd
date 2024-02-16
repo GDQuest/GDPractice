@@ -31,9 +31,10 @@ class Check:
 		var result := false
 		# This check is disabled if any of its dependencies is disabled or has not passed.
 		for dependency: Check in dependencies:
-			if dependency.cache.has("is_disabled") and dependency.cache.is_disabled:
+			if "is_disabled" in dependency.cache and dependency.cache.is_disabled:
 				result = true
 				break
+
 			if not await dependency.has_passed():
 				result = true
 				break
