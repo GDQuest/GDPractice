@@ -160,6 +160,7 @@ func build_project(suffix: String, output_path: String, exclude_slugs: Array[Str
 	var return_code := ReturnCode.OK
 	const EXE := "godot"
 
+	# Preparing paths for copying files.
 	var plugin_dir_path: String = get_script().resource_path.get_base_dir()
 	var solution_dir_path := plugin_dir_path.path_join(Paths.SOLUTIONS_PATH.get_file())
 
@@ -171,6 +172,8 @@ func build_project(suffix: String, output_path: String, exclude_slugs: Array[Str
 		)
 	var lessons_reference_dir_path := Paths.RES.path_join("lessons_reference")
 	var script_templates_dir_path = Paths.RES.path_join("script_templates")
+
+	# Finding files to copy.
 	var should_be_copied := func(path: String) -> bool:
 		var path_starts_to_exclude := [Paths.PRACTICES_PATH, script_templates_dir_path]
 		if suffix == "solutions":
@@ -182,6 +185,8 @@ func build_project(suffix: String, output_path: String, exclude_slugs: Array[Str
 			or exclude_slugs.any(func(slug: String) -> bool: return (path.ends_with(slug)))
 		)
 	var source_file_paths := Utils.fs_find().filter(should_be_copied)
+
+	# Copying files and replacing paths.
 	for source_file_path: String in source_file_paths:
 		source_file_path = ProjectSettings.globalize_path(source_file_path)
 		var destination_file_path := source_file_path.replace(
@@ -224,9 +229,12 @@ func build_project(suffix: String, output_path: String, exclude_slugs: Array[Str
 			DirAccess.make_dir_recursive_absolute(destination_project_dir_path.path_join("lessons"))
 
 		var output := []
+		var arguments := ["--path", destination_project_dir_path, "--headless", "--script", plugin_dir_path.path_join("build.gd"), "--", "--generate-practices", "--disable-plugins"]
+		print("Generating practice files from solutions in workbook project...")
+		print("Running: ", EXE, " ", " ".join(arguments))
 		return_code = OS.execute(
 			EXE,
-			["--path", destination_project_dir_path, "--headless", "--script", plugin_dir_path.path_join("build.gd"), "--", "--generate-practices", "--disable-plugins"],
+			arguments,
 			output,
 			true
 		)
