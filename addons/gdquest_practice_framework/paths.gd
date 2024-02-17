@@ -2,8 +2,8 @@
 extends RefCounted
 
 const RES := "res://"
-const PRACTICES_PATH := RES + "practices"
-const SOLUTIONS_PATH := RES + "practice_solutions"
+const PRACTICES_PATH := "res://practices"
+const SOLUTIONS_PATH := "res://practice_solutions"
 
 
 static func to_solution(path: String) -> String:
