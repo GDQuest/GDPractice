@@ -65,6 +65,9 @@ class Check:
 		)
 
 
+const Paths := preload("../paths.gd")
+const Utils := preload("../utils.gd")
+
 ## Functions that have names beginning with this string will be called in [method run]
 ## automatically.
 const COMMENT_REGEX := "#.*$"
@@ -268,4 +271,24 @@ static func _preprocess_practice_code(practice_script: Script) -> Array[String]:
 		line = line.strip_edges().replace(" ", "")
 		if not (line.is_empty() or line.begins_with("#")):
 			result.push_back(comment_suffix.sub(line, ""))
+	return result
+
+
+func _load(pattern: String, is_practice := true) -> Resource:
+	var result: Resource = null
+	var path: String = get_script().resource_path.get_base_dir()
+	if is_practice:
+		path = Paths.to_practice(path)
+
+	var file_paths := Utils.fs_find(pattern, path)
+	var error_message := ""
+	if file_paths.is_empty():
+		error_message = "Couldn't find '%s' in '%s'" % [pattern, path]
+	elif file_paths.size() > 1:
+		error_message = "Found more than one file with name '%s': %s" % [pattern, file_paths]
+	else:
+		for file_path in file_paths:
+			result = load(file_path)
+
+	assert(error_message.is_empty(), error_message)
 	return result
