@@ -75,6 +75,9 @@ const PLUGINS_SECTION := "editor_plugins"
 const AUTOLOAD_SECTION := "autoload"
 const APP_SECTION := "application"
 const APP_NAME_KEY := "config/name"
+const REPLACE_EXTS := ["gd", "tscn", "tres", "cfg"]
+const GODOT := "godot"
+
 
 const DENTS := {"<": -1, ">": 1}
 const LOG_MESSAGE := "\t%s...%s"
@@ -139,10 +142,10 @@ func parse_command_line_arguments() -> void:
 	var return_code := ReturnCode.OK
 	for key in args:
 		if key in ARG_GENERATE_PROJECT_WORKBOOK:
-			return_code = build_project("workbook", args["--output-path"], ["plug.gd", "makefile", ".import"])
+			return_code = build_project("workbook", args["--output-path"], ["plug.gd", "makefile"])
 
 		if key in ARG_GENERATE_PROJECT_SOLUTIONS:
-			return_code = build_project("solutions", args["--output-path"], ["plug.gd", "makefile", ".import", "test.gd", "diff.gd",])
+			return_code = build_project("solutions", args["--output-path"], ["plug.gd", "makefile", "test.gd", "diff.gd",])
 
 		if key in ARG_PRACTICES:
 			var do_disable_plugins := "--disable-plugins" in user_args
@@ -158,7 +161,6 @@ func parse_command_line_arguments() -> void:
 
 func build_project(suffix: String, output_path: String, exclude_slugs: Array[String] = []) -> ReturnCode:
 	var return_code := ReturnCode.OK
-	const EXE := "godot"
 
 	# Preparing paths for copying files.
 	var plugin_dir_path: String = get_script().resource_path.get_base_dir()
@@ -200,10 +202,7 @@ func build_project(suffix: String, output_path: String, exclude_slugs: Array[Str
 		DirAccess.copy_absolute(source_file_path, destination_file_path)
 
 		var extension := source_file_path.get_extension()
-		var do_replace := (
-			destination_file_path == destination_plugin_dir_path.path_join("paths.gd")
-			or (suffix == "workbook" and source_file_path.begins_with(source_solution_dir_path) and extension in ["gd", "tscn", "tres"])
-		)
+		var do_replace := (suffix == "workbook" and extension in REPLACE_EXTS)
 		if do_replace:
 			var contents := FileAccess.get_file_as_string(destination_file_path)
 			contents = contents.replace(Paths.SOLUTIONS_PATH, solution_dir_path)
@@ -229,25 +228,15 @@ func build_project(suffix: String, output_path: String, exclude_slugs: Array[Str
 			DirAccess.make_dir_recursive_absolute(destination_project_dir_path.path_join("lessons"))
 
 		var output := []
-		var arguments := ["--path", destination_project_dir_path, "--headless", "--script", plugin_dir_path.path_join("build.gd"), "--", "--generate-practices", "--disable-plugins"]
+		var arguments_list := [
+			["--path", destination_project_dir_path, "--headless", "--editor", "--quit"],
+			["--path", destination_project_dir_path, "--headless", "--script", plugin_dir_path.path_join("build.gd"), "--", "--generate-practices", "--disable-plugins"]
+		]
 		print("Generating practice files from solutions in workbook project...")
-		print("Running: ", EXE, " ", " ".join(arguments))
-		return_code = OS.execute(
-			EXE,
-			arguments,
-			output,
-			true
-		)
-		if return_code == ReturnCode.RETURN_CODE_NOT_FOUND:
-			print_rich("[color=red]ERROR: Godot 4 executable expected at '%s' but not found. Aborting.[/color]" % EXE)
-
-		if output.any(func(s: String) -> bool: return 'FAIL' in s):
-			return_code = ReturnCode.FAIL
-			Utils.fs_remove_dir(destination_project_dir_path)
-
-		for line: String in output:
-			print_rich(line)
-
+		for arguments: Array in arguments_list:
+			return_code = _run_godot(destination_project_dir_path, arguments)
+			if return_code != ReturnCode.OK:
+				break
 	return return_code
 
 
@@ -278,7 +267,7 @@ func build_practice(dir_name: StringName, is_forced := false) -> ReturnCode:
 			func(x: String) -> bool: return not (
 				x.ends_with("/test.gd")
 				or x.ends_with("/diff.gd")
-				or x.get_extension() == "import"
+				or x.ends_with("/metadata.cfg")
 			)
 		)
 	)
@@ -334,7 +323,7 @@ func build_practice(dir_name: StringName, is_forced := false) -> ReturnCode:
 			DirAccess.copy_absolute(solution_file_path, practice_file_path)
 			print_rich(LOG_MESSAGE % [practice_file_path, "[color=green]COPY[/color]"])
 
-		if extension in ["gd", "tscn", "tres"]:
+		if extension in REPLACE_EXTS:
 			var contents := FileAccess.get_file_as_string(practice_file_path)
 			if extension == "gd":
 				contents = _process_gd(contents)
@@ -373,3 +362,20 @@ func _process_tabs(prefix: String, line: String) -> String:
 			tabs += DENTS[shift]
 		line = regex_shift_match.strings[2]
 	return "\t".repeat(tabs) + line
+
+
+func _run_godot(destination_project_dir_path: String, arguments: Array) -> ReturnCode:
+	var return_code := ReturnCode.OK
+	var output := []
+	prints("Running:", GODOT, " ".join(arguments))
+	return_code = OS.execute(GODOT, arguments, output, true)
+	if return_code == ReturnCode.RETURN_CODE_NOT_FOUND:
+		print_rich("[color=red]ERROR: Godot 4 executable expected at '%s' but not found. Aborting.[/color]" % GODOT)
+
+	if output.any(func(s: String) -> bool: return 'FAIL' in s):
+		return_code = ReturnCode.FAIL
+		Utils.fs_remove_dir(destination_project_dir_path)
+
+	for line: String in output:
+		print_rich(line)
+	return return_code
