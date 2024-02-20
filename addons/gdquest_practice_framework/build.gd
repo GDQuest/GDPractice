@@ -75,6 +75,7 @@ const PLUGINS_SECTION := "editor_plugins"
 const AUTOLOAD_SECTION := "autoload"
 const APP_SECTION := "application"
 const APP_NAME_KEY := "config/name"
+const RUN_MAIN_SCENE_KEY := "run/main_scene"
 const REPLACE_EXTS := ["gd", "tscn", "tres", "cfg"]
 const GODOT := "godot"
 
@@ -172,16 +173,15 @@ func build_project(suffix: String, output_path: String, exclude_slugs: Array[Str
 	var destination_plugin_dir_path := ProjectSettings.globalize_path(plugin_dir_path).replace(
 		source_project_dir_path, destination_project_dir_path
 		)
-	var lessons_reference_dir_path := Paths.RES.path_join("lessons_reference")
-	var script_templates_dir_path = Paths.RES.path_join("script_templates")
 
 	# Finding files to copy.
 	var should_be_copied := func(path: String) -> bool:
-		var path_starts_to_exclude := [Paths.PRACTICES_PATH, script_templates_dir_path]
+		var path_starts_to_exclude := [Paths.PRACTICES_PATH, Paths.RES.path_join("script_templates")]
 		if suffix == "solutions":
 			path_starts_to_exclude.append(plugin_dir_path)
+			path_starts_to_exclude.append(Paths.RES.path_join("lessons/"))
 		elif suffix == "workbook":
-			path_starts_to_exclude.append(lessons_reference_dir_path)
+			path_starts_to_exclude.append(Paths.RES.path_join("lessons_reference"))
 		return not (
 			path_starts_to_exclude.any(func(path_start: String) -> bool: return path.begins_with(path_start))
 			or exclude_slugs.any(func(slug: String) -> bool: return (path.ends_with(slug)))
@@ -237,6 +237,14 @@ func build_project(suffix: String, output_path: String, exclude_slugs: Array[Str
 			return_code = _run_godot(destination_project_dir_path, arguments)
 			if return_code != ReturnCode.OK:
 				break
+	# For the solutions project, remove the main scene from the project file. We want the user to land on an empty project.
+	elif suffix == "solutions":
+		var solutions_project_file_path := destination_project_dir_path.path_join(PROJECT_FILE)
+		var solutions_cfg = ConfigFile.new()
+		solutions_cfg.load(solutions_project_file_path)
+		solutions_cfg.erase_section_key(APP_SECTION, RUN_MAIN_SCENE_KEY)
+		solutions_cfg.save(solutions_project_file_path)
+
 	return return_code
 
 
