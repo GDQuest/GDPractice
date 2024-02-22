@@ -1,7 +1,7 @@
 @tool
 extends EditorPlugin
 
-const Utils := preload("utils.gd")
+const Utils := preload("../gdquest_sparkly_bag/sparkly_bag_utils.gd")
 
 const ROOT_PATH := "res://"
 const TEMPLATES_DIR := "script_templates/Test"
@@ -33,7 +33,11 @@ func _exit_tree() -> void:
 func add_templates() -> void:
 	var plugin_dir_path: String = get_script().resource_path.get_base_dir()
 	var plugin_template_dir_path := plugin_dir_path.path_join(TEMPLATES_DIR)
-	for plugin_template_file_path in Utils.fs_find("*.gd", plugin_template_dir_path):
+	var found := Utils.fs_find("*.gd", plugin_template_dir_path)
+	if found.return_code != Utils.ReturnCode.OK:
+		return
+
+	for plugin_template_file_path: String in found.result:
 		var root_template_file_path = ROOT_PATH.path_join(TEMPLATES_DIR).path_join(
 			plugin_template_file_path.get_file()
 		)
@@ -54,5 +58,5 @@ func add_templates() -> void:
 func remove_templates() -> void:
 	var templates_base_dir_path := ROOT_PATH.path_join(TEMPLATES_DIR.get_base_dir())
 	Utils.fs_remove_dir(ROOT_PATH.path_join(TEMPLATES_DIR))
-	if Utils.fs_find("*", templates_base_dir_path).is_empty():
+	if Utils.fs_find("*", templates_base_dir_path).result.is_empty():
 		Utils.fs_remove_dir(templates_base_dir_path)

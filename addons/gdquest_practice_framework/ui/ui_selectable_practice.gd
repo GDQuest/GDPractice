@@ -7,7 +7,7 @@ const Build := preload("../build.gd")
 const Paths := preload("../paths.gd")
 const Progress := preload("../db/progress.gd")
 const Metadata := preload("../metadata.gd")
-const ThemeUtils := preload("../utils/theme_utils.gd")
+const ThemeUtils := preload("../../gdquest_theme_utils/theme_utils.gd")
 
 const DEFAULT_VARIATION := &"MarginContainerPractice"
 const SELECTED_VARIATION := &"MarginContainerSelectedPractice"

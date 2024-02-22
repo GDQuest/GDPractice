@@ -1,5 +1,5 @@
 const Paths := preload("../paths.gd")
-const Utils := preload("../utils.gd")
+const Utils := preload("../../gdquest_sparkly_bag/sparkly_bag_utils.gd")
 
 static var _name_sorter := func(x: Dictionary, y: Dictionary) -> bool: return x.name < y.name
 
@@ -28,7 +28,7 @@ static func setup(practice_base_path: String) -> void:
 	var patterns := {scripts = "*.gd", scenes = "*.tscn"}
 	for key in patterns:
 		_list[key] = (
-			Utils.fs_find(patterns[key], practice_base_path)
+			Utils.fs_find(patterns[key], practice_base_path).result
 			.map(path_transformer)
 			.filter(file_exists_predicate)
 			.map(load_transformer)

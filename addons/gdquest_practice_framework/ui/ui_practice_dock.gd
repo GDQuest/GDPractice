@@ -7,7 +7,7 @@ const DB := preload("../db/db.gd")
 const Build := preload("../build.gd")
 const Paths := preload("../paths.gd")
 const Metadata := preload("../metadata.gd")
-const ThemeUtils := preload("../utils/theme_utils.gd")
+const ThemeUtils := preload("../../gdquest_theme_utils/theme_utils.gd")
 
 const UI_SELECTABLE_PRACTICE_SCENE := preload("ui_selectable_practice.tscn")
 
