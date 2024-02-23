@@ -49,7 +49,8 @@ var db := DB.new()
 
 
 func _ready() -> void:
-	if DisplayServer.get_name() == "headless":
+	var cmdline_args := OS.get_cmdline_args()
+	if DisplayServer.get_name() == "headless" or "--script" in cmdline_args or "-s" in cmdline_args:
 		queue_free()
 		return
 
