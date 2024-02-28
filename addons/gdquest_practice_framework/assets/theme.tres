@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=36 format=3 uid="uid://bk3rqtt0xeorm"]
+[gd_resource type="Theme" load_steps=38 format=3 uid="uid://bk3rqtt0xeorm"]
 
 [ext_resource type="FontFile" uid="uid://d3u2nhkuevn1l" path="res://addons/gdquest_practice_framework/assets/fonts/Inter-Bold.ttf" id="1_guogc"]
 [ext_resource type="FontFile" uid="uid://deeixt6cs64ak" path="res://addons/gdquest_practice_framework/assets/fonts/Inter-SemiBold.ttf" id="2_r3hcp"]
@@ -201,6 +201,11 @@ corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 anti_aliasing = false
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hs085"]
+bg_color = Color(0.870588, 0.313726, 0.168627, 1)
+corner_radius_bottom_right = 5
+anti_aliasing = false
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s7qg0"]
 bg_color = Color(0.282353, 0.105882, 0.588235, 1)
 corner_radius_bottom_right = 5
@@ -242,6 +247,8 @@ anti_aliasing = false
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_fh8oh"]
 color = Color(0.533333, 0.486275, 0.615686, 1)
 vertical = true
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6hu1e"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_1dsos"]
 content_margin_left = 10.0
@@ -406,6 +413,8 @@ PanelContainerPractice/base_type = &"PanelContainer"
 PanelContainerPractice/styles/panel = SubResource("StyleBoxFlat_jpatc")
 PanelContainerPractices/base_type = &"PanelContainer"
 PanelContainerPractices/styles/panel = SubResource("StyleBoxFlat_wkr1x")
+PanelContainerSolutionWarning/base_type = &"PanelContainer"
+PanelContainerSolutionWarning/styles/panel = SubResource("StyleBoxFlat_hs085")
 PanelContainerTester/base_type = &"PanelContainer"
 PanelContainerTester/styles/panel = SubResource("StyleBoxFlat_s7qg0")
 PanelContainerTesterCheck/base_type = &"PanelContainer"
@@ -421,6 +430,16 @@ PanelSeparator/styles/panel = SubResource("StyleBoxLine_fh8oh")
 RichTextLabel/fonts/bold_font = ExtResource("1_guogc")
 RichTextLabel/fonts/bold_italics_font = ExtResource("5_gv20d")
 RichTextLabel/fonts/italics_font = ExtResource("6_s8153")
+RichTextLabelSolutionWarning/base_type = &"RichTextLabel"
+RichTextLabelSolutionWarning/colors/default_color = Color(1, 0.92549, 0.788235, 1)
+RichTextLabelSolutionWarning/font_sizes/bold_font_size = 20
+RichTextLabelSolutionWarning/font_sizes/bold_italics_font_size = 20
+RichTextLabelSolutionWarning/font_sizes/italics_font_size = 20
+RichTextLabelSolutionWarning/font_sizes/normal_font_size = 20
+RichTextLabelSolutionWarning/fonts/bold_font = ExtResource("1_guogc")
+RichTextLabelSolutionWarning/fonts/bold_italics_font = ExtResource("5_gv20d")
+RichTextLabelSolutionWarning/fonts/italics_font = ExtResource("6_s8153")
+RichTextLabelSolutionWarning/styles/normal = SubResource("StyleBoxEmpty_6hu1e")
 RichTextLabelTesterCheckHint/base_type = &"RichTextLabel"
 RichTextLabelTesterCheckHint/colors/default_color = Color(0.921569, 0.878431, 1, 1)
 RichTextLabelTesterCheckHint/font_sizes/bold_font_size = 16
