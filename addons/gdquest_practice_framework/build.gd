@@ -318,7 +318,7 @@ func build_practice(dir_name: StringName, is_forced := false) -> ReturnCode:
 					solution_diff.call(func_name, solution_scene)
 					print_rich(LOG_MESSAGE % [solution_file_path, "[color=blue]DIFF[/color]"])
 				else:
-					push_error("FAIL: Found diff.gd script for %s, and expected a function named %s, but it was not found." % [solution_file_path, func_name])
+					push_error("FAIL: Found 'diff.gd' script for '%s', and expected a static function named '%s', but it was not found." % [solution_file_path, func_name])
 					return ReturnCode.FAIL
 
 			var practice_packed_scene := PackedScene.new()
