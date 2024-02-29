@@ -22,7 +22,7 @@ const REPORT_PHASES = {
 	checking = {text = "Verifying your practice tasks..."},
 	requirements_fail = {text = "Test setup failed."},
 	test_fail = {text = "Looks like you've got some things to fix."},
-	test_pass = {text = "Congradulations! You aced this practice."},
+	test_pass = {text = "Congratulations! You aced this practice."},
 }
 var _practice_info := {}
 
