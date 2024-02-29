@@ -78,6 +78,9 @@ func open() -> void:
 		EditorInterface.open_scene_from_path(practice_scene_path)
 		await get_tree().process_frame
 		select()
+	else:
+		var msg := "Practice (id=%s) not found at '%s'"
+		push_warning(msg % [practice_metadata.id, practice_scene_path])
 
 
 func reset_practice() -> void:
