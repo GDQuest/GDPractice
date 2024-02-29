@@ -25,13 +25,14 @@ mouse_filter = 2
 [node name="PracticeSubViewportContainer" type="SubViewportContainer" parent="HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-mouse_filter = 2
 stretch = true
 
 [node name="PracticeSubViewport" type="SubViewport" parent="HBoxContainer/PracticeSubViewportContainer"]
 unique_name_in_owner = true
 transparent_bg = true
 handle_input_locally = false
+physics_object_picking = true
+physics_object_picking_sort = true
 size = Vector2i(954, 1080)
 render_target_update_mode = 4
 
@@ -41,12 +42,13 @@ layout_mode = 2
 [node name="SolutionSubViewportContainer" type="SubViewportContainer" parent="HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-mouse_filter = 2
 stretch = true
 
 [node name="SolutionSubViewport" type="SubViewport" parent="HBoxContainer/SolutionSubViewportContainer"]
 unique_name_in_owner = true
 transparent_bg = true
 handle_input_locally = false
+physics_object_picking = true
+physics_object_picking_sort = true
 size = Vector2i(954, 1080)
 render_target_update_mode = 4

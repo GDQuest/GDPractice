@@ -28,6 +28,8 @@ var _practice_info := {}
 
 var db := DB.new()
 
+@onready var main_panel_container: PanelContainer = %MainPanelContainer
+
 @onready var item_label: Label = %ItemLabel
 @onready var title_label: Label = %TitleLabel
 @onready var status_label: Label = %StatusLabel
@@ -90,10 +92,10 @@ func _on_toggle_show_button(is_toggled: bool) -> void:
 	tween = create_tween().set_ease(Tween.EASE_IN)
 	if is_toggled:
 		toggle_show_button.icon = preload(ICON_PATH % "hide")
-		tween.tween_property(self, "custom_minimum_size:x", 1920, 0.1)
+		tween.tween_property(main_panel_container, "position:x", 0.0, 0.1)
 	else:
 		toggle_show_button.icon = preload(ICON_PATH % "show")
-		tween.tween_property(self, "custom_minimum_size:x", 2340, 0.1)
+		tween.tween_property(main_panel_container, "position:x", -main_panel_container.size.x, 0.1)
 
 
 func _on_toggle_x5_button_toggled(is_toggled: bool) -> void:
