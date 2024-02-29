@@ -23,10 +23,6 @@ window/size/viewport_height=1080
 
 project/assembly_name="Godot Practice Framework"
 
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/gdquest_practice_framework/plugin.cfg")
-
 [input]
 
 move_left={

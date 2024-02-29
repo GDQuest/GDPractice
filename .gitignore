@@ -2,6 +2,7 @@
 .godot/
 
 # GDQuest
+.plugged/
 practices/
 dev.*
 .plugged/

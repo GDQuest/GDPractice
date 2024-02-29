@@ -1,5 +1,5 @@
 ## Utility script to handle paths and file names for practice and solution files.
-extends RefCounted
+const Utils := preload("../gdquest_sparkly_bag/sparkly_bag_utils.gd")
 
 const RES := "res://"
 const PRACTICES_PATH := "res://practices"
@@ -15,7 +15,6 @@ static func to_practice(path: String) -> String:
 
 
 static func get_dir_name(path: String, relative_to := SOLUTIONS_PATH) -> String:
-	const DELIM := "/"
 	var result := path.replace(relative_to, "")
-	result = "" if result == path else result.lstrip(DELIM).get_slice(DELIM, 0)
+	result = "" if result == path else result.lstrip(Utils.SEP).get_slice(Utils.SEP, 0)
 	return result

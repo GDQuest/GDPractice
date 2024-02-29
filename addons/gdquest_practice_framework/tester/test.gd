@@ -66,7 +66,7 @@ class Check:
 
 
 const Paths := preload("../paths.gd")
-const Utils := preload("../utils.gd")
+const Utils := preload("../../gdquest_sparkly_bag/sparkly_bag_utils.gd")
 
 ## Functions that have names beginning with this string will be called in [method run]
 ## automatically.
@@ -280,7 +280,7 @@ func _load(pattern: String, is_practice := true) -> Resource:
 	if is_practice:
 		path = Paths.to_practice(path)
 
-	var file_paths := Utils.fs_find(pattern, path)
+	var file_paths := Utils.fs_find(pattern, path).result
 	var error_message := ""
 	if file_paths.is_empty():
 		error_message = "Couldn't find '%s' in '%s'" % [pattern, path]
