@@ -9,6 +9,7 @@ const DB := preload("../db/db.gd")
 const Build := preload("../build.gd")
 const Metadata := preload("../metadata.gd")
 const Paths := preload("../paths.gd")
+const Plugin := preload("../gdquest_practice_framework.gd")
 const ThemeUtils := preload("../../gdquest_theme_utils/theme_utils.gd")
 
 const PracticeMetadata := Metadata.PracticeMetadata
@@ -108,5 +109,4 @@ func set_module_name() -> void:
 
 
 func get_metadatas() -> Array:
-	var predicate := func(n: Node) -> bool: return n is Metadata
-	return get_window().get_children().filter(predicate)
+	return get_window().get_children().filter(Plugin.is_metadata)

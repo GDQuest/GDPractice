@@ -2,10 +2,11 @@
 @tool
 extends MarginContainer
 
-const DB := preload("../db/db.gd")
 const Build := preload("../build.gd")
 const Metadata := preload("../metadata.gd")
 const Paths := preload("../paths.gd")
+const Plugin := preload("../gdquest_practice_framework.gd")
+const DB := preload("../db/db.gd")
 const Progress := preload("../db/progress.gd")
 const ThemeUtils := preload("../../gdquest_theme_utils/theme_utils.gd")
 
@@ -14,7 +15,6 @@ const PracticeMetadata := Metadata.PracticeMetadata
 const DEFAULT_VARIATION := &"MarginContainerPractice"
 const SELECTED_VARIATION := &"MarginContainerSelectedPractice"
 
-const ITEM_FORMAT := "L%d.P%d"
 const COLOR_DISABLED_TEXT := Color(0.51764708757401, 0.59607845544815, 0.74509805440903)
 const CHECKBOX_TEXTURES := {
 	false: preload("../assets/checkbox_empty.svg"),
@@ -50,9 +50,7 @@ func _ready() -> void:
 func setup(practice_metadata: PracticeMetadata) -> void:
 	self.practice_metadata = practice_metadata
 	label_title.text = practice_metadata.title
-	label_item.text = (
-		ITEM_FORMAT % [practice_metadata.lesson_number, practice_metadata.practice_number]
-	)
+	label_item.text = practice_metadata.item
 
 
 ## Makes this selected, pressing the child button node and emitting the pressed signal.
@@ -88,8 +86,7 @@ func open() -> void:
 
 
 func reset_practice() -> void:
-	var predicate := func(n: Node) -> bool: return n is Metadata
-	for metadata: Metadata in get_window().get_children().filter(predicate):
+	for metadata: Metadata in get_window().get_children().filter(Plugin.is_metadata):
 		var db := DB.new(metadata)
 		db.progress.state[practice_metadata.id].completion = 0
 		db.save()

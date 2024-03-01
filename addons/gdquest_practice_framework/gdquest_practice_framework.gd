@@ -71,12 +71,11 @@ func _on_scene_changed(scene_root: Node) -> void:
 		solution_dir_path
 	)
 
-	var metadata: Metadata = get_window().get_node(Metadata.NAME)
-	for pm: PracticeMetadata in metadata.list.filter(predicate):
-		var practice_title := "L%d.P%d %s" % [pm.lesson_number, pm.practice_number, pm.title]
-		ui_solution_warning.set_text(
-			solution_file_path, Paths.to_practice(pm.packed_scene_path), practice_title
-		)
+	for metadata: Metadata in get_window().get_children().filter(is_metadata):
+		for pm: PracticeMetadata in metadata.list.filter(predicate):
+			ui_solution_warning.set_text(
+				solution_file_path, Paths.to_practice(pm.packed_scene_path), pm.full_title
+			)
 
 
 func _on_ui_practice_dock_metadata_refreshed() -> void:
@@ -115,3 +114,7 @@ func remove_templates() -> void:
 	Utils.fs_remove_dir(Paths.RES.path_join(TEMPLATES_DIR))
 	if Utils.fs_find("*", templates_base_dir_path).result.is_empty():
 		Utils.fs_remove_dir(templates_base_dir_path)
+
+
+static func is_metadata(n: Node) -> bool:
+	return n is Metadata

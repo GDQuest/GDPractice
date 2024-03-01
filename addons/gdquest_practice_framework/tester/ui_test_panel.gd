@@ -12,7 +12,6 @@ const LogEntryPackedScene := preload("log_entry/log_entry.tscn")
 
 const NAME := "UITestPanel"
 const ICON_PATH := "../assets/icons/%s.svg"
-const ITEM := "L%d.P%d"
 const REPORT_STATUS := {
 	0: {text = "FAIL", theme_type_variation = &"LabelTesterStatusFail"},
 	1: {text = "PASS", theme_type_variation = &"LabelTesterStatusPass"},
@@ -178,7 +177,7 @@ func _report_prep() -> void:
 	var pm: PracticeMetadata = _practice_info.metadata
 	var info := {}
 	info[report_label] = REPORT_PHASES.prep
-	info[item_label] = {text = ITEM % [pm.lesson_number, pm.practice_number]}
+	info[item_label] = {text = pm.item}
 	info[title_label] = {text = pm.title}
 	_report(info)
 

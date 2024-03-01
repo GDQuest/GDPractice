@@ -12,13 +12,15 @@ class PracticeMetadata:
 	var _cache := {}
 	var _dir_name_regex := RegEx.create_from_string(r"^L(\d+)\.P(\d+)\..+$")
 
-	var id := ""
-	var title := ""
-	var packed_scene: PackedScene = null
-
 	var lesson_number := 0
 	var practice_number := 0
 	var packed_scene_path := ""
+	var item := ""
+	var full_title := ""
+
+	var id := ""
+	var title := ""
+	var packed_scene: PackedScene = null
 
 	func _init(id: String, title: String, packed_scene: PackedScene) -> void:
 		self.id = id
@@ -35,6 +37,8 @@ class PracticeMetadata:
 
 		lesson_number = match.strings[1].to_int()
 		practice_number = match.strings[2].to_int()
+		item = "L%d.P%d" % [lesson_number, practice_number]
+		full_title = "%s %s" % [item, title]
 
 	func _to_string() -> String:
 		return str(to_dictionary())
@@ -71,9 +75,9 @@ var list: Array[PracticeMetadata] = [
 		"Adding Timer",
 		preload("res://practice_solutions/L2.P3.adding_timer/adding_timer.tscn")
 	),
-	 PracticeMetadata.new(
-	 	"making_ship_move",
-	 	"Making ship move",
-	 	preload("res://practice_solutions/L3.P1.making_ship_move/making_ship_move.tscn")
-	 ),
+	PracticeMetadata.new(
+		"making_ship_move",
+		"Making ship move",
+		preload("res://practice_solutions/L3.P1.making_ship_move/making_ship_move.tscn")
+	),
 ]
