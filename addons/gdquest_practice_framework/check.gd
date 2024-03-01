@@ -1,7 +1,7 @@
 extends SceneTree
 
-const Paths := preload("paths.gd")
 const Metadata := preload("metadata.gd")
+const Paths := preload("paths.gd")
 const Test := preload("tester/test.gd")
 const Utils := preload("../gdquest_sparkly_bag/sparkly_bag_utils.gd")
 
@@ -15,9 +15,9 @@ const TEST_FILE_NAME := "test.gd"
 
 
 func _init() -> void:
-	var metadata := Metadata.load()
-	for practice_metadata in metadata:
-		var solution_scene_path := practice_metadata.main_scene
+	var metadata := Metadata.new()
+	for practice_metadata: PracticeMetadata in metadata.list:
+		var solution_scene_path := practice_metadata.packed_scene_path
 		var practice_scene_path := Paths.to_practice(solution_scene_path)
 
 		print_rich("[color=green]%s[/color]" % Paths.get_dir_name(solution_scene_path))

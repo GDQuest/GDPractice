@@ -4,10 +4,12 @@ extends MarginContainer
 
 const DB := preload("../db/db.gd")
 const Build := preload("../build.gd")
+const Metadata := preload("../metadata.gd")
 const Paths := preload("../paths.gd")
 const Progress := preload("../db/progress.gd")
-const Metadata := preload("../metadata.gd")
 const ThemeUtils := preload("../../gdquest_theme_utils/theme_utils.gd")
+
+const PracticeMetadata := Metadata.PracticeMetadata
 
 const DEFAULT_VARIATION := &"MarginContainerPractice"
 const SELECTED_VARIATION := &"MarginContainerSelectedPractice"
@@ -22,7 +24,7 @@ const CHECKBOX_TEXTURES := {
 static var button_group := ButtonGroup.new()
 static var build := Build.new()
 
-var practice_metadata: Metadata.PracticeMetadata = null
+var practice_metadata: PracticeMetadata = null
 
 @onready var label_item: Label = %LabelItem
 @onready var label_title: Label = %LabelTitle
@@ -45,10 +47,12 @@ func _ready() -> void:
 		control.custom_minimum_size *= EditorInterface.get_editor_scale()
 
 
-func setup(metadata: Metadata.PracticeMetadata) -> void:
-	self.practice_metadata = metadata
-	label_title.text = metadata.title
-	label_item.text = ITEM_FORMAT % [metadata.lesson_number, metadata.practice_number]
+func setup(practice_metadata: PracticeMetadata) -> void:
+	self.practice_metadata = practice_metadata
+	label_title.text = practice_metadata.title
+	label_item.text = (
+		ITEM_FORMAT % [practice_metadata.lesson_number, practice_metadata.practice_number]
+	)
 
 
 ## Makes this selected, pressing the child button node and emitting the pressed signal.
@@ -73,7 +77,7 @@ func update(progress: Progress) -> void:
 
 
 func open() -> void:
-	var practice_scene_path = Paths.to_practice(practice_metadata.main_scene)
+	var practice_scene_path = Paths.to_practice(practice_metadata.packed_scene_path)
 	if FileAccess.file_exists(practice_scene_path):
 		EditorInterface.open_scene_from_path(practice_scene_path)
 		await get_tree().process_frame
@@ -84,11 +88,13 @@ func open() -> void:
 
 
 func reset_practice() -> void:
-	var db := DB.new()
-	db.progress.state[practice_metadata.id].completion = 0
-	db.save()
+	var predicate := func(n: Node) -> bool: return n is Metadata
+	for metadata: Metadata in get_window().get_children().filter(predicate):
+		var db := DB.new(metadata)
+		db.progress.state[practice_metadata.id].completion = 0
+		db.save()
 
-	var solution_dir_name := Paths.get_dir_name(practice_metadata.main_scene)
-	if not solution_dir_name.is_empty():
-		build.build_practice(solution_dir_name, true)
-		update(db.progress)
+		var solution_dir_name := Paths.get_dir_name(practice_metadata.packed_scene_path)
+		if not solution_dir_name.is_empty():
+			build.build_practice(solution_dir_name, true)
+			update(db.progress)

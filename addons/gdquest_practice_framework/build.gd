@@ -270,15 +270,9 @@ func build_practice(dir_name: StringName, is_forced := false) -> ReturnCode:
 	var solution_dir_path := Paths.SOLUTIONS_PATH.path_join(dir_name)
 	var solution_file_paths := Utils.fs_find("*", solution_dir_path).result
 
-	solution_file_paths.assign(
-		solution_file_paths.filter(
-			func(x: String) -> bool: return not (
-				x.ends_with("/test.gd")
-				or x.ends_with("/diff.gd")
-				or x.ends_with("/metadata.cfg")
-			)
-		)
-	)
+	var predicate := func(x: String) -> bool:
+		return not (x.ends_with("/test.gd") or x.ends_with("/diff.gd"))
+	solution_file_paths.assign(solution_file_paths.filter(predicate))
 
 	if solution_file_paths.is_empty():
 		print_rich(LOG_MESSAGE % ["Nothing to do", "[color=orange]SKIP[/color]"])

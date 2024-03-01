@@ -2,13 +2,15 @@ extends Control
 
 const Test := preload("test.gd")
 const LogEntry := preload("log_entry/log_entry.gd")
-const Paths := preload("../paths.gd")
-# const Requirements := preload("requirements.gd")
-const DB := preload("../db/db.gd")
 const Metadata := preload("../metadata.gd")
+const Paths := preload("../paths.gd")
+const DB := preload("../db/db.gd")
+
+const PracticeMetadata := Metadata.PracticeMetadata
 
 const LogEntryPackedScene := preload("log_entry/log_entry.tscn")
 
+const NAME := "UITestPanel"
 const ICON_PATH := "../assets/icons/%s.svg"
 const ITEM := "L%d.P%d"
 const REPORT_STATUS := {
@@ -24,9 +26,11 @@ const REPORT_PHASES = {
 	test_fail = {text = "Looks like you've got some things to fix."},
 	test_pass = {text = "Congratulations! You aced this practice."},
 }
+
 var _practice_info := {}
 
-var db := DB.new()
+@onready var metadata: Metadata = get_window().get_node(Metadata.NAME)
+@onready var db := DB.new(metadata)
 
 @onready var main_panel_container: PanelContainer = %MainPanelContainer
 
@@ -119,9 +123,8 @@ func _prepare_practice_info() -> void:
 	_practice_info.dir_name = Paths.get_dir_name(_practice_info.file_path, Paths.PRACTICES_PATH)
 	_practice_info.base_path = Paths.PRACTICES_PATH.path_join(_practice_info.dir_name)
 
-	var metadata := Metadata.load()
-	for practice_metadata: Metadata.PracticeMetadata in metadata:
-		var path := Paths.to_practice(practice_metadata.main_scene)
+	for practice_metadata: PracticeMetadata in metadata.list:
+		var path := Paths.to_practice(practice_metadata.packed_scene_path)
 		if path == _practice_info.file_path:
 			_practice_info.metadata = practice_metadata
 			break
@@ -172,7 +175,7 @@ func _report_prep() -> void:
 		return
 
 	status_animation_player.play("testing")
-	var pm: Metadata.PracticeMetadata = _practice_info.metadata
+	var pm: PracticeMetadata = _practice_info.metadata
 	var info := {}
 	info[report_label] = REPORT_PHASES.prep
 	info[item_label] = {text = ITEM % [pm.lesson_number, pm.practice_number]}

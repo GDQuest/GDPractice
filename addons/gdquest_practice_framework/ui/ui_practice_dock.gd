@@ -1,15 +1,21 @@
 @tool
 extends PanelContainer
 
+signal metadata_refreshed
+
 const UISelectablePractice := preload("ui_selectable_practice.gd")
 
 const DB := preload("../db/db.gd")
 const Build := preload("../build.gd")
-const Paths := preload("../paths.gd")
 const Metadata := preload("../metadata.gd")
+const Paths := preload("../paths.gd")
 const ThemeUtils := preload("../../gdquest_theme_utils/theme_utils.gd")
 
-const UI_SELECTABLE_PRACTICE_SCENE := preload("ui_selectable_practice.tscn")
+const PracticeMetadata := Metadata.PracticeMetadata
+
+const UISelectablePracticePackedScene := preload("ui_selectable_practice.tscn")
+
+const METADATA_PATH := "res://addons/gdquest_practice_framework/metadata.gd"
 
 var metadata_modified_time := 0
 var build := Build.new()
@@ -31,21 +37,25 @@ func _ready() -> void:
 
 
 func construct_panel_list() -> void:
-	var new_metadata_modified_time := Metadata.get_modified_time()
+	var new_metadata_modified_time = FileAccess.get_modified_time(METADATA_PATH)
 	if metadata_modified_time == new_metadata_modified_time:
 		return
+	metadata_refreshed.emit()
 
 	metadata_modified_time = new_metadata_modified_time
 	for ui_selectable_practice: UISelectablePractice in list.get_children():
 		ui_selectable_practice.queue_free()
 
-	var metadata := Metadata.load()
-	for practice_metadata: Metadata.PracticeMetadata in metadata:
-		var ui_selectable_practice = UI_SELECTABLE_PRACTICE_SCENE.instantiate()
-		list.add_child(ui_selectable_practice)
-		ui_selectable_practice.setup(practice_metadata)
-	set_module_name()
-	update()
+	for metadata: Metadata in get_metadatas():
+		if metadata.is_queued_for_deletion() or not "list" in metadata:
+			continue
+
+		for practice_metadata: PracticeMetadata in metadata.list:
+			var ui_selectable_practice = UISelectablePracticePackedScene.instantiate()
+			list.add_child(ui_selectable_practice)
+			ui_selectable_practice.setup(practice_metadata)
+		set_module_name()
+		update()
 
 
 func get_practice_index(path: String) -> int:
@@ -57,7 +67,7 @@ func get_practice_index(path: String) -> int:
 	var checker := func(p: PackedScene) -> bool: return path == p.resource_path
 	for idx in range(list.get_child_count()):
 		var ui_selectable_practice: UISelectablePractice = list.get_child(idx)
-		if path == ui_selectable_practice.practice_metadata.main_scene:
+		if path == ui_selectable_practice.practice_metadata.packed_scene_path:
 			result = idx
 			break
 	return result
@@ -78,9 +88,10 @@ func deselect() -> void:
 
 
 func update() -> void:
-	var db := DB.new()
-	for ui_selectable_practice in list.get_children():
-		ui_selectable_practice.update(db.progress)
+	for metadata: Metadata in get_metadatas():
+		var db := DB.new(metadata)
+		for ui_selectable_practice in list.get_children():
+			ui_selectable_practice.update(db.progress)
 
 
 func set_module_name() -> void:
@@ -94,3 +105,8 @@ func set_module_name() -> void:
 
 		for idx in range(module_info_size):
 			module_labels[idx].text = ("%s." % module_info[idx]) if idx == 0 else module_info[idx]
+
+
+func get_metadatas() -> Array:
+	var predicate := func(n: Node) -> bool: return n is Metadata
+	return get_window().get_children().filter(predicate)

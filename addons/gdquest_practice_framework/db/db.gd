@@ -1,18 +1,17 @@
 ## Keeps track of the student's progress. Most importantly which practices have been completed.
-extends RefCounted
-
 const Progress := preload("progress.gd")
 const Metadata := preload("../metadata.gd")
 const Paths := preload("../paths.gd")
 
+const PracticeMetadata := Metadata.PracticeMetadata
+
 var progress: Progress = null
 
 
-func _init() -> void:
-	var metadata := Metadata.load()
+func _init(metadata: Metadata) -> void:
 	if not ResourceLoader.exists(Progress.PATH):
 		progress = Progress.new()
-		for practice_metadata: Metadata.PracticeMetadata in metadata:
+		for practice_metadata: PracticeMetadata in metadata.list:
 			progress.state[practice_metadata.id] = {completion = 0, tries = 0}
 		save()
 	reload()
