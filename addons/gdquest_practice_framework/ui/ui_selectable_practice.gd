@@ -4,7 +4,6 @@ extends MarginContainer
 
 const Build := preload("../build.gd")
 const Paths := preload("../paths.gd")
-const Plugin := preload("../gdquest_practice_framework.gd")
 const DB := preload("../db/db.gd")
 const Progress := preload("../db/progress.gd")
 const ThemeUtils := preload("../../gdquest_theme_utils/theme_utils.gd")
@@ -86,7 +85,8 @@ func open() -> void:
 
 
 func reset_practice() -> void:
-	for metadata: Metadata in get_window().get_children().filter(Plugin.is_metadata):
+	var predicate := func(n: Node) -> bool: return n is Metadata
+	for metadata: Metadata in get_window().get_children().filter(predicate):
 		var db := DB.new(metadata)
 		db.progress.state[practice_metadata.id].completion = 0
 		db.save()

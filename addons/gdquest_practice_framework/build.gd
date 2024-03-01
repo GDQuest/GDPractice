@@ -133,7 +133,7 @@ func _init() -> void:
 			return_code = build_project("workbook", args["--output-path"], ["plug.gd", "makefile"])
 
 		if key in ARG_GENERATE_PROJECT_SOLUTIONS:
-			return_code = build_project("solutions", args["--output-path"], ["plug.gd", "makefile", "test.gd", "diff.gd",])
+			return_code = build_project("solutions", args["--output-path"], ["plug.gd", "makefile", "test.gd", "diff.gd", "practice_solutions/metadata.gd"])
 
 		if key in ARG_PRACTICES:
 			var do_disable_plugins := "--disable-plugins" in user_args

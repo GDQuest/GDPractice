@@ -30,11 +30,6 @@ class PracticeMetadata:
 		packed_scene_path = packed_scene.resource_path
 		var dir_name := Paths.get_dir_name(packed_scene_path)
 		var match := _dir_name_regex.search(dir_name)
-		if match == null:
-			var msg := "Practice (id=%s) 'packed_scene' dir name should be 'L-.P-.some_name', but got '%s' instead! Fix 'list.cfg'."
-			push_error(msg % [id, dir_name])
-			return
-
 		lesson_number = match.strings[1].to_int()
 		practice_number = match.strings[2].to_int()
 		item = "L%d.P%d" % [lesson_number, practice_number]

@@ -17,7 +17,7 @@ const TEMPLATES_DIR := "script_templates/Test"
 
 const AUTOLOADS := {
 	UITestPanel.NAME: "tester/ui_test_panel.tscn",
-	Metadata.NAME: "res://practice_solutions/metadata.gd"
+	Metadata.NAME: Paths.SOLUTIONS_PATH + "/metadata.gd"
 }
 
 var editor_run_bar: MarginContainer = null
@@ -43,7 +43,7 @@ func _enter_tree() -> void:
 	add_control_to_dock(DOCK_SLOT_RIGHT_UL, ui_practice_dock)
 
 	# Removed for now because this should not happen to the user's project. It's a tool for teachers creating practices.
-	add_templates()
+	# add_templates()
 
 
 func _exit_tree() -> void:
@@ -70,20 +70,21 @@ func _on_scene_changed(scene_root: Node) -> void:
 
 	var solution_file_path := scene_root.scene_file_path
 	var solution_dir_path := solution_file_path.get_base_dir()
-	var predicate := func(m: PracticeMetadata) -> bool: return m.packed_scene_path.begins_with(
-		solution_dir_path
+	var is_solution_predicate := func(m: PracticeMetadata) -> bool: return (
+		m.packed_scene_path.begins_with(solution_dir_path)
 	)
 
-	for metadata: Metadata in get_window().get_children().filter(is_metadata):
-		for pm: PracticeMetadata in metadata.list.filter(predicate):
+	var is_metadata_predicate := func is_metadata(n: Node) -> bool: return n is Metadata
+	for metadata: Metadata in get_window().get_children().filter(is_metadata_predicate):
+		for pm: PracticeMetadata in metadata.list.filter(is_solution_predicate):
 			ui_solution_warning.set_text(
 				solution_file_path, Paths.to_practice(pm.packed_scene_path), pm.full_title
 			)
 
 
 func _on_ui_practice_dock_metadata_refreshed() -> void:
-	remove_autoload_singleton(Metadata.NAME)
-	add_autoload_singleton(Metadata.NAME, AUTOLOADS[Metadata.NAME])
+	remove_autoload_singleton.call_deferred(Metadata.NAME)
+	add_autoload_singleton.call_deferred(Metadata.NAME, AUTOLOADS[Metadata.NAME])
 
 
 ## Copies practice template scripts to the project root directory.
@@ -117,7 +118,3 @@ func remove_templates() -> void:
 	Utils.fs_remove_dir(Paths.RES.path_join(TEMPLATES_DIR))
 	if Utils.fs_find("*", templates_base_dir_path).result.is_empty():
 		Utils.fs_remove_dir(templates_base_dir_path)
-
-
-static func is_metadata(n: Node) -> bool:
-	return n is Metadata

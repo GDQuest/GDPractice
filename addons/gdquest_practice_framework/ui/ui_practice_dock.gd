@@ -8,7 +8,6 @@ const UISelectablePractice := preload("ui_selectable_practice.gd")
 const DB := preload("../db/db.gd")
 const Build := preload("../build.gd")
 const Paths := preload("../paths.gd")
-const Plugin := preload("../gdquest_practice_framework.gd")
 const ThemeUtils := preload("../../gdquest_theme_utils/theme_utils.gd")
 const Metadata := preload(Paths.SOLUTIONS_PATH + "/metadata.gd")
 
@@ -18,7 +17,7 @@ const UISelectablePracticePackedScene := preload("ui_selectable_practice.tscn")
 
 const METADATA_PATH := "res://practice_solutions/metadata.gd"
 
-var metadata_modified_time := 0
+var metadata_modified_time := -1
 var build := Build.new()
 
 @onready var list: VBoxContainer = %List
@@ -42,6 +41,7 @@ func construct_panel_list() -> void:
 	if metadata_modified_time == new_metadata_modified_time:
 		return
 	metadata_refreshed.emit()
+	await get_tree().process_frame
 
 	metadata_modified_time = new_metadata_modified_time
 	for ui_selectable_practice: UISelectablePractice in list.get_children():
@@ -109,4 +109,5 @@ func set_module_name() -> void:
 
 
 func get_metadatas() -> Array:
-	return get_window().get_children().filter(Plugin.is_metadata)
+	var predicate := func(n: Node) -> bool: return n is Metadata
+	return get_window().get_children().filter(predicate)
