@@ -2,9 +2,9 @@ extends Control
 
 const Test := preload("test.gd")
 const LogEntry := preload("log_entry/log_entry.gd")
-const Metadata := preload("../metadata.gd")
 const Paths := preload("../paths.gd")
 const DB := preload("../db/db.gd")
+const Metadata := preload("res://practice_solutions/metadata.gd")
 
 const PracticeMetadata := Metadata.PracticeMetadata
 

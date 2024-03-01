@@ -7,16 +7,16 @@ const UISelectablePractice := preload("ui_selectable_practice.gd")
 
 const DB := preload("../db/db.gd")
 const Build := preload("../build.gd")
-const Metadata := preload("../metadata.gd")
 const Paths := preload("../paths.gd")
 const Plugin := preload("../gdquest_practice_framework.gd")
 const ThemeUtils := preload("../../gdquest_theme_utils/theme_utils.gd")
+const Metadata := preload(Paths.SOLUTIONS_PATH + "/metadata.gd")
 
 const PracticeMetadata := Metadata.PracticeMetadata
 
 const UISelectablePracticePackedScene := preload("ui_selectable_practice.tscn")
 
-const METADATA_PATH := "res://addons/gdquest_practice_framework/metadata.gd"
+const METADATA_PATH := "res://practice_solutions/metadata.gd"
 
 var metadata_modified_time := 0
 var build := Build.new()

@@ -1,7 +1,7 @@
 ## Keeps track of the student's progress. Most importantly which practices have been completed.
 const Progress := preload("progress.gd")
-const Metadata := preload("../metadata.gd")
 const Paths := preload("../paths.gd")
+const Metadata := preload(Paths.SOLUTIONS_PATH + "/metadata.gd")
 
 const PracticeMetadata := Metadata.PracticeMetadata
 

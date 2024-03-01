@@ -1,9 +1,9 @@
 extends SceneTree
 
-const Metadata := preload("metadata.gd")
 const Paths := preload("paths.gd")
 const Test := preload("tester/test.gd")
 const Utils := preload("../gdquest_sparkly_bag/sparkly_bag_utils.gd")
+const Metadata := preload(Paths.SOLUTIONS_PATH + "/metadata.gd")
 
 const PracticeMetadata := Metadata.PracticeMetadata
 const Check := Test.Check

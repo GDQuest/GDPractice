@@ -3,12 +3,12 @@
 extends MarginContainer
 
 const Build := preload("../build.gd")
-const Metadata := preload("../metadata.gd")
 const Paths := preload("../paths.gd")
 const Plugin := preload("../gdquest_practice_framework.gd")
 const DB := preload("../db/db.gd")
 const Progress := preload("../db/progress.gd")
 const ThemeUtils := preload("../../gdquest_theme_utils/theme_utils.gd")
+const Metadata := preload(Paths.SOLUTIONS_PATH + "/metadata.gd")
 
 const PracticeMetadata := Metadata.PracticeMetadata
 

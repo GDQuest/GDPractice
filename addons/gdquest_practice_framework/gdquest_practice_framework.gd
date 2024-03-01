@@ -2,11 +2,11 @@
 extends EditorPlugin
 
 const Paths := preload("paths.gd")
-const Metadata := preload("metadata.gd")
 const UITestPanel := preload("tester/ui_test_panel.gd")
 const UIPracticeDock := preload("ui/ui_practice_dock.gd")
 const UISolutionWarning := preload("ui/ui_solution_warning.gd")
 const Utils := preload("../gdquest_sparkly_bag/sparkly_bag_utils.gd")
+const Metadata := preload(Paths.SOLUTIONS_PATH + "/metadata.gd")
 
 const PracticeMetadata := Metadata.PracticeMetadata
 
@@ -15,7 +15,10 @@ const UISolutionWarningPackedScene := preload("ui/ui_solution_warning.tscn")
 
 const TEMPLATES_DIR := "script_templates/Test"
 
-const AUTOLOADS := {UITestPanel.NAME: "tester/ui_test_panel.tscn", Metadata.NAME: "metadata.gd"}
+const AUTOLOADS := {
+	UITestPanel.NAME: "tester/ui_test_panel.tscn",
+	Metadata.NAME: "res://practice_solutions/metadata.gd"
+}
 
 var editor_run_bar: MarginContainer = null
 var ui_practice_dock: UIPracticeDock = null
