@@ -128,12 +128,15 @@ func _init() -> void:
 			args["--output-path"] = args["-o"]
 
 	var return_code := ReturnCode.OK
+	var exclude_patterns: Array[String] = ["*.godot/*", "*.plugged/*", "res://.git*", "*plug.gd", "*makefile"]
 	for key in args:
 		if key in ARG_GENERATE_PROJECT_WORKBOOK:
-			return_code = build_project("workbook", args["--output-path"], ["plug.gd", "makefile"])
+			return_code = build_project("workbook", args["--output-path"], exclude_patterns)
 
 		if key in ARG_GENERATE_PROJECT_SOLUTIONS:
-			return_code = build_project("solutions", args["--output-path"], ["plug.gd", "makefile", "test.gd", "diff.gd", "practice_solutions/metadata.gd"])
+			var exclude_solutions_patterns: Array[String] = exclude_patterns.duplicate()
+			exclude_solutions_patterns.append_array(["*test.gd", "*diff.gd", "*practice_solutions/metadata.gd"])
+			return_code = build_project("solutions", args["--output-path"], exclude_solutions_patterns)
 
 		if key in ARG_PRACTICES:
 			var do_disable_plugins := "--disable-plugins" in user_args
@@ -147,7 +150,7 @@ func _init() -> void:
 	quit(return_code)
 
 
-func build_project(suffix: String, output_path: String, exclude_slugs: Array[String] = []) -> ReturnCode:
+func build_project(suffix: String, output_path: String, exclude_patterns: Array[String] = []) -> ReturnCode:
 	var return_code := ReturnCode.OK
 
 	# Preparing paths for copying files.
@@ -175,7 +178,7 @@ func build_project(suffix: String, output_path: String, exclude_slugs: Array[Str
 				else [lessons_reference_dir_path] if suffix == "workbook"
 				else []
 			)).any(func(path_start: String) -> bool: return path.begins_with(path_start))
-			or exclude_slugs.any(func(slug: String) -> bool: return (path.ends_with(slug)))
+			or exclude_patterns.any(func(pattern: String) -> bool: return (path.match(pattern)))
 		)
 	var source_file_paths: Array = Utils.fs_find().result.filter(should_be_copied_predicate)
 

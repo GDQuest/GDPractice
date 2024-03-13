@@ -11,7 +11,7 @@ class Result:
 		self.result = result
 
 
-static func fs_find(pattern: String = "*", path: String = "res://", do_fail := true) -> Result:
+static func fs_find(pattern: String = "*", path: String = "res://", do_include_hidden := true, do_fail := true) -> Result:
 	const TAG := { ReturnCode.FAIL: "FAIL", ReturnCode.SKIP: "SKIP" }
 
 	var result: Result = Result.new([])
@@ -19,6 +19,8 @@ static func fs_find(pattern: String = "*", path: String = "res://", do_fail := t
 	pattern = pattern.rstrip(SEP)
 
 	var dir := DirAccess.open(path)
+	dir.include_hidden = do_include_hidden
+
 	if DirAccess.get_open_error() != OK:
 		result.return_code = ReturnCode.FAIL if do_fail else ReturnCode.SKIP
 		printerr("%s: could not open [%s]" % [TAG[result.return_code], path])
