@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=38 format=3 uid="uid://bk3rqtt0xeorm"]
+[gd_resource type="Theme" load_steps=39 format=3 uid="uid://bk3rqtt0xeorm"]
 
 [ext_resource type="FontFile" uid="uid://d3u2nhkuevn1l" path="res://addons/gdquest_practice_framework/assets/fonts/Inter-Bold.ttf" id="1_guogc"]
 [ext_resource type="FontFile" uid="uid://deeixt6cs64ak" path="res://addons/gdquest_practice_framework/assets/fonts/Inter-SemiBold.ttf" id="2_r3hcp"]
@@ -182,6 +182,13 @@ bg_color = Color(0.282353, 0.105882, 0.588235, 1)
 draw_center = false
 anti_aliasing = false
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gypsw"]
+bg_color = Color(1, 0.835294, 0, 1)
+corner_radius_top_left = 1
+corner_radius_top_right = 1
+corner_radius_bottom_right = 1
+corner_radius_bottom_left = 1
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jpatc"]
 draw_center = false
 border_width_left = 4
@@ -303,6 +310,10 @@ HBoxContainerHeader/constants/separation = 2
 HBoxContainerTesterInput/base_type = &"HBoxContainer"
 HBoxContainerTesterInput/constants/separation = 10
 Label/colors/font_color = Color(0.921569, 0.878431, 1, 1)
+LabelInputFeedback/base_type = &"Label"
+LabelInputFeedback/colors/font_color = Color(0.282353, 0.105882, 0.588235, 1)
+LabelInputFeedback/font_sizes/font_size = 12
+LabelInputFeedback/fonts/font = ExtResource("1_guogc")
 LabelItem/base_type = &"Label"
 LabelItem/colors/font_color = Color(0.133333, 0.0627451, 0.266667, 1)
 LabelItem/styles/normal = SubResource("StyleBoxFlat_sj2re")
@@ -407,6 +418,8 @@ PanelContainerButtonTester/base_type = &"PanelContainer"
 PanelContainerButtonTester/styles/panel = SubResource("StyleBoxFlat_wqakg")
 PanelContainerHeader/base_type = &"PanelContainer"
 PanelContainerHeader/styles/panel = SubResource("StyleBoxFlat_wfwvj")
+PanelContainerInputFeedback/base_type = &"PanelContainer"
+PanelContainerInputFeedback/styles/panel = SubResource("StyleBoxFlat_gypsw")
 PanelContainerPractice/base_type = &"PanelContainer"
 PanelContainerPractice/styles/panel = SubResource("StyleBoxFlat_jpatc")
 PanelContainerPractices/base_type = &"PanelContainer"

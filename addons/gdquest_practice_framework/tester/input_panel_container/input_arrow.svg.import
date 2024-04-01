@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cmovmuxppt8hk"
-path="res://.godot/imported/input_safe.svg-dbaad47ef84574edadaf7af03d68e938.ctex"
+uid="uid://b4joorlr8jn0j"
+path="res://.godot/imported/input_arrow.svg-a5025117973db1b252cb69a0a7e45a56.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/gdquest_practice_framework/tester/input_panel_container/input_safe.svg"
-dest_files=["res://.godot/imported/input_safe.svg-dbaad47ef84574edadaf7af03d68e938.ctex"]
+source_file="res://addons/gdquest_practice_framework/tester/input_panel_container/input_arrow.svg"
+dest_files=["res://.godot/imported/input_arrow.svg-a5025117973db1b252cb69a0a7e45a56.ctex"]
 
 [params]
 
