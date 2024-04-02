@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bslm4lxba0pwq"
-path="res://.godot/imported/input_note.svg-b555bf24b0b2301e68f8afd1f9ca636f.ctex"
+uid="uid://c7syvtw4ssbeb"
+path="res://.godot/imported/input_mouse_base.svg-51c55904b8b731b3315f48f28b0b83e1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/gdquest_practice_framework/tester/input_panel_container/input_note.svg"
-dest_files=["res://.godot/imported/input_note.svg-b555bf24b0b2301e68f8afd1f9ca636f.ctex"]
+source_file="res://addons/gdquest_practice_framework/tester/input_panel_container/input_mouse_base.svg"
+dest_files=["res://.godot/imported/input_mouse_base.svg-51c55904b8b731b3315f48f28b0b83e1.ctex"]
 
 [params]
 
@@ -32,6 +32,6 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=1.0
+svg/scale=4.0
 editor/scale_with_editor_scale=false
 editor/convert_colors_with_editor_theme=false

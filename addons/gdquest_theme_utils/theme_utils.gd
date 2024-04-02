@@ -71,9 +71,14 @@ static func generate_scaled_theme(theme_resource: Theme) -> Theme:
 				stylebox.shadow_offset *= editor_scale
 				stylebox.shadow_size *= editor_scale
 
+			if stylebox is StyleBoxFlat or stylebox is StyleBoxTexture:
 				stylebox.content_margin_left *= editor_scale
 				stylebox.content_margin_right *= editor_scale
 				stylebox.content_margin_top *= editor_scale
 				stylebox.content_margin_bottom *= editor_scale
 
+				stylebox.expand_margin_left *= editor_scale
+				stylebox.expand_margin_right *= editor_scale
+				stylebox.expand_margin_top *= editor_scale
+				stylebox.expand_margin_bottom *= editor_scale
 	return new_theme

@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://cntr4eqyhedci" path="res://addons/gdquest_practice_framework/assets/icons/reset_button.svg" id="3_br2dx"]
 [ext_resource type="Texture2D" uid="uid://cjrd8lw4g0wi" path="res://addons/gdquest_practice_framework/assets/checkbox_empty.svg" id="3_u2byc"]
 
-[sub_resource type="ButtonGroup" id="ButtonGroup_6aukr"]
+[sub_resource type="ButtonGroup" id="ButtonGroup_gyoq3"]
 
 [node name="UISelectablePractice" type="MarginContainer"]
 custom_minimum_size = Vector2(256, 0)
@@ -26,7 +26,7 @@ layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_type_variation = &"ButtonPractice"
 toggle_mode = true
-button_group = SubResource("ButtonGroup_6aukr")
+button_group = SubResource("ButtonGroup_gyoq3")
 
 [node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
 layout_mode = 2
@@ -96,3 +96,21 @@ text = "RUN"
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 5)
 layout_mode = 2
+
+[node name="ResetConfirmationDialog" type="ConfirmationDialog" parent="."]
+unique_name_in_owner = true
+title = "Reset the practice?"
+initial_position = 2
+size = Vector2i(416, 155)
+theme_type_variation = &"ResetAcceptDialog"
+dialog_text = "Do  you want to reset \"%s\"? This will reset the files to the practice starting point, overwriting your changes. If you completed the practice, it will also remove the completion mark."
+dialog_autowrap = true
+
+[node name="ResetAcceptDialog" type="AcceptDialog" parent="."]
+unique_name_in_owner = true
+title = "Reset successful"
+initial_position = 2
+size = Vector2i(400, 108)
+theme_type_variation = &"ResetAcceptDialog"
+dialog_text = "The practice \"%s\" has been reset to its starting point. You can now do it again from the start."
+dialog_autowrap = true

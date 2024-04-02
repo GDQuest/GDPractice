@@ -32,24 +32,43 @@ var practice_metadata: PracticeMetadata = null
 @onready var run_button: Button = %RunButton
 @onready var icon_checkbox: TextureRect = %IconCheckbox
 @onready var run_button_container: VBoxContainer = %RunButtonContainer
+@onready var reset_confirmation_dialog: ConfirmationDialog = %ResetConfirmationDialog
+@onready var reset_accept_dialog: AcceptDialog = %ResetAcceptDialog
 
 
 func _ready() -> void:
 	button.button_group = button_group
 	button.pressed.connect(open)
 	run_button.pressed.connect(EditorInterface.play_current_scene)
-	reset_button.pressed.connect(reset_practice)
+	reset_button.pressed.connect(reset_confirmation_dialog.set_visible.bind(true))
+	var reset_ok_button := reset_confirmation_dialog.get_ok_button()
+	reset_ok_button.pressed.connect(reset_practice)
+
 	if not Engine.is_editor_hint() or EditorInterface.get_edited_scene_root() == self:
 		return
+
 	theme = ThemeUtils.generate_scaled_theme(theme)
 	for control: Control in find_children("", "TextureRect") + find_children("", "TextureButton"):
 		control.custom_minimum_size *= EditorInterface.get_editor_scale()
+
+	for dialog: AcceptDialog in find_children("", "AcceptDialog"):
+		dialog.size *= EditorInterface.get_editor_scale()
+
+	for button: Button in [
+		reset_ok_button,
+		reset_confirmation_dialog.get_cancel_button(),
+		reset_accept_dialog.get_ok_button(),
+	]:
+		button.theme_type_variation = "ButtonRun"
+		button.custom_minimum_size = Vector2(160, 0) * EditorInterface.get_editor_scale()
 
 
 func setup(practice_metadata: PracticeMetadata) -> void:
 	self.practice_metadata = practice_metadata
 	label_title.text = practice_metadata.title
 	label_item.text = practice_metadata.item
+	reset_confirmation_dialog.dialog_text %= practice_metadata.id
+	reset_accept_dialog.dialog_text %= practice_metadata.id
 
 
 ## Makes this selected, pressing the child button node and emitting the pressed signal.
@@ -63,7 +82,8 @@ func select() -> void:
 func deselect() -> void:
 	button.set_pressed_no_signal(false)
 	theme_type_variation = DEFAULT_VARIATION
-	reset_button.visible = false
+	var practice_packed_scene_path := Paths.to_practice(practice_metadata.packed_scene_path)
+	reset_button.visible = not FileAccess.file_exists(practice_packed_scene_path)
 	run_button_container.visible = false
 
 
@@ -95,3 +115,5 @@ func reset_practice() -> void:
 		if not solution_dir_name.is_empty():
 			build.build_practice(solution_dir_name, true)
 			update(db.progress)
+			reset_accept_dialog.visible = true
+			reset_button.visible = false
