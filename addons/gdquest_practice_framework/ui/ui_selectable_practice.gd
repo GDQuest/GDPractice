@@ -51,13 +51,16 @@ func _ready() -> void:
 	for control: Control in find_children("", "TextureRect") + find_children("", "TextureButton"):
 		control.custom_minimum_size *= EditorInterface.get_editor_scale()
 
+	for dialog: AcceptDialog in find_children("", "AcceptDialog"):
+		dialog.size *= EditorInterface.get_editor_scale()
+
 	for button: Button in [
 		reset_ok_button,
 		reset_confirmation_dialog.get_cancel_button(),
 		reset_accept_dialog.get_ok_button(),
 	]:
 		button.theme_type_variation = "ButtonRun"
-		button.custom_minimum_size.x = 160 * EditorInterface.get_editor_scale()
+		button.custom_minimum_size = Vector2(160, 0) * EditorInterface.get_editor_scale()
 
 
 func setup(practice_metadata: PracticeMetadata) -> void:
