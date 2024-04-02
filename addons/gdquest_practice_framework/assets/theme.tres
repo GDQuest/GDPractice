@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=39 format=3 uid="uid://bk3rqtt0xeorm"]
+[gd_resource type="Theme" load_steps=42 format=3 uid="uid://bk3rqtt0xeorm"]
 
 [ext_resource type="FontFile" uid="uid://d3u2nhkuevn1l" path="res://addons/gdquest_practice_framework/assets/fonts/Inter-Bold.ttf" id="1_guogc"]
 [ext_resource type="FontFile" uid="uid://deeixt6cs64ak" path="res://addons/gdquest_practice_framework/assets/fonts/Inter-SemiBold.ttf" id="2_r3hcp"]
@@ -255,6 +255,35 @@ anti_aliasing = false
 color = Color(0.533333, 0.486275, 0.615686, 1)
 vertical = true
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m5dla"]
+bg_color = Color(0.282353, 0.105882, 0.588235, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+expand_margin_left = 10.0
+expand_margin_top = 36.0
+expand_margin_right = 10.0
+expand_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_edg1p"]
+bg_color = Color(0.282353, 0.105882, 0.588235, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+expand_margin_left = 10.0
+expand_margin_top = 36.0
+expand_margin_right = 10.0
+expand_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cb47a"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 16.0
+bg_color = Color(0.156863, 0.0784314, 0.305882, 1)
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6hu1e"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_1dsos"]
@@ -438,6 +467,13 @@ PanelContainerTesterRadioButtons/base_type = &"PanelContainer"
 PanelContainerTesterRadioButtons/styles/panel = SubResource("StyleBoxFlat_wiq68")
 PanelSeparator/base_type = &"Panel"
 PanelSeparator/styles/panel = SubResource("StyleBoxLine_fh8oh")
+ResetAcceptDialog/base_type = &"AcceptDialog"
+ResetAcceptDialog/colors/title_color = Color(1, 0.835294, 0, 1)
+ResetAcceptDialog/font_sizes/title_font_size = 16
+ResetAcceptDialog/fonts/title_font = ExtResource("1_guogc")
+ResetAcceptDialog/styles/embedded_border = SubResource("StyleBoxFlat_m5dla")
+ResetAcceptDialog/styles/embedded_unfocused_border = SubResource("StyleBoxFlat_edg1p")
+ResetAcceptDialog/styles/panel = SubResource("StyleBoxFlat_cb47a")
 RichTextLabel/fonts/bold_font = ExtResource("1_guogc")
 RichTextLabel/fonts/bold_italics_font = ExtResource("5_gv20d")
 RichTextLabel/fonts/italics_font = ExtResource("6_s8153")
