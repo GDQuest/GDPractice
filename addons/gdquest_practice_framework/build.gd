@@ -269,10 +269,12 @@ func build_practices(do_disable_plugins := false, do_project_diff := false) -> R
 		if result == ReturnCode.FAIL:
 			break
 
-	const PROJECT_FUNC_NAME := "edit_project_configuration"
-	var project_diff := load(Paths.SOLUTIONS_PATH.path_join("diff.gd"))
-	if do_project_diff and project_diff != null and PROJECT_FUNC_NAME in project_diff:
-		project_diff.call(PROJECT_FUNC_NAME)
+	var project_diff_path := Paths.SOLUTIONS_PATH.path_join("diff.gd")
+	if FileAccess.file_exists(project_diff_path):
+		const PROJECT_FUNC_NAME := "edit_project_configuration"
+		var project_diff := load(project_diff_path)
+		if do_project_diff and project_diff != null and PROJECT_FUNC_NAME in project_diff:
+			project_diff.call(PROJECT_FUNC_NAME)
 	return result
 
 
@@ -317,19 +319,18 @@ func build_practice(dir_name: StringName, is_forced := false) -> ReturnCode:
 			for node in solution_scene.find_children("*"):
 				node.remove_from_group(Layout.VISIBILITY_GROUP)
 
+			var diff_func_names := solution_diff.get_script_method_list().map(func(d: Dictionary) -> String: return d.name)
 			if solution_diff != null:
-				var func_name := solution_file_path.get_file().get_basename()
-				if func_name in solution_diff:
-					solution_diff.call(func_name, solution_scene)
+				var diff_func_name := solution_file_path.get_file().get_basename()
+				if diff_func_name in diff_func_names:
+					solution_diff.call(diff_func_name, solution_scene)
 					print_rich(LOG_MESSAGE % [solution_file_path, "[color=blue]DIFF[/color]"])
 				else:
-					push_error("FAIL: Found 'diff.gd' script for '%s', and expected a static function named '%s', but it was not found." % [solution_file_path, func_name])
-					return ReturnCode.FAIL
+					print_rich(LOG_MESSAGE % ["%s:%s() not found" % [solution_diff_path, diff_func_name], "[color=orange]SKIP[/color]"])
 
 			var practice_packed_scene := PackedScene.new()
 			practice_packed_scene.pack(solution_scene)
 			ResourceSaver.save(practice_packed_scene, practice_file_path)
-			print_rich(LOG_MESSAGE % [practice_file_path, "[color=green]PROCESS[/color]"])
 			was_copied = true
 
 		if not was_copied:
