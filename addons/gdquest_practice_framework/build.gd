@@ -319,8 +319,8 @@ func build_practice(dir_name: StringName, is_forced := false) -> ReturnCode:
 			for node in solution_scene.find_children("*"):
 				node.remove_from_group(Layout.VISIBILITY_GROUP)
 
-			var diff_func_names := solution_diff.get_script_method_list().map(func(d: Dictionary) -> String: return d.name)
 			if solution_diff != null:
+				var diff_func_names := solution_diff.get_script_method_list().map(func(d: Dictionary) -> String: return d.name)
 				var diff_func_name := solution_file_path.get_file().get_basename()
 				if diff_func_name in diff_func_names:
 					solution_diff.call(diff_func_name, solution_scene)
