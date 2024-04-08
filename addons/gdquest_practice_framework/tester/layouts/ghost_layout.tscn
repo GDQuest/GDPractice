@@ -10,7 +10,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
-mouse_filter = 2
 script = ExtResource("1_hix58")
 
 [node name="PracticeSubViewportContainer" type="SubViewportContainer" parent="."]
@@ -21,6 +20,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
+mouse_filter = 2
 stretch = true
 
 [node name="PracticeSubViewport" type="SubViewport" parent="PracticeSubViewportContainer"]
@@ -41,6 +41,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
+mouse_filter = 2
 stretch = true
 
 [node name="SolutionSubViewport" type="SubViewport" parent="SolutionSubViewportContainer"]
