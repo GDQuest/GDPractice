@@ -24,8 +24,15 @@ var editor_run_bar: MarginContainer = null
 var ui_practice_dock: UIPracticeDock = null
 var ui_solution_warning: UISolutionWarning = null
 
+var solution_nodes: Array[Node] = []
+
 
 func _enter_tree() -> void:
+	for scene_tree_dock: VBoxContainer in EditorInterface.get_base_control().find_children(
+		"", "SceneTreeDock", true, false
+	):
+		scene_tree_dock.node_created.connect(_on_scene_tree_dock_node_created)
+
 	for key: String in AUTOLOADS.keys():
 		add_autoload_singleton(key, AUTOLOADS[key])
 
@@ -77,9 +84,26 @@ func _on_scene_changed(scene_root: Node) -> void:
 	var is_metadata_predicate := func is_metadata(n: Node) -> bool: return n is Metadata
 	for metadata: Metadata in get_window().get_children().filter(is_metadata_predicate):
 		for pm: PracticeMetadata in metadata.list.filter(is_solution_predicate):
-			ui_solution_warning.set_text(
+			ui_solution_warning.set_is_solution_text(
 				solution_file_path, Paths.to_practice(pm.packed_scene_path), pm.full_title
 			)
+
+
+func _on_scene_tree_dock_node_created(node: Node) -> void:
+	var root := EditorInterface.get_edited_scene_root()
+	var is_practice := root != null and root.scene_file_path.begins_with(Paths.PRACTICES_PATH)
+	if not is_practice:
+		return
+
+	if node.scene_file_path.begins_with(Paths.SOLUTIONS_PATH):
+		node.tree_exited.connect(_on_remove_solution_node.bind(node))
+		solution_nodes.push_back(node)
+		update_solution_nodes_warning()
+
+
+func _on_remove_solution_node(node: Node) -> void:
+	solution_nodes.erase(node)
+	update_solution_nodes_warning()
 
 
 func _on_ui_practice_dock_metadata_refreshed() -> void:
@@ -118,3 +142,8 @@ func remove_templates() -> void:
 	Utils.fs_remove_dir(Paths.RES.path_join(TEMPLATES_DIR))
 	if Utils.fs_find("*", templates_base_dir_path).result.is_empty():
 		Utils.fs_remove_dir(templates_base_dir_path)
+
+
+func update_solution_nodes_warning() -> void:
+	ui_solution_warning.set_has_solution_text(solution_nodes)
+	ui_solution_warning.visible = not solution_nodes.is_empty()
