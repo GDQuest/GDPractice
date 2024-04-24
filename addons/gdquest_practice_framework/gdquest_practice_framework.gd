@@ -28,14 +28,14 @@ var filesystem_dock_trees: Array[Tree] = []
 
 
 func _enter_tree() -> void:
-	# if Paths.SOLUTIONS_PATH.begins_with("res://addons"):
-	for quick_open in EditorInterface.get_base_control().find_children(
-		"", "EditorQuickOpen", true, false
-	):
-		quick_open_trees.append_array(quick_open.find_children("", "Tree", true, false))
-	filesystem_dock_trees.assign(
-		EditorInterface.get_file_system_dock().find_children("", "Tree", true, false)
-	)
+	if Paths.SOLUTIONS_PATH.begins_with("res://addons"):
+		for quick_open in EditorInterface.get_base_control().find_children(
+			"", "EditorQuickOpen", true, false
+		):
+			quick_open_trees.append_array(quick_open.find_children("", "Tree", true, false))
+		filesystem_dock_trees.assign(
+			EditorInterface.get_file_system_dock().find_children("", "Tree", true, false)
+		)
 
 	for key: String in AUTOLOADS.keys():
 		add_autoload_singleton(key, AUTOLOADS[key])
