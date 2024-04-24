@@ -23,9 +23,16 @@ const AUTOLOADS := {
 var editor_run_bar: MarginContainer = null
 var ui_practice_dock: UIPracticeDock = null
 var ui_solution_warning: UISolutionWarning = null
+var quick_open_trees: Array[Tree] = []
 
 
 func _enter_tree() -> void:
+	# if Paths.SOLUTIONS_PATH.begins_with("res://addons"):
+	for quick_open in EditorInterface.get_base_control().find_children(
+		"", "EditorQuickOpen", true, false
+	):
+		quick_open_trees.append_array(quick_open.find_children("", "Tree", true, false))
+
 	for key: String in AUTOLOADS.keys():
 		add_autoload_singleton(key, AUTOLOADS[key])
 
@@ -59,6 +66,10 @@ func _exit_tree() -> void:
 
 	for key: String in AUTOLOADS:
 		remove_autoload_singleton(key)
+
+
+func _process(_delta: float) -> void:
+	hide_solutions()
 
 
 func _on_scene_changed(scene_root: Node) -> void:
@@ -118,3 +129,14 @@ func remove_templates() -> void:
 	Utils.fs_remove_dir(Paths.RES.path_join(TEMPLATES_DIR))
 	if Utils.fs_find("*", templates_base_dir_path).result.is_empty():
 		Utils.fs_remove_dir(templates_base_dir_path)
+
+
+func hide_solutions() -> void:
+	for tree in quick_open_trees:
+		if not tree.is_inside_tree():
+			continue
+
+		var item := tree.get_root()
+		while item != null:
+			item.visible = not item.get_text(0).begins_with("addons")
+			item = item.get_next_in_tree()
