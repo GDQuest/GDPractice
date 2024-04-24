@@ -24,6 +24,7 @@ var editor_run_bar: MarginContainer = null
 var ui_practice_dock: UIPracticeDock = null
 var ui_solution_warning: UISolutionWarning = null
 var quick_open_trees: Array[Tree] = []
+var filesystem_dock_trees: Array[Tree] = []
 
 
 func _enter_tree() -> void:
@@ -32,6 +33,9 @@ func _enter_tree() -> void:
 		"", "EditorQuickOpen", true, false
 	):
 		quick_open_trees.append_array(quick_open.find_children("", "Tree", true, false))
+	filesystem_dock_trees.assign(
+		EditorInterface.get_file_system_dock().find_children("", "Tree", true, false)
+	)
 
 	for key: String in AUTOLOADS.keys():
 		add_autoload_singleton(key, AUTOLOADS[key])
@@ -133,10 +137,27 @@ func remove_templates() -> void:
 
 func hide_solutions() -> void:
 	for tree in quick_open_trees:
-		if not tree.is_inside_tree():
+		var item := tree.get_root()
+		if not tree.is_inside_tree() or item == null:
 			continue
 
-		var item := tree.get_root()
 		while item != null:
 			item.visible = not item.get_text(0).begins_with("addons")
+			item = item.get_next_in_tree()
+
+	for tree in filesystem_dock_trees:
+		var item := tree.get_root()
+		if not tree.is_inside_tree() or item == null:
+			continue
+
+		var is_done := false
+		while item != null and not is_done:
+			var parent := item.get_parent()
+			if (
+				item.get_text(0).begins_with("addons")
+				and parent != null
+				and parent.get_text(0) == "res://"
+			):
+				item.visible = false
+				is_done = true
 			item = item.get_next_in_tree()
