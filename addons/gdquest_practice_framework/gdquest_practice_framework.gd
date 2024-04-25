@@ -24,34 +24,35 @@ var editor_run_bar: MarginContainer = null
 var ui_practice_dock: UIPracticeDock = null
 var ui_solution_warning: UISolutionWarning = null
 var quick_open_trees: Array[Tree] = []
+var picker_quick_open_trees: Array[Tree] = []
 var filesystem_dock_trees: Array[Tree] = []
 
 
 func _enter_tree() -> void:
+	var base_control := EditorInterface.get_base_control()
 	if Paths.SOLUTIONS_PATH.begins_with("res://addons"):
-		for quick_open in EditorInterface.get_base_control().find_children(
-			"", "EditorQuickOpen", true, false
-		):
+		filesystem_dock_trees.assign(EditorInterface.get_file_system_dock().find_children("", "Tree", true, false))
+		var predicate := func(e: ConfirmationDialog) -> bool: return not e.get_parent() is EditorResourcePicker
+		var quick_opens: Array[Node] = base_control.find_children("", "EditorQuickOpen", true, false).filter(predicate)
+		for quick_open: ConfirmationDialog in quick_opens:
 			quick_open_trees.append_array(quick_open.find_children("", "Tree", true, false))
-		filesystem_dock_trees.assign(
-			EditorInterface.get_file_system_dock().find_children("", "Tree", true, false)
-		)
 
 	for key: String in AUTOLOADS.keys():
 		add_autoload_singleton(key, AUTOLOADS[key])
 
 	scene_changed.connect(_on_scene_changed)
 
+	for control: MarginContainer in base_control.find_children("", "EditorRunBar", true, false):
+		editor_run_bar = control
+
 	ui_practice_dock = UIPracticeDockPackedScene.instantiate()
 	ui_practice_dock.metadata_refreshed.connect(_on_ui_practice_dock_metadata_refreshed)
-
-	ui_solution_warning = UISolutionWarningPackedScene.instantiate()
-	EditorInterface.get_editor_main_screen().add_child(ui_solution_warning)
-
-	editor_run_bar = EditorInterface.get_base_control().find_child("*EditorRunBar*", true, false)
 	editor_run_bar.stop_pressed.connect(ui_practice_dock.update)
 	scene_changed.connect(ui_practice_dock.select_practice)
 	add_control_to_dock(DOCK_SLOT_RIGHT_UL, ui_practice_dock)
+
+	ui_solution_warning = UISolutionWarningPackedScene.instantiate()
+	EditorInterface.get_editor_main_screen().add_child(ui_solution_warning)
 
 	# Removed for now because this should not happen to the user's project. It's a tool for teachers creating practices.
 	# add_templates()
@@ -102,6 +103,14 @@ func _on_ui_practice_dock_metadata_refreshed() -> void:
 	add_autoload_singleton.call_deferred(Metadata.NAME, AUTOLOADS[Metadata.NAME])
 
 
+func _on_resource_picker_id_pressed(id: int, resource_picker: EditorResourcePicker) -> void:
+	if id != 1:
+		return
+
+	for quick_open: ConfirmationDialog in resource_picker.find_children("", "EditorQuickOpen", false, false):
+		picker_quick_open_trees.assign(quick_open.find_children("", "Tree", true, false))
+
+
 ## Copies practice template scripts to the project root directory.
 func add_templates() -> void:
 	var plugin_dir_path: String = get_script().resource_path.get_base_dir()
@@ -136,21 +145,22 @@ func remove_templates() -> void:
 
 
 func hide_solutions() -> void:
-	for tree in quick_open_trees:
-		var item := tree.get_root()
-		if not tree.is_inside_tree() or item == null:
+	for tree in quick_open_trees + picker_quick_open_trees:
+		var is_valid := is_instance_valid(tree)
+		if not is_valid or (is_valid and not tree.is_inside_tree()):
 			continue
 
+		var item := tree.get_root()
 		while item != null:
 			item.visible = not item.get_text(0).begins_with("addons")
 			item = item.get_next_in_tree()
 
 	for tree in filesystem_dock_trees:
-		var item := tree.get_root()
-		if not tree.is_inside_tree() or item == null:
+		if not tree.is_inside_tree():
 			continue
 
 		var is_done := false
+		var item := tree.get_root()
 		while item != null and not is_done:
 			var parent := item.get_parent()
 			if (
@@ -161,3 +171,12 @@ func hide_solutions() -> void:
 				item.visible = false
 				is_done = true
 			item = item.get_next_in_tree()
+
+	var resource_pickers := EditorInterface.get_inspector().find_children(
+		"", "EditorResourcePicker", true, false
+	)
+	for resource_picker: EditorResourcePicker in resource_pickers:
+		var popup_menus := resource_picker.find_children("", "PopupMenu", true, false)
+		for popup_menu: PopupMenu in popup_menus:
+			if not popup_menu.id_pressed.is_connected(_on_resource_picker_id_pressed):
+				popup_menu.id_pressed.connect(_on_resource_picker_id_pressed.bind(resource_picker))
