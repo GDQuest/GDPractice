@@ -21,3 +21,17 @@ static func edit_project_configuration() -> void:
         ProjectSettings.set_setting(INPUT_KEY % action, null)
     ProjectSettings.save()
 ```
+
+## Troubleshooting
+
+### Instantiated scenes in the workbook project practices point to solution scenes
+
+In some cases, the instantiated scenes in the workbook project practices may appear to point to the solution scenes instead of the files in the `res://practices/` folder.
+
+This can be due to a cache problem in the Godot editor. To fix this, you can try the following:
+
+1. Close the Godot editor.
+2. Delete the `.godot/` folder in the project directory.
+3. Open the Godot editor and reload the project.
+
+You can also open the `.tscn` files of generated practices in a text editor and ensure that the paths to the scenes are correct.
