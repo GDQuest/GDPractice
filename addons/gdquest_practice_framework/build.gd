@@ -63,11 +63,9 @@
 ##
 ## - Only-comment lines are also preserved in the practice. [br]
 ## - The special [code]<[/code] and [code]>[/code] symbols can be repeated multiple times. [br]
-## - It also strips the ["addons/gdquest_practice_framework/tester/layout.gd"] [code]VISIBILITY_GROUP[/code] group from nodes. [br]
 extends SceneTree
 
 const Paths := preload("paths.gd")
-const Layout := preload("tester/layouts/layout.gd")
 const Utils := preload("../gdquest_sparkly_bag/sparkly_bag_utils.gd")
 
 const PROJECT_FILE := "project.godot"
@@ -316,9 +314,6 @@ func build_practice(dir_name: StringName, is_forced := false) -> ReturnCode:
 		var was_copied := false
 		if extension == "tscn":
 			var solution_scene: Node = load(solution_file_path).instantiate()
-			for node in solution_scene.find_children("*"):
-				node.remove_from_group(Layout.VISIBILITY_GROUP)
-
 			if solution_diff != null:
 				var diff_func_names := solution_diff.get_script_method_list().map(func(d: Dictionary) -> String: return d.name)
 				var diff_func_name := solution_file_path.get_file().get_basename()

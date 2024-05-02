@@ -7,6 +7,7 @@ const Paths := preload("../paths.gd")
 const DB := preload("../db/db.gd")
 const Progress := preload("../db/progress.gd")
 const ThemeUtils := preload("../../gdquest_theme_utils/theme_utils.gd")
+const Utils := preload("../../gdquest_sparkly_bag/sparkly_bag_utils.gd")
 const Metadata := preload(Paths.SOLUTIONS_PATH + "/metadata.gd")
 
 const PracticeMetadata := Metadata.PracticeMetadata
@@ -112,8 +113,22 @@ func reset_practice() -> void:
 		db.save()
 
 		var solution_dir_name := Paths.get_dir_name(practice_metadata.packed_scene_path)
-		if not solution_dir_name.is_empty():
-			build.build_practice(solution_dir_name, true)
-			update(db.progress)
-			reset_accept_dialog.visible = true
-			reset_button.visible = false
+		if solution_dir_name.is_empty():
+			continue
+
+		build.build_practice(solution_dir_name, true)
+		update(db.progress)
+		reset_accept_dialog.visible = true
+		reset_button.visible = false
+
+		EditorInterface.get_resource_filesystem().scan()
+		while EditorInterface.get_resource_filesystem().is_scanning():
+			pass
+
+		var practice_scene_paths := Utils.fs_find(
+			"*.tscn", Paths.to_practice(practice_metadata.packed_scene_path.get_base_dir())
+		).result
+		var open_scene_paths := EditorInterface.get_open_scenes()
+		for practice_scene_path in practice_scene_paths:
+			if practice_scene_path in open_scene_paths:
+				EditorInterface.reload_scene_from_path(practice_scene_path)
