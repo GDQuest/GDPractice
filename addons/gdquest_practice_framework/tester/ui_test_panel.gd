@@ -43,14 +43,13 @@ var _practice_info := {}
 @onready var input_panel_container: PanelContainer = %InputPanelContainer
 @onready var log_v_box_container: VBoxContainer = %LogVBoxContainer
 
-@onready var ghost_layout: Control = %GhostLayout
 @onready var split_layout: Control = %SplitLayout
 
 @onready var toggle_show_button: Button = %ToggleShowButton
 @onready var toggle_x5_button: Button = %ToggleX5Button
-@onready var toggle_ghost_split_button: Button = %ToggleGhostSplitButton
 
 @onready var tween: Tween = create_tween()
+@onready var custom_minimum_size_x := custom_minimum_size.x
 
 
 func _ready() -> void:
@@ -60,7 +59,7 @@ func _ready() -> void:
 		return
 
 	tween.kill()
-	toggle_show_button.toggled.connect(_on_toggle_show_button)
+	toggle_show_button.toggled.connect(_on_toggle_show_button_toggled)
 
 	_prepare_practice_info()
 	_report_prep()
@@ -90,30 +89,19 @@ func _ready() -> void:
 	_report_test(completion)
 
 
-func _on_toggle_show_button(is_toggled: bool) -> void:
+func _on_toggle_show_button_toggled(is_toggled: bool) -> void:
 	tween.kill()
 	tween = create_tween().set_ease(Tween.EASE_IN)
 	if is_toggled:
 		toggle_show_button.icon = preload(ICON_PATH % "hide")
-		tween.tween_property(main_panel_container, "position:x", 0.0, 0.1)
+		tween.tween_property(self, "custom_minimum_size:x", custom_minimum_size_x, 0.1)
 	else:
 		toggle_show_button.icon = preload(ICON_PATH % "show")
-		tween.tween_property(main_panel_container, "position:x", -main_panel_container.size.x, 0.1)
+		tween.tween_property(self, "custom_minimum_size:x", custom_minimum_size_x + main_panel_container.size.x, 0.1)
 
 
 func _on_toggle_x5_button_toggled(is_toggled: bool) -> void:
 	Engine.set_time_scale(5 if is_toggled else 1)
-
-
-func _on_toggle_ghost_split_button_toggled(is_toggled: bool) -> void:
-	if is_toggled:
-		ghost_layout.visible = false
-		split_layout.visible = true
-		split_layout.refresh(ghost_layout.scenes)
-	else:
-		ghost_layout.visible = true
-		split_layout.visible = false
-		ghost_layout.refresh(split_layout.scenes)
 
 
 func _prepare_practice_info() -> void:
@@ -136,7 +124,6 @@ func _is_practice_scene() -> bool:
 
 
 func _prepare_for_test() -> void:
-	toggle_ghost_split_button.toggled.connect(_on_toggle_ghost_split_button_toggled)
 	toggle_x5_button.toggled.connect(_on_toggle_x5_button_toggled)
 	input_panel_container.warn()
 
@@ -144,7 +131,7 @@ func _prepare_for_test() -> void:
 func _setup_test() -> Test:
 	var solution_packed_scene := load(Paths.to_solution(_practice_info.file_path))
 	var solution: Node = solution_packed_scene.instantiate()
-	ghost_layout.refresh([_practice_info.scene, solution])
+	split_layout.refresh([_practice_info.scene, solution])
 
 	var test_script := load(Paths.to_solution(_practice_info.base_path).path_join("test.gd"))
 	var test: Test = test_script.new()
