@@ -10,9 +10,15 @@ config_version=5
 
 [application]
 
-config/name="Godot Practice Framework"
+config/name="GDPractice: Interactive Practices"
+config/description="Complete system for interactive coding exercises in the Godot game engine."
 config/features=PackedStringArray("4.2", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+UITestPanel="*res://addons/gdpractice/tester/ui_test_panel.tscn"
+Metadata="*res://practice_solutions/metadata.gd"
 
 [display]
 
@@ -22,6 +28,10 @@ window/size/viewport_height=1080
 [dotnet]
 
 project/assembly_name="Godot Practice Framework"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gdpractice/plugin.cfg")
 
 [input]
 

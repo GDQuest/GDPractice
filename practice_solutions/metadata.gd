@@ -1,5 +1,5 @@
 @tool
-extends "res://addons/gdquest_practice_framework/metadata.gd"
+extends "res://addons/gdpractice/metadata.gd"
 
 
 func _init() -> void:

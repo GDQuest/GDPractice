@@ -1,4 +1,4 @@
-extends "res://addons/gdquest_practice_framework/tester/test.gd"
+extends "res://addons/gdpractice/tester/test.gd"
 
 
 func _build_requirements() -> void:
