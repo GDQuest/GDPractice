@@ -9,19 +9,20 @@ var progress: Progress = null
 
 
 func _init(metadata: Metadata) -> void:
-	if not ResourceLoader.exists(Progress.PATH):
+	if ResourceLoader.exists(Progress.PATH):
+		progress = ResourceLoader.load(Progress.PATH)
+	elif ResourceLoader.exists(Progress.PATH_V1):
+		progress = _update_save_file_format()
+		save()
+	else:
 		progress = Progress.new()
 		for practice_metadata: PracticeMetadata in metadata.list:
 			progress.state[practice_metadata.id] = {completion = 0, tries = 0}
 		save()
-	else:
-		progress = ResourceLoader.load(Progress.PATH)
-		if progress == null:
-			progress = _update_save_file_format()
 
 
 func save() -> void:
-	ResourceSaver.save(progress)
+	ResourceSaver.save(progress, Progress.PATH)
 
 
 func update(dict: Dictionary) -> void:
@@ -51,9 +52,11 @@ static func _update_save_file_format() -> Progress:
 		var content := file.get_as_text().replace(V1_RESOURCE_CLASS_PATH, Progress.resource_path)
 		file.store_string(content)
 		file.close()
-		var progress_v1 := ResourceLoader.load(Progress.PATH_V1)
+		var progress_v1 := ResourceLoader.load(Progress.PATH_V1).duplicate(true)
 		if progress_v1 == null:
 			printerr("Failed to load the progress save file from version 1.")
+		else:
+			print("Success! The progress save file has been migrated to the new resource file format.")
 		return progress_v1
 
 	return null
