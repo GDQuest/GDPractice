@@ -14,11 +14,10 @@ func _init(metadata: Metadata) -> void:
 		for practice_metadata: PracticeMetadata in metadata.list:
 			progress.state[practice_metadata.id] = {completion = 0, tries = 0}
 		save()
-	reload()
-
-
-func reload() -> void:
-	progress = ResourceLoader.load(Progress.PATH, "", ResourceLoader.CACHE_MODE_IGNORE)
+	else:
+		progress = ResourceLoader.load(Progress.PATH)
+		if progress == null:
+			progress = _update_save_file_format()
 
 
 func save() -> void:
@@ -38,3 +37,23 @@ func update(dict: Dictionary) -> void:
 				progress.state[id] = {}
 			progress.state[id][key] = dict[id][key]
 	progress.emit_changed()
+
+
+## Updates the save file format if it's outdated and returns the updated progress resource.
+static func _update_save_file_format() -> Progress:
+	# We renamed the addon folder at some point for Windows users, this requires migrating the original save data.
+	# We need to first replace the path to the loader resource in the save file to load it, then save it back.
+	if ResourceLoader.exists(Progress.PATH_V1):
+		print("Migrating progress save file from version 1 to the new resource file format...")
+		# Open the file as text and replace V1_RESOURCE_CLASS_PATH with Progress.resource_path
+		const V1_RESOURCE_CLASS_PATH := "res://addons/gdquest_practice_framework/db/progress.gd"
+		var file := FileAccess.open(Progress.PATH_V1, FileAccess.READ_WRITE)
+		var content := file.get_as_text().replace(V1_RESOURCE_CLASS_PATH, Progress.resource_path)
+		file.store_string(content)
+		file.close()
+		var progress_v1 := ResourceLoader.load(Progress.PATH_V1)
+		if progress_v1 == null:
+			printerr("Failed to load the progress save file from version 1.")
+		return progress_v1
+
+	return null
