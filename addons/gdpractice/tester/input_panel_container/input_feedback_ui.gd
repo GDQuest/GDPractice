@@ -45,29 +45,35 @@ const COLORS := {true: COLOR_YELLOW, false: COLOR_GRAY}
 	_arrow_down_texture_rect,
 ]
 
+func _ready() -> void:
+	_arrow_right_texture_rect.visible = InputMap.has_action("move_right")
+	_arrow_up_texture_rect.visible = InputMap.has_action("move_up")
+	_arrow_left_texture_rect.visible = InputMap.has_action("move_left")
+	_arrow_down_texture_rect.visible = InputMap.has_action("move_down")
+
 
 func _process(_delta: float) -> void:
-	_arrow_right_texture_rect.self_modulate = COLORS[Input.is_action_pressed("move_right")]
-	_arrow_up_texture_rect.self_modulate = COLORS[Input.is_action_pressed("move_up")]
-	_arrow_left_texture_rect.self_modulate = COLORS[Input.is_action_pressed("move_left")]
-	_arrow_down_texture_rect.self_modulate = COLORS[Input.is_action_pressed("move_down")]
+	_arrow_right_texture_rect.self_modulate = COLORS[_arrow_right_texture_rect.visible and Input.is_action_pressed("move_right")]
+	_arrow_up_texture_rect.self_modulate = COLORS[_arrow_up_texture_rect.visible and Input.is_action_pressed("move_up")]
+	_arrow_left_texture_rect.self_modulate = COLORS[_arrow_left_texture_rect.visible and Input.is_action_pressed("move_left")]
+	_arrow_down_texture_rect.self_modulate = COLORS[_arrow_down_texture_rect.visible and Input.is_action_pressed("move_down")]
 
 
 func _input(event: InputEvent) -> void:
 	var is_direction := false
-	if event.is_action("move_right"):
+	if _arrow_right_texture_rect.visible and event.is_action("move_right"):
 		_arrow_right_texture_rect.self_modulate = COLORS[event.is_pressed()]
 		is_direction = true
 
-	if event.is_action("move_up"):
+	if _arrow_up_texture_rect.visible and event.is_action("move_up"):
 		_arrow_up_texture_rect.self_modulate = COLORS[event.is_pressed()]
 		is_direction = true
 
-	if event.is_action("move_left"):
+	if _arrow_left_texture_rect.visible and event.is_action("move_left"):
 		_arrow_left_texture_rect.self_modulate = COLORS[event.is_pressed()]
 		is_direction = true
 
-	if event.is_action("move_down"):
+	if _arrow_down_texture_rect.visible and event.is_action("move_down"):
 		_arrow_down_texture_rect.self_modulate = COLORS[event.is_pressed()]
 		is_direction = true
 
@@ -85,8 +91,8 @@ func _input(event: InputEvent) -> void:
 			_key_panel_container.custom_minimum_size.x = 18
 			_key_label.text = event.as_text_key_label()
 
-	if event.is_action("left_click") or event.is_action("right_click"):
+	if event is InputEventMouseButton and event.button_index in [MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT]:
 		_mouse_texture_rect.visible = event.pressed
 		_mouse_button_texture_rect.flip_h = (
-			event.is_action_pressed("right_click") and not event.is_action_pressed("left_click")
+			event.button_index != MOUSE_BUTTON_LEFT and event.button_index == MOUSE_BUTTON_RIGHT
 		)
