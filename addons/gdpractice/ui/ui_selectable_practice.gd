@@ -132,3 +132,4 @@ func reset_practice() -> void:
 		for practice_scene_path in practice_scene_paths:
 			if practice_scene_path in open_scene_paths:
 				EditorInterface.reload_scene_from_path(practice_scene_path)
+		EditorInterface.get_script_editor().notification(NOTIFICATION_APPLICATION_FOCUS_IN)
