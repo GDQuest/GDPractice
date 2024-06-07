@@ -10,7 +10,7 @@ const NAME := "Metadata"
 ## Represents the metadata of a practice.
 class PracticeMetadata:
 	var _cache := {}
-	var _dir_name_regex := RegEx.create_from_string(r"^L(\d+)\.P(\d+)\..+$")
+	var _dir_name_regex := RegEx.create_from_string(r"^L(\d+)\.P(\d+)(\..+)?$")
 
 	var lesson_number := 0
 	var practice_number := 0
@@ -29,9 +29,11 @@ class PracticeMetadata:
 
 		packed_scene_path = packed_scene.resource_path
 		var dir_name := Paths.get_dir_name(packed_scene_path)
-		var match := _dir_name_regex.search(dir_name)
-		lesson_number = match.strings[1].to_int()
-		practice_number = match.strings[2].to_int()
+		var regex_match := _dir_name_regex.search(dir_name)
+		if regex_match == null:
+			printerr("Invalid practice directory name: %s. It should have the form LX.PX, or LX.PX.folder_name. For example, L4.P2.practice_name" % dir_name)
+		lesson_number = regex_match.strings[1].to_int()
+		practice_number = regex_match.strings[2].to_int()
 		item = "L%d.P%d" % [lesson_number, practice_number]
 		full_title = "%s %s" % [item, title]
 
