@@ -35,10 +35,10 @@ extends "res://addons/gd-plug/plug.gd"
 
 
 func _plugging() -> void:
- plug(
- "git@github.com:GDQuest/GDPractice.git",
- {include = ["addons/gdpractice", "addons/gdquest_sparkly_bag", "addons/gdquest_theme_utils"]}
- )
+	plug(
+		"git@github.com:GDQuest/GDPractice.git",
+		{include = ["addons/gdpractice", "addons/gdquest_sparkly_bag", "addons/gdquest_theme_utils"]},
+	)
 ```
 
 Then, run the following command in your terminal to download the addons:
@@ -63,12 +63,12 @@ For example, this code snippet removes all input actions from the workbook, exce
 
 ```gdscript
 static func edit_project_configuration() -> void:
- const INPUT_KEY := "input/%s"
- for action in InputMap.get_actions():
- if action.begins_with("ui"):
- continue
- ProjectSettings.set_setting(INPUT_KEY % action, null)
- ProjectSettings.save()
+	const INPUT_KEY := "input/%s"
+	for action in InputMap.get_actions():
+		if action.begins_with("ui"):
+			continue
+		ProjectSettings.set_setting(INPUT_KEY % action, null)
+		ProjectSettings.save()
 ```
 
 ## Troubleshooting
