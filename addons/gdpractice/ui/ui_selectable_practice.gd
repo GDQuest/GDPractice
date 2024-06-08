@@ -109,6 +109,9 @@ func reset_practice() -> void:
 	var predicate := func(n: Node) -> bool: return n is Metadata
 	for metadata: Metadata in get_window().get_children().filter(predicate):
 		var db := DB.new(metadata)
+		if not practice_metadata.id in db.progress.state:
+			db.progress.state[practice_metadata.id] = {}
+
 		db.progress.state[practice_metadata.id].completion = 0
 		db.save()
 
