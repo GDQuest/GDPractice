@@ -180,18 +180,19 @@ func _add_callable_requirement(description: String, checker: Callable, params :=
 	requirements.push_back(requirement)
 
 
-func _add_properties_requirement(properties: Array[String]) -> void:
+## Adds a requirement to the list of requirements that checks if the given [param properties] are present in the [param object].
+func _add_properties_requirement(properties: Array[String], object: Object = _practice) -> void:
 	var requirement := Requirement.new()
 	requirement.description = tr("Missing properties")
 	requirement.checker = func check_properties() -> String:
 		var missing_properties := []
 		for prop_name: String in properties:
-			if not prop_name in _practice:
+			if not prop_name in object:
 				missing_properties.append(prop_name)
 		if not missing_properties.is_empty():
 			var property_list := ", ".join(missing_properties)
 			var property_word := tr("properties") if missing_properties.size() > 1 else tr("property")
-			return tr("The practice is missing the %s %s. Did you remove it from the practice scene?") % [property_list, property_word]
+			return tr("%s is missing the %s %s. Did you remove it from the script?") % [object.name, property_list, property_word]
 		return ""
 	requirements.push_back(requirement)
 
