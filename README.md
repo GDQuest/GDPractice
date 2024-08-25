@@ -71,6 +71,81 @@ static func edit_project_configuration() -> void:
 		ProjectSettings.save()
 ```
 
+## How practice tests run
+
+Every practice has a script named test.gd that extends the built-in script tester/test.gd. This script is responsible for running the practice tests. The test.gd script exposes a few virtual functions it calls in preparation before running the checks.
+
+The testing system waits for nodes in the tree to be ready before running the tests. It ensures that the practice and solution are initialized before collecting data.
+
+The system runs the following functions in order and in relatively rapid succession:
+
+1. `_build_requirements()`: checks pre-requisites before running other functions.
+2. `_setup_state()`: used to harmonize the properties of the student practice and solution scene.
+3. `_setup_populate_test_space()`: used to collect data from the running practice and solution scene.
+4. `_build_checks()`: creates unit tests used to test student code.
+
+Here's some more detail. Two functions are provided to build requirements and checks:
+
+1. `_build_requirements()`: This function is called before the practice starts running. It should check if the practice has all the necessary variables, functions, signal connections, and so on to run without errors. For example, you can use this to check if a node or property exists in the student practice so that you can safely access it without error later on. If the requirements are not met, the other functions will not run to avoid errors. To add requirements, add `Requirement` objects to the `requirements` array.
+2. `_build_checks()`: This function is called after the practice has run for a moment. It should be used to check if the practice is behaving as expected. If the checks fail, the practice will be marked as failed. To add checks, create `Check` objects and add them to the `checks` array.
+
+Two functions allow the practice system to capture data from the practice and solution:
+
+1. `_setup_state()`: This async function is called before the practice starts running, once all nodes are ready in the scene tree. It should be used to copy the state of the practice to the solution. Use this to ensure that the practice and solution start with the same properties. For example, you can copy the speed or health of a character from the practice to the solution.
+2. `_setup_populate_test_space()`: This async function is called right after `_setup_state()`. It should be used to capture data from the practice and solution. Use this to collect the state of the practice and the solution during the practice. For example, you can capture the position of a character in the practice and solution to compare them later.
+
+The two functions above run one after the other and are separated just for conceptual clarity.
+
+## How to collect data from the practice and solution
+
+The needs of practice tests are very different, so the data you collect and how you collect it is entirely up to you. You collect all the data you need in `_setup_populate_test_space()`. You can store the data however you want, though I recommend using the provided `_test_space` array. Some helper functions in the `Test` class make it easier to check the data later on.
+
+### Storing data over multiple frames
+
+To store data from multiple frames, use `await` in the `_setup_populate_test_space()` function. This will allow you to run code over multiple frames. For example, you can use the following code to store the position of a character in the practice and solution over ten frames:
+
+```gdscript
+func _setup_populate_test_space() -> void:
+	for i in range(10):
+		var data := {
+			"practice_global_position": _practice.global_position,
+			"solution_global_position": _solution.global_position
+		}
+		_test_space.append(data)
+		await get_tree().physics_frame
+```
+
+I prefer using an inner class to store the data, to get static typing, and to make it easier to access the data later on. Here's the same example using an inner class:
+
+```gdscript
+class TestData:
+	var practice_global_position := Vector2.ZERO
+	var solution_global_position := Vector2.ZERO
+
+
+func _setup_populate_test_space() -> void:
+	for i in range(10):
+		var data := TestData.new()
+		data.practice_global_position = _practice.global_position
+		data.solution_global_position = _solution.global_position
+		_test_space.append(data)
+		await get_tree().physics_frame
+```
+
+Alternatively, the test script provides the method `_connect_timed()` to collect data over some time. Here's a typical example: collecting frame data over one second:
+
+```gdscript
+func _setup_populate_test_space() -> void:
+	await _connect_timed(1.0, get_tree().process_frame, _populate_test_space)
+
+
+func _populate_test_space() -> void:
+	var data := TestData.new()
+	data.practice_global_position = _practice.global_position
+	data.solution_global_position = _solution.global_position
+	_test_space.append(data)
+```
+
 ## Troubleshooting
 
 ### Instantiated scenes in the workbook project practices point to solution scenes
