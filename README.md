@@ -15,7 +15,7 @@ After iterating over solutions for interactive practices, which we first open-so
     - Change any project settings when generating workbook projects. For example, you can remove all input actions from the workbook project if the practice requires the learner to create them.
 - **Hides addon files:** GDPractice hides the addons/ and other files from the user in the workbook project to offer them a more streamlined experience browsing the project. The files are hidden from the FileSystem dock and quick picker dialogs.
 
-\* Note that the practices' behavior can vary a little depending on the system, the learner's framerate, and input devices. 
+\* Note that the practices' behavior can vary a little depending on the system, the learner's framerate, and input devices.
 
 ## How to integrate into other projects
 
@@ -144,6 +144,50 @@ func _populate_test_space() -> void:
 	data.practice_global_position = _practice.global_position
 	data.solution_global_position = _solution.global_position
 	_test_space.append(data)
+```
+
+## Simulating player input
+
+One key difference between game dev practices and usual interactive programming exercises is that we simulate player input and need to ensure that the student code accounts for this input.
+
+Godot has two main ways to check for player input:
+
+1. Polling in the `_process()` and `_physics_process()` functions.
+2. Using the `_input()` functions with input events.
+
+Similarly, we use two different approaches to inject and simulate inputs depending on the approach used by the practice:
+
+1. Polling: We can simulate player input in the processing loop by calling `Input.action_press()` and `Input.action_release()`.
+2. Input events: We can simulate player input by creating an `InputEvent` object and calling `Input.parse_input_event()`.
+
+### Examples
+
+The following example simulates the player moving to the right for 0.3 seconds and collecting data in the test space.
+
+```gdscript
+func _setup_populate_test_space() -> void:
+	Input.action_press("move_right")
+	await _connect_timed(0.3, get_tree().process_frame, _populate_test_space)
+	Input.action_release("move_right")
+
+
+func _populate_test_space() -> void:
+	_test_space.append({
+		"practice_position": _practice.position,
+		"solution_position": _practice.position,
+	})
+```
+
+For input events, it's different as we need to create an `InputEvent` object and call `Input.parse_input_event()`. We use them more for one-time events like mouse clicks or key presses. Here's an example of simulating pressing the space bar:
+
+```gdscript
+func _setup_populate_test_space() -> void:
+	var event = InputEventKey.new()
+	event.scancode = KEY_SPACE
+	event.pressed = true
+	Input.parse_input_event(event)
+
+	# ... collect data
 ```
 
 ## Troubleshooting
