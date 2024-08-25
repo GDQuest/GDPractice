@@ -168,15 +168,15 @@ corner_detail = 1
 anti_aliasing = false
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yf1dk"]
-bg_color = Color(0.792, 0.792, 0.792, 0.4)
+content_margin_left = 28.0
+content_margin_top = 14.0
+content_margin_right = 28.0
+content_margin_bottom = 14.0
+bg_color = Color(0, 0, 0, 0.188235)
 corner_radius_top_left = 2
 corner_radius_top_right = 2
 corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
-expand_margin_left = 20.0
-expand_margin_top = 10.0
-expand_margin_right = 20.0
-expand_margin_bottom = 10.0
 anti_aliasing = false
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k6urd"]
@@ -381,7 +381,8 @@ LabelTesterItem/colors/font_color = Color(0.133333, 0.0627451, 0.266667, 1)
 LabelTesterItem/font_sizes/font_size = 9
 LabelTesterItem/styles/normal = SubResource("StyleBoxFlat_vyguw")
 LabelTesterReference/base_type = &"Label"
-LabelTesterReference/font_sizes/font_size = 16
+LabelTesterReference/colors/font_color = Color(1, 1, 1, 1)
+LabelTesterReference/font_sizes/font_size = 42
 LabelTesterReference/fonts/font = ExtResource("1_rk1hk")
 LabelTesterReference/styles/normal = SubResource("StyleBoxFlat_yf1dk")
 LabelTesterStatusFail/base_type = &"Label"

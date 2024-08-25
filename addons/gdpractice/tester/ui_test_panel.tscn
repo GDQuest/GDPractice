@@ -180,6 +180,7 @@ stretch_mode = 5
 [node name="ReportLabel" type="Label" parent="HBoxContainer/MainPanelContainer/VBoxContainer/MarginContainerBody/PanelContainer/MarginContainer/VBoxContainer/ReportMarginContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+text = "test"
 
 [node name="InputPanelContainer" parent="HBoxContainer/MainPanelContainer/VBoxContainer/MarginContainerBody/PanelContainer/MarginContainer/VBoxContainer" instance=ExtResource("7_uxwio")]
 unique_name_in_owner = true
