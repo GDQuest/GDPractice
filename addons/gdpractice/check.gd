@@ -15,12 +15,23 @@ const TEST_FILE_NAME := "test.gd"
 
 
 func _init() -> void:
+	print_rich("[color=blue]Checking scene instantiation...[/color]")
+	var predicate = func(p: String): return not p.begins_with("%spractice" % Paths.RES)
+	for scene_path in Utils.fs_find("*.tscn", Paths.RES, false).result.filter(predicate):
+		var message := "%s instance check..." % scene_path
+		if load(scene_path) == null:
+			push_error("%sFAIL" % message)
+			quit()
+		else:
+			print_rich("%s[color=green]PASS[/color]" % message)
+	print()
+
 	var metadata := Metadata.new()
 	for practice_metadata: PracticeMetadata in metadata.list:
 		var solution_scene_path := practice_metadata.packed_scene_path
 		var practice_scene_path := Paths.to_practice(solution_scene_path)
 
-		print_rich("[color=green]%s[/color]" % Paths.get_dir_name(solution_scene_path))
+		print_rich("[color=blue]%s[/color]" % Paths.get_dir_name(solution_scene_path))
 		for node in root.get_children():
 			node.queue_free()
 

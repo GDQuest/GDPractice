@@ -56,7 +56,7 @@
 ##     var cell := Vector2(0, 0)
 ##     generate_one_gem(cell)
 ## [/codeblock]
-## 
+##
 ## [b]Note[/b] that:
 ##
 ## [b]Note[/b] that: [br]
@@ -83,8 +83,9 @@ const LOG_MESSAGE := "\t%s...%s"
 
 const ReturnCode = Utils.ReturnCode
 
-var regex_line := RegEx.create_from_string("^(\\h*)(.*)#\\h*(.*)$")
-var regex_shift := RegEx.create_from_string("^([<>]+)\\h*(.*)")
+var regex_line := RegEx.create_from_string(r"^(\h*)(.*)#\h*(.*)$")
+var regex_shift := RegEx.create_from_string(r"^([<>]+)\h*(.*)")
+var regex_uid := RegEx.create_from_string(r'\s*uid=".*?"')
 
 
 func _init() -> void:
@@ -117,7 +118,6 @@ func _init() -> void:
 		user_args = parsed.result.user_args
 		args = parsed.result.args
 		if args.is_empty():
-			print_rich(parsed.result.help_message)
 			quit()
 			return
 
@@ -340,6 +340,8 @@ func build_practice(dir_name: StringName, is_forced := false) -> ReturnCode:
 			var contents := FileAccess.get_file_as_string(practice_file_path)
 			if extension == "gd":
 				contents = _process_gd(contents)
+			elif extension == "tscn":
+				contents = regex_uid.sub(contents, "", true)
 			contents = Paths.to_practice(contents)
 			FileAccess.open(practice_file_path, FileAccess.WRITE).store_string(contents)
 			print_rich(LOG_MESSAGE % [practice_file_path, "[color=yellow]PROCESS[/color]"])
