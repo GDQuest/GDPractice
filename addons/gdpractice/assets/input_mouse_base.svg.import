@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b4joorlr8jn0j"
-path="res://.godot/imported/input_arrow.svg-e0edc453e0536aac2b1e0bbea11d2dca.ctex"
+uid="uid://c7syvtw4ssbeb"
+path="res://.godot/imported/input_mouse_base.svg-dbf80cc9a5deece90e8d05ef17a0c72f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/gdpractice/tester/input_panel_container/input_arrow.svg"
-dest_files=["res://.godot/imported/input_arrow.svg-e0edc453e0536aac2b1e0bbea11d2dca.ctex"]
+source_file="res://addons/gdpractice/assets/input_mouse_base.svg"
+dest_files=["res://.godot/imported/input_mouse_base.svg-dbf80cc9a5deece90e8d05ef17a0c72f.ctex"]
 
 [params]
 

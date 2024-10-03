@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://tiyc2q2h37gv"
-path="res://.godot/imported/dash_border.svg-e007dd2dd1b2fbea659b89bae8a84980.ctex"
+uid="uid://cfym0ycchwbaf"
+path="res://.godot/imported/dash_border.png-62c45c79b21ca5931452928502aa8536.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/gdpractice/assets/dash_border.svg"
-dest_files=["res://.godot/imported/dash_border.svg-e007dd2dd1b2fbea659b89bae8a84980.ctex"]
+source_file="res://addons/gdpractice/assets/dash_border.png"
+dest_files=["res://.godot/imported/dash_border.png-62c45c79b21ca5931452928502aa8536.ctex"]
 
 [params]
 
@@ -32,6 +32,3 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=1.0
-editor/scale_with_editor_scale=false
-editor/convert_colors_with_editor_theme=false

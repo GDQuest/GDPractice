@@ -1,7 +1,8 @@
-[gd_resource type="Theme" load_steps=43 format=3 uid="uid://bk3rqtt0xeorm"]
+[gd_resource type="Theme" load_steps=44 format=3 uid="uid://bk3rqtt0xeorm"]
 
 [ext_resource type="FontFile" uid="uid://d3u2nhkuevn1l" path="res://addons/gdpractice/assets/fonts/Inter-Bold.ttf" id="1_rk1hk"]
 [ext_resource type="FontFile" uid="uid://deeixt6cs64ak" path="res://addons/gdpractice/assets/fonts/Inter-SemiBold.ttf" id="2_q1phb"]
+[ext_resource type="FontFile" uid="uid://b4dj3x16cr0vk" path="res://addons/gdpractice/assets/fonts/Inter-ExtraBoldItalic.otf" id="3_j31b0"]
 [ext_resource type="FontFile" uid="uid://btiybsu6acuy7" path="res://addons/gdpractice/assets/fonts/Montserrat-Bold.ttf" id="3_sfnh1"]
 [ext_resource type="FontFile" uid="uid://h13sewj2ined" path="res://addons/gdpractice/assets/fonts/Inter-BoldItalic.otf" id="4_s6jil"]
 [ext_resource type="FontFile" uid="uid://c5j5yg0bc1jec" path="res://addons/gdpractice/assets/fonts/Inter-Italic.otf" id="5_1mp7t"]
@@ -376,6 +377,14 @@ LabelTesterCheckDisabled/base_type = &"Label"
 LabelTesterCheckDisabled/colors/font_color = Color(0.533333, 0.486275, 0.615686, 1)
 LabelTesterCheckPass/base_type = &"Label"
 LabelTesterCheckPass/colors/font_color = Color(0.388235, 0.8, 0.372549, 1)
+LabelTesterInputSafe/base_type = &"Label"
+LabelTesterInputSafe/colors/font_color = Color(0.388235, 0.8, 0.372549, 1)
+LabelTesterInputSafe/font_sizes/font_size = 20
+LabelTesterInputSafe/fonts/font = ExtResource("3_j31b0")
+LabelTesterInputWarn/base_type = &"Label"
+LabelTesterInputWarn/colors/font_color = Color(1, 0.835294, 0, 1)
+LabelTesterInputWarn/font_sizes/font_size = 20
+LabelTesterInputWarn/fonts/font = ExtResource("3_j31b0")
 LabelTesterItem/base_type = &"Label"
 LabelTesterItem/colors/font_color = Color(0.133333, 0.0627451, 0.266667, 1)
 LabelTesterItem/font_sizes/font_size = 9
@@ -536,33 +545,23 @@ RichTextLabelTesterFail/font_sizes/normal_font_size = 16
 RichTextLabelTesterFail/fonts/bold_font = ExtResource("1_rk1hk")
 RichTextLabelTesterFail/fonts/bold_italics_font = ExtResource("4_s6jil")
 RichTextLabelTesterFail/fonts/italics_font = ExtResource("5_1mp7t")
-RichTextLabelTesterInputNote/base_type = &"RichTextLabel"
-RichTextLabelTesterInputNote/colors/default_color = Color(0.533333, 0.486275, 0.615686, 1)
-RichTextLabelTesterInputNote/font_sizes/bold_font_size = 12
-RichTextLabelTesterInputNote/font_sizes/bold_italics_font_size = 12
-RichTextLabelTesterInputNote/font_sizes/italics_font_size = 12
-RichTextLabelTesterInputNote/font_sizes/mono_font_size = 12
-RichTextLabelTesterInputNote/font_sizes/normal_font_size = 12
-RichTextLabelTesterInputNote/fonts/bold_font = ExtResource("1_rk1hk")
-RichTextLabelTesterInputNote/fonts/bold_italics_font = ExtResource("4_s6jil")
-RichTextLabelTesterInputNote/fonts/italics_font = ExtResource("5_1mp7t")
 RichTextLabelTesterInputSafe/base_type = &"RichTextLabel"
 RichTextLabelTesterInputSafe/colors/default_color = Color(0.921569, 0.878431, 1, 1)
-RichTextLabelTesterInputSafe/font_sizes/bold_font_size = 12
-RichTextLabelTesterInputSafe/font_sizes/bold_italics_font_size = 12
-RichTextLabelTesterInputSafe/font_sizes/italics_font_size = 12
-RichTextLabelTesterInputSafe/font_sizes/mono_font_size = 12
-RichTextLabelTesterInputSafe/font_sizes/normal_font_size = 12
+RichTextLabelTesterInputSafe/font_sizes/bold_font_size = 16
+RichTextLabelTesterInputSafe/font_sizes/bold_italics_font_size = 16
+RichTextLabelTesterInputSafe/font_sizes/italics_font_size = 16
+RichTextLabelTesterInputSafe/font_sizes/mono_font_size = 16
+RichTextLabelTesterInputSafe/font_sizes/normal_font_size = 16
 RichTextLabelTesterInputSafe/fonts/bold_font = ExtResource("1_rk1hk")
 RichTextLabelTesterInputSafe/fonts/bold_italics_font = ExtResource("4_s6jil")
 RichTextLabelTesterInputSafe/fonts/italics_font = ExtResource("5_1mp7t")
 RichTextLabelTesterInputWarn/base_type = &"RichTextLabel"
 RichTextLabelTesterInputWarn/colors/default_color = Color(1, 0.835294, 0, 1)
-RichTextLabelTesterInputWarn/font_sizes/bold_font_size = 12
-RichTextLabelTesterInputWarn/font_sizes/bold_italics_font_size = 12
-RichTextLabelTesterInputWarn/font_sizes/italics_font_size = 12
-RichTextLabelTesterInputWarn/font_sizes/mono_font_size = 12
-RichTextLabelTesterInputWarn/font_sizes/normal_font_size = 12
+RichTextLabelTesterInputWarn/font_sizes/bold_font_size = 16
+RichTextLabelTesterInputWarn/font_sizes/bold_italics_font_size = 16
+RichTextLabelTesterInputWarn/font_sizes/italics_font_size = 16
+RichTextLabelTesterInputWarn/font_sizes/mono_font_size = 16
+RichTextLabelTesterInputWarn/font_sizes/normal_font_size = 16
 RichTextLabelTesterInputWarn/fonts/bold_font = ExtResource("1_rk1hk")
 RichTextLabelTesterInputWarn/fonts/bold_italics_font = ExtResource("4_s6jil")
 RichTextLabelTesterInputWarn/fonts/italics_font = ExtResource("5_1mp7t")

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bv5xjs50niyq0"
-path="res://.godot/imported/input_mouse_left_click.svg-6d628ce7f07aea1ae35375677adc4c39.ctex"
+uid="uid://b4joorlr8jn0j"
+path="res://.godot/imported/input_arrow.svg-5aa72252ed21c45dc453a0abfac8950e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/gdpractice/tester/input_panel_container/input_mouse_left_click.svg"
-dest_files=["res://.godot/imported/input_mouse_left_click.svg-6d628ce7f07aea1ae35375677adc4c39.ctex"]
+source_file="res://addons/gdpractice/assets/input_arrow.svg"
+dest_files=["res://.godot/imported/input_arrow.svg-5aa72252ed21c45dc453a0abfac8950e.ctex"]
 
 [params]
 
