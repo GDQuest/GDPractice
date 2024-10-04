@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=44 format=3 uid="uid://bk3rqtt0xeorm"]
+[gd_resource type="Theme" load_steps=42 format=3 uid="uid://bk3rqtt0xeorm"]
 
 [ext_resource type="FontFile" uid="uid://d3u2nhkuevn1l" path="res://addons/gdpractice/assets/fonts/Inter-Bold.ttf" id="1_rk1hk"]
 [ext_resource type="FontFile" uid="uid://deeixt6cs64ak" path="res://addons/gdpractice/assets/fonts/Inter-SemiBold.ttf" id="2_q1phb"]
@@ -111,21 +111,6 @@ corner_radius_bottom_left = 5
 shadow_color = Color(0.282353, 0.105882, 0.588235, 1)
 shadow_size = 1
 shadow_offset = Vector2(0, 4)
-anti_aliasing = false
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2v75h"]
-bg_color = Color(0.282353, 0.105882, 0.588235, 1)
-corner_radius_bottom_right = 5
-anti_aliasing = false
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4sfa2"]
-bg_color = Color(0.282353, 0.105882, 0.588235, 1)
-corner_radius_bottom_right = 5
-anti_aliasing = false
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a42xb"]
-bg_color = Color(0.282353, 0.105882, 0.588235, 1)
-corner_radius_bottom_right = 5
 anti_aliasing = false
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i8djt"]
@@ -273,6 +258,11 @@ corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 anti_aliasing = false
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sbwnn"]
+bg_color = Color(0.282353, 0.105882, 0.588235, 1)
+corner_radius_bottom_right = 5
+anti_aliasing = false
+
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_fh8oh"]
 color = Color(0.533333, 0.486275, 0.615686, 1)
 vertical = true
@@ -336,10 +326,6 @@ ButtonRun/styles/focus = SubResource("StyleBoxFlat_vuvh6")
 ButtonRun/styles/hover = SubResource("StyleBoxFlat_w73fc")
 ButtonRun/styles/normal = SubResource("StyleBoxFlat_dn46q")
 ButtonRun/styles/pressed = SubResource("StyleBoxFlat_h1p1q")
-ButtonShowTester/base_type = &"Button"
-ButtonShowTester/styles/hover = SubResource("StyleBoxFlat_2v75h")
-ButtonShowTester/styles/normal = SubResource("StyleBoxFlat_4sfa2")
-ButtonShowTester/styles/pressed = SubResource("StyleBoxFlat_a42xb")
 ButtonTester/base_type = &"Button"
 ButtonTester/colors/font_color = Color(0.533333, 0.486275, 0.615686, 1)
 ButtonTester/colors/font_focus_color = Color(0.921569, 0.878431, 1, 1)
@@ -402,7 +388,7 @@ LabelTesterStatusPass/colors/font_color = Color(0.388235, 0.8, 0.372549, 1)
 LabelTesterStatusPass/fonts/font = ExtResource("1_rk1hk")
 LabelTesterStatusTesting/base_type = &"Label"
 LabelTesterStatusTesting/colors/font_color = Color(1, 0.835294, 0, 1)
-LabelTesterStatusTesting/fonts/font = ExtResource("1_rk1hk")
+LabelTesterStatusTesting/fonts/font = ExtResource("3_sfnh1")
 LabelTesterTitle/base_type = &"Label"
 LabelTesterTitle/font_sizes/font_size = 14
 LabelTitle/base_type = &"Label"
@@ -491,6 +477,8 @@ PanelContainerTesterChecksInner/base_type = &"PanelContainer"
 PanelContainerTesterChecksInner/styles/panel = SubResource("StyleBoxFlat_hs5v2")
 PanelContainerTesterRadioButtons/base_type = &"PanelContainer"
 PanelContainerTesterRadioButtons/styles/panel = SubResource("StyleBoxFlat_wiq68")
+PanelContainerTesterShowTab/base_type = &"PanelContainer"
+PanelContainerTesterShowTab/styles/panel = SubResource("StyleBoxFlat_sbwnn")
 PanelSeparator/base_type = &"Panel"
 PanelSeparator/styles/panel = SubResource("StyleBoxLine_fh8oh")
 ResetAcceptDialog/base_type = &"AcceptDialog"

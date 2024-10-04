@@ -35,6 +35,8 @@ var _practice_info := {}
 
 @onready var item_label: Label = %ItemLabel
 @onready var title_label: Label = %TitleLabel
+
+@onready var panel_container_toggle: PanelContainer = %PanelContainerToggle
 @onready var status_label: Label = %StatusLabel
 @onready var status_animation_player: AnimationPlayer = %StatusAnimationPlayer
 
@@ -50,6 +52,7 @@ var _practice_info := {}
 
 @onready var tween: Tween = create_tween()
 @onready var custom_minimum_size_x := custom_minimum_size.x
+@onready var panel_container_toggle_position_x := panel_container_toggle.position.x
 
 
 func _ready() -> void:
@@ -90,14 +93,17 @@ func _ready() -> void:
 
 
 func _on_toggle_show_button_toggled(is_toggled: bool) -> void:
+	const DURATION = 0.1
 	tween.kill()
 	tween = create_tween().set_ease(Tween.EASE_IN)
 	if is_toggled:
 		toggle_show_button.icon = preload(ICON_PATH % "hide")
-		tween.tween_property(self, "custom_minimum_size:x", custom_minimum_size_x, 0.1)
+		tween.tween_property(self, "custom_minimum_size:x", custom_minimum_size_x, DURATION)
+		tween.parallel().tween_property(panel_container_toggle, "position:x", panel_container_toggle_position_x, DURATION)
 	else:
 		toggle_show_button.icon = preload(ICON_PATH % "show")
-		tween.tween_property(self, "custom_minimum_size:x", custom_minimum_size_x + main_panel_container.size.x, 0.1)
+		tween.tween_property(self, "custom_minimum_size:x", custom_minimum_size_x + main_panel_container.size.x, DURATION)
+		tween.parallel().tween_property(panel_container_toggle, "position:x", 0, DURATION)
 
 
 func _on_toggle_x5_button_toggled(is_toggled: bool) -> void:
@@ -141,6 +147,7 @@ func _setup_test() -> Test:
 
 
 func _restore_from_test(completion: int) -> void:
+	status_animation_player.play("default")
 	toggle_x5_button.toggled.disconnect(_on_toggle_x5_button_toggled)
 	toggle_x5_button.disabled = true
 	Engine.time_scale = 1
