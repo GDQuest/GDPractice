@@ -51,6 +51,24 @@ godot --headless --script plug.gd update
 
 Due to our current workload, we still have limited documentation for GDPractice. However, several example practices are in the `practice_solutions/` folder of this repository.
 
+A limitation of Godot is that we do not have a great system to register entry points or hooks to tell an add-on what configuration to use. So we rely on having GDScript files at specific paths to make GDPractice work:
+
+1. `res://practice_solutions/metadata.gd`: This file should extend the `res://addons/gdpractice/metadata.gd` class. It's used to register and list the practices in your project.
+2. `res://practice_solutions/build_settings.gd`: This file is optional. It's used to override the default build settings. Open the `res://addons/gdpractice/build_settings.gd` file to see the available settings you can override.
+3. `res://practice_solutions/diff.gd`: This file is optional. It's used to edit the project settings at build time. For example, you can remove all input actions from the workbook project if the course or some practices require students to create them.
+
+### Building projects
+
+To build the workbook and solution projects, you can use the `build.gd` script in the `res://addons/gdpractice/` folder. Run the script with `godot --headless --script addons/gdpractice/build.gd -- --help` to get its documentation and all the options.
+
+To build, and for practices to work, the system requires you to create a practice metadata file at the path `res://practice_solutions/metadata.gd`. This file should extend the class `res://addons/gdpractice/metadata.gd`.
+
+### Changing build settings
+
+You can control the settings applied at build time by creating a file named `res://practice_solutions/build_settings.gd`. This file should extend the `res://addons/gdpractice/build_settings.gd` class.
+
+Open the `res://addons/gdpractice/build_settings.gd` file to see the available settings you can override.
+
 ### Editing project configuration at build time
 
 You can edit the project settings (the `project.godot` file) at build time by creating a script named `diff.gd` in the `res://practice_solutions/` folder.

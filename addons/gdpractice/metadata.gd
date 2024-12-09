@@ -1,13 +1,14 @@
+## Base class for registering practices and their metadata in a project.
+## Create a file res://practice_solutions/metadata.gd in your project and append PracticeMetadata objects to the [member list] property to define and register practices in your project.
 @tool
 extends Node
 
-## Saves and loads metadata for practices using the ConfigFile format of Godot.
 const Paths := preload("paths.gd")
 
 const NAME := "Metadata"
 
-
-## Represents the metadata of a practice.
+## Represents the metadata of a given practice.
+## You need to create these objects and append them to the list property in your project's metadata.gd file.
 class PracticeMetadata:
 	var _cache := {}
 	var _dir_name_regex := RegEx.create_from_string(r"^L(\d+)\.P(\d+)(\..+)?$")
@@ -55,5 +56,5 @@ class PracticeMetadata:
 		_cache.dictionary = result
 		return result
 
-
+## Create and store practice metadata objects in here to register practices.
 var list: Array[PracticeMetadata] = []

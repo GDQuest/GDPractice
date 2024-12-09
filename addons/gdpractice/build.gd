@@ -67,6 +67,7 @@ extends SceneTree
 
 const Paths := preload("paths.gd")
 const Utils := preload("../gdquest_sparkly_bag/sparkly_bag_utils.gd")
+const BuildSettings := preload("build_settings.gd")
 
 const PROJECT_FILE := "project.godot"
 const PLUGINS_SECTION := "editor_plugins"
@@ -126,16 +127,34 @@ func _init() -> void:
 		elif "-o" in args:
 			args["--output-path"] = args["-o"]
 
+	var build_settings_path := Paths.SOLUTIONS_PATH.path_join("build_settings.gd")
+	var build_settings: BuildSettings = null
+	if FileAccess.file_exists(build_settings_path):
+		var script: GDScript = load(build_settings_path)
+		var instance = script.new()
+		if instance is not BuildSettings:
+			push_error(
+				"Found build settings script at path '%s' but it does not extend 'BuildSettings' It should extend '%s'. Ignoring build settings."
+				% [build_settings_path, (BuildSettings as GDScript).resource_path]
+			)
+		else:
+			build_settings = instance
+
 	var return_code := ReturnCode.OK
 	var exclude_patterns: Array[String] = ["*.godot/*", "*.plugged/*", "res://.git*", "*plug.gd", "*makefile"]
 	for key in args:
 		if key in ARG_GENERATE_PROJECT_WORKBOOK:
-			return_code = build_project("workbook", args["--output-path"], exclude_patterns)
+			var exclude_patterns_workbook := exclude_patterns.duplicate()
+			if build_settings != null:
+				exclude_patterns_workbook.append_array(build_settings.workbook_exclude_patterns)
+			return_code = build_project("workbook", args["--output-path"], exclude_patterns_workbook)
 
 		if key in ARG_GENERATE_PROJECT_SOLUTIONS:
-			var exclude_solutions_patterns: Array[String] = exclude_patterns.duplicate()
-			exclude_solutions_patterns.append_array(["*test.gd", "*diff.gd", "*practice_solutions/metadata.gd"])
-			return_code = build_project("solutions", args["--output-path"], exclude_solutions_patterns)
+			var exclude_patterns_solutions: Array[String] = exclude_patterns.duplicate()
+			exclude_patterns_solutions.append_array(["*test.gd", "*diff.gd", "*practice_solutions/metadata.gd"])
+			if build_settings != null:
+				exclude_patterns_solutions.append_array(build_settings.solution_exclude_patterns)
+			return_code = build_project("solutions", args["--output-path"], exclude_patterns_solutions)
 
 		if key in ARG_PRACTICES:
 			var do_disable_plugins := "--do-disable-plugins" in user_args
@@ -226,12 +245,14 @@ func build_project(suffix: String, output_path: String, exclude_patterns: Array[
 			DirAccess.make_dir_recursive_absolute(destination_project_dir_path.path_join("lessons"))
 
 		var output := []
-		var arguments_list := [
+		var commands_list := [
+			# We first need to open the destination project once to import it and ensure that the cache is built. Otherwise, we will not be able to process practices.
 			["--path", destination_project_dir_path, "--headless", "--editor", "--quit"],
+			# Then we generate the practice files and modify the project.
 			["--path", destination_project_dir_path, "--headless", "--script", plugin_dir_path.path_join("build.gd"), "--", "--generate-practices", "--do-disable-plugins", "--do-project-diff"]
 		]
 		print("Generating practice files from solutions in workbook project...")
-		for arguments: Array in arguments_list:
+		for arguments: Array in commands_list:
 			prints("Running:", GODOT_EXE, " ".join(arguments))
 			return_code = Utils.os_execute(GODOT_EXE, arguments)
 			if return_code == ReturnCode.EXE_NOT_FOUND:
@@ -258,7 +279,6 @@ func build_project(suffix: String, output_path: String, exclude_patterns: Array[
 func build_practices(do_disable_plugins := false, do_project_diff := false) -> ReturnCode:
 	var result := ReturnCode.OK
 	if do_disable_plugins:
-		# ProjectSettings.set_setting()
 		var cfg = ConfigFile.new()
 		cfg.load(PROJECT_FILE)
 		for section in [PLUGINS_SECTION, AUTOLOAD_SECTION]:
