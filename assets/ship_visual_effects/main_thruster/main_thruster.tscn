@@ -2,7 +2,7 @@
 
 [ext_resource type="Material" uid="uid://djyidstytau4k" path="res://assets/ship_visual_effects/main_thruster/thruster_material.tres" id="1_hncak"]
 [ext_resource type="Texture2D" uid="uid://jroyif3arx2w" path="res://assets/ship_visual_effects/main_thruster/ship_flame_sdf.png" id="2_0uds3"]
-[ext_resource type="Script" path="res://assets/ship_visual_effects/main_thruster/main_thruster.gd" id="3_dpbpx"]
+[ext_resource type="Script" uid="uid://t8tp77akxywu" path="res://assets/ship_visual_effects/main_thruster/main_thruster.gd" id="3_dpbpx"]
 [ext_resource type="Texture2D" uid="uid://b4eivixs3nn3n" path="res://assets/ship_visual_effects/spark.png" id="4_hbt2x"]
 
 [sub_resource type="Curve" id="Curve_8xwmy"]

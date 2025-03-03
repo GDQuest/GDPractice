@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cu0ij1ytyf37d"]
 
-[ext_resource type="Script" path="res://assets/visualization/steering_vectors_2d.gd" id="1_vqbnv"]
-[ext_resource type="Script" path="res://assets/visualization/vector_2d.gd" id="2_bsh4y"]
+[ext_resource type="Script" uid="uid://b4fwfxoh4d872" path="res://assets/visualization/steering_vectors_2d.gd" id="1_vqbnv"]
+[ext_resource type="Script" uid="uid://cpc0cq3auip4o" path="res://assets/visualization/vector_2d.gd" id="2_bsh4y"]
 
 [node name="SteeringVectors2D" type="Node2D"]
 show_behind_parent = true

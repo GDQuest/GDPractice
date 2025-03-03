@@ -1,9 +1,9 @@
 [gd_scene load_steps=6 format=3 uid="uid://0kgvpq7i06gp"]
 
 [ext_resource type="Texture2D" uid="uid://bniyrxn3r2v8h" path="res://assets/ship.png" id="1_rkf8f"]
-[ext_resource type="Script" path="res://assets/visualization/ship_with_steering_visualization.gd" id="2_rag2q"]
+[ext_resource type="Script" uid="uid://cfkn24p5kp16o" path="res://assets/visualization/ship_with_steering_visualization.gd" id="2_rag2q"]
 [ext_resource type="PackedScene" uid="uid://cu0ij1ytyf37d" path="res://assets/visualization/steering_vectors_2d.tscn" id="3_3ywy5"]
-[ext_resource type="Script" path="res://assets/visualization/vector_2d.gd" id="4_1imyy"]
+[ext_resource type="Script" uid="uid://cpc0cq3auip4o" path="res://assets/visualization/vector_2d.gd" id="4_1imyy"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wshfa"]
 bg_color = Color(0.129412, 0.129412, 0.129412, 0.552941)

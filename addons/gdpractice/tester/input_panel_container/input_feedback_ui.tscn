@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://b4joorlr8jn0j" path="res://addons/gdpractice/assets/input_arrow.svg" id="1_eb8ki"]
 [ext_resource type="Theme" uid="uid://bk3rqtt0xeorm" path="res://addons/gdpractice/assets/theme.tres" id="1_wgobd"]
-[ext_resource type="Script" path="res://addons/gdpractice/tester/input_panel_container/input_feedback_ui.gd" id="2_4xmn8"]
+[ext_resource type="Script" uid="uid://c3okg4d4257ai" path="res://addons/gdpractice/tester/input_panel_container/input_feedback_ui.gd" id="2_4xmn8"]
 [ext_resource type="Texture2D" uid="uid://c7syvtw4ssbeb" path="res://addons/gdpractice/assets/input_mouse_base.svg" id="3_d6t12"]
 [ext_resource type="Texture2D" uid="uid://bv5xjs50niyq0" path="res://addons/gdpractice/assets/input_mouse_left_click.svg" id="4_mn6qq"]
 

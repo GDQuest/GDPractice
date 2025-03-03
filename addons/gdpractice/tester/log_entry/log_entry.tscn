@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://24w1un2neyn1"]
 
-[ext_resource type="Script" path="res://addons/gdpractice/tester/log_entry/log_entry.gd" id="2_jdqln"]
+[ext_resource type="Script" uid="uid://d3wl3y82xcd8o" path="res://addons/gdpractice/tester/log_entry/log_entry.gd" id="2_jdqln"]
 [ext_resource type="Texture2D" uid="uid://bmnsj7r5yi08u" path="res://addons/gdpractice/assets/icons/fail.svg" id="3_pbwd5"]
 
 [node name="LogEntry" type="MarginContainer"]

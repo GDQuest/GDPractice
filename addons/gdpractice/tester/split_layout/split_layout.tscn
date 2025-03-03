@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://5l36tosihkeq"]
 
-[ext_resource type="Script" path="res://addons/gdpractice/tester/split_layout/split_layout.gd" id="1_dlxmn"]
+[ext_resource type="Script" uid="uid://clf53n8b70ofj" path="res://addons/gdpractice/tester/split_layout/split_layout.gd" id="1_dlxmn"]
 [ext_resource type="Theme" uid="uid://bk3rqtt0xeorm" path="res://addons/gdpractice/assets/theme.tres" id="2_fsela"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_bgs5q"]

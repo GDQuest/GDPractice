@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://bvundni1onryo"]
 
 [ext_resource type="Theme" uid="uid://bk3rqtt0xeorm" path="res://addons/gdpractice/assets/theme.tres" id="1_61aqm"]
-[ext_resource type="Script" path="res://addons/gdpractice/ui/ui_solution_warning.gd" id="2_as5ah"]
+[ext_resource type="Script" uid="uid://b80jtubf2mi16" path="res://addons/gdpractice/ui/ui_solution_warning.gd" id="2_as5ah"]
 
 [node name="UISolutionWarning" type="PanelContainer"]
 visible = false

@@ -1,7 +1,7 @@
 [gd_scene load_steps=12 format=3 uid="uid://bnnxfl3thl8qk"]
 
 [ext_resource type="Theme" uid="uid://bk3rqtt0xeorm" path="res://addons/gdpractice/assets/theme.tres" id="1_n7obm"]
-[ext_resource type="Script" path="res://addons/gdpractice/tester/ui_test_panel.gd" id="2_vgmr1"]
+[ext_resource type="Script" uid="uid://tie6rb7577kc" path="res://addons/gdpractice/tester/ui_test_panel.gd" id="2_vgmr1"]
 [ext_resource type="Texture2D" uid="uid://dc6w5203e7i4w" path="res://addons/gdpractice/assets/icons/hide.svg" id="3_iivbp"]
 [ext_resource type="Texture2D" uid="uid://wgr4gdu7syvg" path="res://addons/gdpractice/assets/icons/pass.svg" id="6_7jrhn"]
 [ext_resource type="Texture2D" uid="uid://d2wi8pb6umoui" path="res://addons/gdpractice/assets/icons/hand_warn.svg" id="6_fe7lp"]
@@ -118,9 +118,9 @@ tracks/2/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_lbhxb"]
 _data = {
-"RESET": SubResource("Animation_y1jah"),
-"default": SubResource("Animation_yyykk"),
-"testing": SubResource("Animation_p88ms")
+&"RESET": SubResource("Animation_y1jah"),
+&"default": SubResource("Animation_yyykk"),
+&"testing": SubResource("Animation_p88ms")
 }
 
 [node name="UITestPanel" type="Control"]
