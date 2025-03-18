@@ -319,6 +319,9 @@ func build_practice(dir_name: StringName, is_forced := false) -> ReturnCode:
 
 	for solution_file_path: String in solution_file_paths:
 		var extension := solution_file_path.get_extension()
+		if extension == "uid":
+			continue
+
 		var practice_file_path: String = solution_file_path.replace(
 			Paths.SOLUTIONS_PATH, Paths.PRACTICES_PATH
 		)
