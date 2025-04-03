@@ -23,10 +23,15 @@ class PracticeMetadata:
 	var title := ""
 	var packed_scene: PackedScene = null
 
-	func _init(id: String, title: String, packed_scene: PackedScene) -> void:
+	## Array of script paths to automatically open when this practice is selected.
+	## Leave empty to use the default behavior (opening the root node's script)
+	var scripts_to_open: Array[String] = []
+
+	func _init(id: String, title: String, packed_scene: PackedScene, scripts_to_open: Array[String] = []) -> void:
 		self.id = id
 		self.title = title
 		self.packed_scene = packed_scene
+		self.scripts_to_open = scripts_to_open
 
 		packed_scene_path = packed_scene.resource_path
 		var dir_name := Paths.get_dir_name(packed_scene_path)

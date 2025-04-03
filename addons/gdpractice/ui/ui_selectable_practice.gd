@@ -100,9 +100,34 @@ func open() -> void:
 		EditorInterface.open_scene_from_path(practice_scene_path)
 		await get_tree().process_frame
 		select()
+		open_practice_scripts()
 	else:
 		var msg := "Practice (id=%s) not found at '%s'"
 		push_warning(msg % [practice_metadata.id, practice_scene_path])
+
+
+## Opens script files associated with this practice based on metadata or defaults
+func open_practice_scripts() -> void:
+	var scene_root = EditorInterface.get_edited_scene_root()
+	if not scene_root:
+		return
+
+	# Check if there are specific scripts to open defined in the practice
+	# metadata resource
+	if not practice_metadata.scripts_to_open.is_empty():
+		for script_path in practice_metadata.scripts_to_open:
+			var script = load(script_path)
+			if script != null and script is Script:
+				EditorInterface.edit_script(script)
+		return
+
+	# Fall back to automatically opening the root node's script if nothing is
+	# specified in metadata
+	var root_script := scene_root.get_script()
+	if root_script:
+		EditorInterface.edit_script(root_script)
+	else:
+		push_warning("No script found for practice '%s'. Add a script to the root node or specify scripts_to_open in the practice metadata." % practice_metadata.id)
 
 
 func reset_practice() -> void:

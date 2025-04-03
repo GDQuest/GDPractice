@@ -80,7 +80,11 @@ func select_practice(scene_root: Node) -> void:
 		return
 	var index := get_practice_index(scene_root.scene_file_path)
 	if index != -1:
-		list.get_child(index).select()
+		var practice_button: UISelectablePractice = list.get_child(index)
+		practice_button.select()
+		# Also open the associated scripts when a practice is selected
+		# from another source (like the file browser)
+		practice_button.open_practice_scripts()
 
 
 func deselect() -> void:
