@@ -134,7 +134,7 @@ func get_completion() -> int:
 
 
 func _build_requirements() -> void:
-	pass
+	_add_file_modified_requirement()
 
 
 func _build_checks() -> void:
@@ -194,6 +194,62 @@ func _add_properties_requirement(properties: Array[String], object: Object = _pr
 			var property_word := tr("properties") if missing_properties.size() > 1 else tr("property")
 			return tr("%s is missing the %s %s. Did you remove it from the script?") % [object.name, property_list, property_word]
 		return ""
+	requirements.push_back(requirement)
+
+
+## Adds a requirement that checks if practice files have been modified
+func _add_file_modified_requirement() -> void:
+	var requirement := Requirement.new()
+	requirement.description = tr("Practice files not modified")
+	requirement.checker = func check_file_modifications() -> String:
+		if _practice_base_path.is_empty() or _practice == null or _practice.scene_file_path.is_empty():
+			return ""
+
+		var practice_directory := _practice.scene_file_path.get_base_dir()
+		var metadata_path := practice_directory.path_join(".file_checksums.json")
+
+		if not FileAccess.file_exists(metadata_path):
+			return ""
+
+		# Load the metadata file
+		var file := FileAccess.open(metadata_path, FileAccess.READ)
+		var json_string := file.get_as_text()
+		file.close()
+
+		var json := JSON.new()
+		var error := json.parse(json_string)
+		if error != OK:
+			return ""
+
+		# The data has the form {filename: "md5_checksum"}
+		var checksums: Dictionary = json.get_data()
+		if not checksums:
+			return ""
+
+		# Check if any files have been modified by comparing MD5 checksums
+		var modified_files: Array[String] = []
+		var scene_filename := _practice.scene_file_path.get_file()
+		for rel_path in checksums.keys():
+			var full_path = practice_directory.path_join(rel_path)
+			if FileAccess.file_exists(full_path):
+				var original_hash = checksums[rel_path]
+				var current_hash = FileAccess.get_md5(full_path)
+
+				if current_hash != original_hash:
+					# When running the practice, Godot overwrites and modifies the main scene file, which
+					# changes the MD5 checksum, so we ignore this file.
+					if rel_path == scene_filename:
+						continue
+					modified_files.append(rel_path)
+
+		if modified_files.is_empty():
+			return (
+				tr("It seems that you haven't modified script files for this practice yet!") + "\n\n" +
+				tr("Make sure that you've opened the scene [b]%s[/b] and that you're working on the scripts and scene instances used in that practice scene.") + "\n\n" +
+				tr("You might be modifying a script from another practice inadvertently. If you're just running the practice to look at the reference before giving it a try, you can ignore this message.")
+			) % scene_filename
+		return ""
+
 	requirements.push_back(requirement)
 
 

@@ -317,6 +317,10 @@ func build_practice(dir_name: StringName, is_forced := false) -> ReturnCode:
 	if FileAccess.file_exists(solution_diff_path):
 		solution_diff = load(solution_diff_path)
 
+	# We track relevant files that students may have to modify in practices to
+	# generate an MD5 checksum for them. We use that to know when a student
+	# modified a practice.
+	var practice_file_paths: Array[String] = []
 	for solution_file_path: String in solution_file_paths:
 		var extension := solution_file_path.get_extension()
 		if extension == "uid":
@@ -335,6 +339,7 @@ func build_practice(dir_name: StringName, is_forced := false) -> ReturnCode:
 			and not is_forced
 		):
 			print_rich(LOG_MESSAGE % [practice_file_path, "[color=orange]SKIP[/color]"])
+			practice_file_paths.append(practice_file_path)
 			continue
 
 		DirAccess.make_dir_recursive_absolute(practice_file_path.get_base_dir())
@@ -368,7 +373,39 @@ func build_practice(dir_name: StringName, is_forced := false) -> ReturnCode:
 			contents = Paths.to_practice(contents)
 			FileAccess.open(practice_file_path, FileAccess.WRITE).store_string(contents)
 			print_rich(LOG_MESSAGE % [practice_file_path, "[color=yellow]PROCESS[/color]"])
+
+		practice_file_paths.append(practice_file_path)
+
+	_store_file_modification_metadata(dir_name, practice_file_paths)
 	return ReturnCode.OK
+
+
+## Creates a file with MD5 checksums for practice files
+## This is used to check if a student has modified the practice files
+func _store_file_modification_metadata(dir_name: String, practice_file_paths: Array[String]) -> void:
+	var practice_dir_path := Paths.PRACTICES_PATH.path_join(dir_name)
+	var metadata_path := practice_dir_path.path_join(".file_checksums.json")
+
+	DirAccess.make_dir_recursive_absolute(practice_dir_path)
+
+	var file_data = {}
+	for file_path: String in practice_file_paths:
+		if FileAccess.file_exists(file_path):
+			var rel_path := file_path
+			if file_path.begins_with(practice_dir_path):
+				rel_path = file_path.substr(practice_dir_path.length() + 1)
+			else:
+				rel_path = file_path.get_file()
+
+			# Store only MD5 checksums
+			file_data[rel_path] = FileAccess.get_md5(file_path)
+
+	var json_string = JSON.stringify(file_data, "  ")
+	var file = FileAccess.open(metadata_path, FileAccess.WRITE)
+	file.store_string(json_string)
+	file.close()
+
+	print_rich("[color=green]Saved file checksums for practice '%s'[/color]" % dir_name)
 
 
 func _process_gd(contents: String) -> String:

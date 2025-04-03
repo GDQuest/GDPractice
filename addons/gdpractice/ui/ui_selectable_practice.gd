@@ -144,6 +144,8 @@ func reset_practice() -> void:
 		if solution_dir_name.is_empty():
 			continue
 
+		# Force rebuild the practice to not only update practice files but also
+		# update the MD5 checksums stored in dotfiles
 		build.build_practice(solution_dir_name, true)
 		update(db.progress)
 		reset_accept_dialog.visible = true
