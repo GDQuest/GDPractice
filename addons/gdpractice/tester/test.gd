@@ -200,7 +200,7 @@ func _add_properties_requirement(properties: Array[String], object: Object = _pr
 ## Adds a requirement that checks if practice files have been modified
 func _add_file_modified_requirement() -> void:
 	var requirement := Requirement.new()
-	requirement.description = tr("Practice files not modified")
+	requirement.description = tr("Practice File(s) Not Modified")
 	requirement.checker = func check_file_modifications() -> String:
 		if _practice_base_path.is_empty() or _practice == null or _practice.scene_file_path.is_empty():
 			return ""
@@ -244,9 +244,8 @@ func _add_file_modified_requirement() -> void:
 
 		if modified_files.is_empty():
 			return (
-				tr("It seems that you haven't modified script files for this practice yet!") + "\n\n" +
-				tr("Make sure that you've opened the scene [b]%s[/b] and that you're working on the scripts and scene instances used in that practice scene.") + "\n\n" +
-				tr("You might be modifying a script from another practice inadvertently. If you're just running the practice to look at the reference before giving it a try, you can ignore this message.")
+				tr("If you did tackle this exercise, verify that you worked in the right script and scene files for the practice. You should have the scene [b]%s[/b] open.") + "\n\n" +
+				tr("If you haven't started yet and you're just checking out the reference, you can ignore this message.")
 			) % scene_filename
 		return ""
 
