@@ -228,9 +228,24 @@ func build_project(suffix: String, output_path: String, exclude_patterns: Array[
 	var cfg = ConfigFile.new()
 	cfg.load(project_file_path)
 	cfg.set_value(APP_SECTION, APP_NAME_KEY, "%s (%s)" % [ProjectSettings.get_setting(APP_SECTION.path_join(APP_NAME_KEY)), suffix.capitalize()])
-	for section in [PLUGINS_SECTION, AUTOLOAD_SECTION]:
-		if cfg.has_section(section):
-			cfg.erase_section(section)
+	# Here, we selectively remove GDPractice and its autoloads in both workbooks and solution projects
+	# This code makes sure that other autoloads and plugins used by projects are preserved.
+	# NOTE: since Godot 4.4 plugins are meant to load without errors even on first import,
+	# so we could remove that from workbooks and ship with pre-activated tours and practices
+	# in workbook projects.
+	if cfg.has_section(AUTOLOAD_SECTION):
+		const AUTOLOADS_TO_REMOVE: Array[String] = ["UITestPanel", "Metadata"]
+		for autoload in AUTOLOADS_TO_REMOVE:
+			if cfg.has_section_key(AUTOLOAD_SECTION, autoload):
+				cfg.erase_section_key(AUTOLOAD_SECTION, autoload)
+
+	if cfg.has_section(PLUGINS_SECTION) and cfg.has_section_key(PLUGINS_SECTION, "enabled"):
+		var enabled_plugins := cfg.get_value(PLUGINS_SECTION, "enabled") as PackedStringArray
+		var filtered_plugins := Array(enabled_plugins).filter(
+			func(plugin_path): return "gdpractice" not in plugin_path
+		)
+		if filtered_plugins.size() != enabled_plugins.size():
+			cfg.set_value(PLUGINS_SECTION, "enabled", PackedStringArray(filtered_plugins))
 	cfg.save(project_file_path)
 
 	# If generating the workbook project, ensure lessons directory is present and generate practice files from solutions.
